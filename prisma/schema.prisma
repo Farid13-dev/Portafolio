@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")       // pooling, puerto 6543 — para runtime
+  directUrl = env("DIRECT_URL")         // directa, puerto 5432 — para db:push
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id           String   @id @default(cuid())
+  firstName    String
+  lastName     String
+  title        String
+  email        String
+  phone        String?
+  linkedin     String?
+  github       String?
+  location     String?
+  bio          String?
+  profileImage String?
+  logoImage    String?
+  techStack    String?
+  availability Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String
+  features    String
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String
+  githubUrl   String?
+  tags        String
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tutorial {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  level       String
+  duration    String
+  category    String
+  youtubeUrl  String?
+  image       String?
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SkillCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  skills    Skill[]
+}
+
+model Skill {
+  id         String        @id @default(cuid())
+  name       String
+  categoryId String
+  order      Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  description String
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

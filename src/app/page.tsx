@@ -1,0 +1,244 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ChevronRight, Mail, Phone, MapPin, Linkedin, Github, Code, CheckCircle2 } from 'lucide-react';
+import { useProfile, useServices, useProjects, useTutorials, useSkills, useExperiences } from '@/hooks/use-portfolio-data';
+import { ExperienceTimeline } from '@/components/portfolio/ExperienceTimeline';
+import { ServicesSection } from '@/components/portfolio/ServicesSection';
+import { ExperienceSection } from '@/components/portfolio/ExperienceSection';
+import { PortfolioSection } from '@/components/portfolio/PortfolioSection';
+import { TutorialsSection } from '@/components/portfolio/TutorialsSection';
+import { ContactForm } from '@/components/portfolio/ContactForm';
+import { HeroSection } from '@/components/portfolio/HeroSection';
+import { AboutSection } from '@/components/portfolio/AboutSection';
+import { Navigation } from '@/components/layout/Navigation';
+import { Footer } from '@/components/layout/Footer';
+
+export default function Portfolio() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('inicio');
+
+
+  // Fetch data from APIs
+  const { data: profile, isLoading: isLoadingProfile } = useProfile();
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
+  const { data: projects = [], isLoading: isLoadingProjects } = useProjects();
+  const { data: tutorials = [], isLoading: isLoadingTutorials } = useTutorials();
+  const { data: skills = [], isLoading: isLoadingSkills } = useSkills();
+  const { data: experiences = [], isLoading: isLoadingExperiences } = useExperiences();
+
+
+
+  // Page navigation with query params - initialize from URL
+  const [currentPage, setCurrentPage] = useState<'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const page = params.get('page') as 'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales' | null;
+      if (page && ['home', 'servicios', 'experiencia', 'portafolio', 'tutoriales'].includes(page)) {
+        return page;
+      }
+    }
+    return 'home';
+  });
+
+  const navigateToPage = (page: 'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales') => {
+    const url = new URL(window.location.href);
+    if (page === 'home') {
+      url.searchParams.delete('page');
+      setCurrentPage('home');
+      setActiveSection('inicio');
+      // Force scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Close mobile menu if open
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    } else {
+      url.searchParams.set('page', page);
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    window.history.pushState({}, '', url);
+  };
+
+  const sections = [
+    { id: 'inicio', label: 'Inicio' },
+    { id: 'servicios', label: 'Servicios' },
+    { id: 'experiencia', label: 'Experiencia' },
+    { id: 'portafolio', label: 'Portafolio' },
+    { id: 'tutoriales', label: 'Tutoriales' },
+    { id: 'contacto', label: 'Contacto' }
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = useCallback((sectionId: string) => {
+    // If we're on a different page, navigate to home first
+    if (currentPage !== 'home') {
+      navigateToPage('home');
+      // Wait for page to load then scroll to section
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          // Update active section immediately
+          setActiveSection(sectionId);
+        }
+      }, 100);
+    } else {
+      // If we're on home, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        // Update active section immediately
+        setActiveSection(sectionId);
+      }
+      setIsMenuOpen(false);
+    }
+  }, [currentPage, navigateToPage]);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Skip to content for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md z-[100]"
+      >
+        Saltar al contenido principal
+      </a>
+
+      {/* Navigation */}
+      <Navigation
+        profile={profile}
+        activeSection={activeSection}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        scrollToSection={scrollToSection}
+      />
+
+      <main id="main-content" className="flex-1 pt-16" tabIndex={-1}>
+        {/* Back to Home Button */}
+        {currentPage !== 'home' && (
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Button variant="outline" onClick={() => navigateToPage('home')}>
+              ← Volver al Inicio
+            </Button>
+          </div>
+        )}
+
+        {/* Hero Section - Inicio */}
+        {currentPage === 'home' && (
+          <HeroSection profile={profile} scrollToSection={scrollToSection} />
+        )}
+
+        {/* About Section */}
+        {currentPage === 'home' && (
+          <AboutSection profile={profile} skills={skills} />
+        )}
+
+        {/* Services Section */}
+        {currentPage === 'home' && (
+          <section id="servicios">
+            <ServicesSection
+              services={services}
+              isFullPage={false}
+              onNavigate={() => navigateToPage('servicios')}
+            />
+          </section>
+        )}
+
+        {/* Experience Section */}
+        {currentPage === 'home' && (
+          <section id="experiencia">
+            <ExperienceSection
+              experiences={experiences}
+              isFullPage={false}
+              onNavigate={() => navigateToPage('experiencia')}
+            />
+          </section>
+        )}
+
+        {/* Portfolio Section */}
+        {currentPage === 'home' && (
+          <section id="portafolio">
+            <PortfolioSection
+              projects={projects}
+              isFullPage={false}
+              onNavigate={() => navigateToPage('portafolio')}
+            />
+          </section>
+        )}
+
+        {/* Tutorials Section */}
+        {currentPage === 'home' && (
+          <section id="tutoriales">
+            <TutorialsSection
+              tutorials={tutorials}
+              isFullPage={false}
+              onNavigate={() => navigateToPage('tutoriales')}
+            />
+          </section>
+        )}
+
+        {/* Contact Section */}
+        {currentPage === 'home' && (
+          <ContactForm profile={profile} />
+        )}
+      </main>
+
+      {/* Full Page Views */}
+      {currentPage === 'servicios' && (
+        <ServicesSection
+          services={services}
+          isFullPage={true}
+        />
+      )}
+
+      {currentPage === 'experiencia' && (
+        <ExperienceSection
+          experiences={experiences}
+          isFullPage={true}
+        />
+      )}
+
+      {currentPage === 'portafolio' && (
+        <PortfolioSection
+          projects={projects}
+          isFullPage={true}
+        />
+      )}
+
+      {currentPage === 'tutoriales' && (
+        <TutorialsSection
+          tutorials={tutorials}
+          isFullPage={true}
+        />
+      )}
+
+      {/* Footer */}
+      <Footer profile={profile} scrollToSection={scrollToSection} />
+    </div>
+  );
+}

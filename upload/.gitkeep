@@ -1,0 +1,3 @@
+# Esta carpeta contiene archivos subidos por usuarios
+# Los archivos individuales NO se incluyen en git (ver .gitignore)
+# Solo el directorio se mantiene con este archivo .gitkeep
