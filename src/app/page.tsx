@@ -20,7 +20,7 @@ import {
 import { ExperienceTimeline } from '@/components/portafolio/ExperienceTimeline';
 import { ServicesSection } from '@/components/portafolio/ServicesSection';
 import { ExperienceSection } from '@/components/portafolio/ExperienceSection';
-import { PortfolioSection } from '@/components/portafolio/PortfolioSection';
+import { PortafolioSection } from '@/components/portafolio/PortafolioSection';
 import { TutorialsSection } from '@/components/portafolio/TutorialsSection';
 import { ContactForm } from '@/components/portafolio/ContactForm';
 import { HeroSection } from '@/components/portafolio/HeroSection';
@@ -43,7 +43,6 @@ export default function Portfolio() {
   const { data: experiences = [], isLoading: isLoadingExperiences } = useExperiences();
   const { data: education = [], isLoading: isLoadingEducation } = useEducation();
   const { data: sectionHeaders } = useSectionHeaders();
-
 
   // Page navigation with query params - initialize from URL
   const [currentPage, setCurrentPage] = useState<'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales'>(() => {
@@ -167,7 +166,11 @@ export default function Portfolio() {
 
         {/* About Section */}
         {currentPage === 'home' && (
-          <AboutSection profile={profile} skills={skills} />
+          <AboutSection
+              profile={profile}
+              skills={skills}
+              header={sectionHeaders?.['sobre-mi']}
+          />
         )}
 
         {/* Services Section */}
@@ -209,7 +212,7 @@ export default function Portfolio() {
         {/* Portfolio Section */}
         {currentPage === 'home' && (
           <section id="portafolio">
-            <PortfolioSection
+            <PortafolioSection
               projects={projects}
               header={sectionHeaders?.portafolio}
               isFullPage={false}
@@ -232,7 +235,10 @@ export default function Portfolio() {
 
         {/* Contact Section */}
         {currentPage === 'home' && (
-          <ContactForm profile={profile} />
+          <ContactForm
+              profile={profile}
+              header={sectionHeaders?.contacto}
+          />
         )}
       </main>
 
@@ -262,7 +268,7 @@ export default function Portfolio() {
       )}
 
       {currentPage === 'portafolio' && (
-        <PortfolioSection
+        <PortafolioSection
           projects={projects}
           header={sectionHeaders?.portafolio}
           isFullPage={true}

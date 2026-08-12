@@ -11,12 +11,13 @@ Portafolio profesional de Ingeniero de Software Full Stack construido con Next.j
 3. [Estructura del Proyecto](#-estructura-del-proyecto)
 4. [Comandos Disponibles](#-comandos-disponibles)
 5. [Base de Datos](#-base-de-datos)
-6. [Imágenes](#-imágenes)
-7. [Despliegue](#-despliegue)
-8. [Desarrollo Local](#-desarrollo-local)
-9. [Modelos de Datos](#-modelos-de-datos)
-10. [Troubleshooting](#-troubleshooting)
-11. [Próximos Pasos](#-próximos-pasos)
+6. [Formulario de Contacto y WhatsApp](#-formulario-de-contacto-y-whatsapp)
+7. [Imágenes](#-imágenes)
+8. [Despliegue](#-despliegue)
+9. [Desarrollo Local](#-desarrollo-local)
+10. [Modelos de Datos](#-modelos-de-datos)
+11. [Troubleshooting](#-troubleshooting)
+12. [Próximos Pasos](#-próximos-pasos)
 
 ---
 
@@ -41,7 +42,7 @@ bun run dev
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-> Necesitas un archivo `.env` con `DATABASE_URL` y `DIRECT_URL` apuntando a tu base de datos PostgreSQL antes del primer paso. Ver [Base de Datos](#-base-de-datos).
+> Necesitas un archivo `.env` con `DATABASE_URL`, `DIRECT_URL`, `RESEND_API_KEY` y `CONTACT_EMAIL` antes del primer paso. Ver [Base de Datos](#-base-de-datos) y [Formulario de Contacto](#-formulario-de-contacto-y-whatsapp).
 
 ---
 
@@ -59,6 +60,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 - **Prisma 6** - ORM type-safe
 - **PostgreSQL (Supabase)** - Base de datos en producción y desarrollo
 - **Next.js API Routes** - Backend integrado
+- **Resend** - Envío de correos del formulario de contacto
 
 ### Estado y Datos
 - **Zustand** - Estado global
@@ -67,9 +69,10 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ### DevOps
 - **Vercel** - Hosting y despliegue continuo
-- **Docker** - Contenedores (opcional, para self-hosting)
 - **ESLint** - Linting de código
 - **TypeScript** - Validación de tipos
+
+> El proyecto se despliega exclusivamente en Vercel. No usa Docker ni VPS propio.
 
 ---
 
@@ -80,29 +83,35 @@ Portafolio/
 ├── prisma/
 │   ├── schema.prisma                     # Esquema de la base de datos (PostgreSQL)
 │   └── seed.ts                           # Datos iniciales
-├── public/                               # Archivos estáticos
+├── public/
+│   └── images/                           # Imágenes estáticas locales
 ├── src/
 │   ├── app/                                   # Next.js App Router
 │   │   ├── api/                               # API Routes
-│   │   │   ├── profile/                       # API del perfil
-│   │   │   ├── services/                      # API de servicios
-│   │   │   ├── projects/                      # API de proyectos
-│   │   │   ├── tutorials/                     # API de tutoriales
-│   │   │   ├── skills/                        # API de habilidades
-│   │   │   └── experiences/                   # API de experiencia
+│   │   │   ├── contact/                       # Envío de correo (Resend)
+│   │   │   ├── education/                     # Formación académica
+│   │   │   ├── experiences/                   # Experiencia laboral
+│   │   │   ├── profile/                       # Perfil
+│   │   │   ├── projects/                      # Proyectos
+│   │   │   ├── section-headers/               # Encabezados dinámicos de sección
+│   │   │   ├── services/                      # Servicios
+│   │   │   ├── skills/                        # Habilidades
+│   │   │   └── tutorials/                     # Tutoriales
 │   │   ├── page.tsx                           # Página principal
 │   │   ├── layout.tsx                         # Layout raíz
 │   │   └── globals.css                        # Estilos globales
 │   │
 │   ├── components/
-│   │   ├── portfolio/                         # Componentes del portafolio
+│   │   ├── portafolio/                        # Componentes del portafolio
 │   │   │   ├── AboutSection.tsx
 │   │   │   ├── ContactForm.tsx
+│   │   │   ├── EducationSection.tsx
+│   │   │   ├── EducationTimeline.tsx
 │   │   │   ├── ExperienceSection.tsx
 │   │   │   ├── ExperienceTimeline.tsx
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── LoadingSkeleton.tsx
-│   │   │   ├── PortfolioSection.tsx
+│   │   │   ├── PortafolioSection.tsx
 │   │   │   ├── ServicesSection.tsx
 │   │   │   └── TutorialsSection.tsx
 │   │   ├── layout/                            # Componentes de layout
@@ -112,20 +121,21 @@ Portafolio/
 │   │   │   └── providers.tsx
 │   │   └── ui/                                # Componentes shadcn/ui
 │   │
-│   └── hooks/
-│       ├── use-mobile.ts                      # Hook para detectar mobile
-│       ├── use-portafolio-data.ts              # Hooks de datos con TanStack Query
-│       └── use-toast.ts                       # Hook para notificaciones toast
+│   ├── hooks/
+│   │   ├── use-mobile.ts                      # Hook para detectar mobile
+│   │   ├── use-portafolio-data.ts             # Hooks de datos con TanStack Query
+│   │   └── use-toast.ts                       # Hook para notificaciones toast
+│   │
+│   └── lib/
+│       ├── db.ts                              # Cliente Prisma (patrón singleton)
+│       ├── utils.ts
+│       └── whatsapp.ts                        # Helper para construir links de WhatsApp
 │
-├── upload/                              # Archivos subidos
-├── 📄.dockerignore
 ├── 📄.env                                # Variables de entorno (gitignored)
 ├── 📄.env.example
 ├── 📄.gitignore
 ├── 📄bun.lock
-├── 📄Caddyfile
 ├── 📄components.json
-├── 📄Dockerfile
 ├── 📄DEPLOYMENT.md                       # Guía detallada del proceso de despliegue
 ├── 📄eslint.config.mjs
 ├── 📄IMAGES_GUIDE.md
@@ -138,6 +148,8 @@ Portafolio/
 ├── 📄tailwind.config.ts
 └── 📄tsconfig.json
 ```
+
+> `scripts/`, `upload/`, `Dockerfile`, `.dockerignore`, `Caddyfile` y `package-lock.json` fueron eliminados: los primeros dos ya no se usaban, y los de Docker/Caddy solo aplicaban a self-hosting con VPS, algo que este proyecto no usa (despliegue 100% en Vercel).
 
 ---
 
@@ -186,17 +198,19 @@ bun run start
 
 ## 🗄️ Base de Datos
 
-El proyecto usa **PostgreSQL alojado en Supabase**, tanto en desarrollo local como en producción (Vercel).
+El proyecto usa **PostgreSQL alojado en Supabase**, tanto en desarrollo local como en producción (Vercel). El cliente de Prisma se instancia una sola vez con patrón singleton en `src/lib/db.ts`, evitando abrir conexiones nuevas en cada request.
 
 ### Esquema
 
-- **Experience** - Experiencia laboral
 - **Profile** - Información personal y profesional
-- **Project** - Proyectos realizados
+- **SectionHeader** - Título y descripción dinámicos de cada sección de la página
 - **Service** - Servicios ofrecidos
-- **Skill** - Habilidades específicas
-- **SkillCategory** - Categorías de habilidades
+- **Experience** - Experiencia laboral
+- **Education** - Formación académica (carreras, posgrados, cursos)
+- **Project** - Proyectos realizados
 - **Tutorial** - Tutoriales creados
+- **SkillCategory** - Categorías de habilidades
+- **Skill** - Habilidades específicas
 
 ### Datos Iniciales
 
@@ -204,13 +218,15 @@ El script `seed.ts` incluye:
 
 | Modelo | Cantidad | Contenido |
 |--------|----------|-----------|
-| Experiences | 2 | SDAyR y Ant Factory Systems |
-| Profile | 1 | Perfil completo con Oliver Farid Rodriguez Morales |
-| Projects | 6 | Proyectos con imágenes y enlaces a GitHub |
+| Profile | 1 | Perfil completo de Oliver Farid Rodriguez Morales |
+| SectionHeader | 7 | Título/descripción de cada sección (sobre-mí, servicios, experiencia, formación, portafolio, tutoriales, contacto) |
 | Services | 6 | Desarrollo Web, Apps Móviles, Backend, BD, Cloud, Consultoría |
-| Skills | ~23 | Habilidades organizadas por categoría |
-| SkillCategories | 4 | Frontend, Backend, Database, DevOps & Tools |
+| Experiences | 3 | Experiencia laboral real |
+| Education | 2 | Formación académica real |
+| Projects | 6 | Proyectos con imágenes y enlaces a GitHub |
 | Tutorials | 6 | Tutoriales con imágenes y videos de YouTube |
+| SkillCategories | 4 | Frontend, Backend, Database, DevOps & Tools |
+| Skills | ~23 | Habilidades organizadas por categoría |
 
 ### Variables de Entorno Requeridas
 
@@ -226,19 +242,44 @@ DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler
 
 ### Editar Contenido del Portafolio
 
-Todo el contenido (perfil, proyectos, servicios, etc.) se administra editando `prisma/seed.ts` y volviendo a correr:
+Todo el contenido (perfil, proyectos, servicios, formación, encabezados de sección, etc.) se administra de dos formas:
 
+**Con Prisma Studio o el Table Editor de Supabase** (edición directa, sin tocar código):
+```bash
+bunx prisma studio
+```
+Se abre en [http://localhost:5555](http://localhost:5555) — conectado a la base de datos que tengas configurada en `.env`.
+
+**Editando `prisma/seed.ts`** (recomendado cuando el cambio debe quedar versionado en Git):
 ```bash
 bun run db:seed
 ```
 
-O directamente con la interfaz visual:
+> ⚠️ Tu `.env` local apunta a la misma base de datos que usa producción. Cualquier cambio hecho con Prisma Studio o `db:seed` desde tu máquina se refleja de inmediato en el sitio en vivo.
 
-```bash
-bunx prisma studio
+---
+
+## 📧 Formulario de Contacto y WhatsApp
+
+### Envío de correo (Resend)
+
+El formulario de contacto (`ContactForm.tsx`) envía un correo real a través de la API route `src/app/api/contact/route.ts`, usando [Resend](https://resend.com).
+
+**Variables de entorno requeridas:**
+```env
+RESEND_API_KEY="re_tu_api_key"
+CONTACT_EMAIL="tu-email@ejemplo.com"
 ```
 
-Se abre en [http://localhost:5555](http://localhost:5555) — conectado a la base de datos que tengas configurada en `.env` (local o producción, según cuál apuntes).
+> Sin verificar un dominio propio en Resend, solo se pueden enviar correos hacia la dirección con la que te registraste en la cuenta — suficiente para este caso de uso, ya que el destinatario eres tú mismo.
+
+El correo incluye: datos del remitente con avatar de iniciales, asunto, mensaje, y un botón para responder directo desde el cliente de correo. El contenido del formulario se sanitiza (`escapeHtml`) antes de insertarse en el HTML del correo, para evitar inyección de código.
+
+### Enlaces a WhatsApp
+
+El teléfono del perfil no abre el marcador (`tel:`), sino WhatsApp directo con un mensaje predefinido. Esto se centraliza en `src/lib/whatsapp.ts` (`buildWhatsappLink`), usado tanto en `HeroSection.tsx` como en `ContactForm.tsx` — evita duplicar la lógica en ambos componentes.
+
+El mensaje predefinido se puede personalizar por perfil mediante el campo `Profile.whatsappMessage`; si está vacío, se usa un mensaje por defecto.
 
 ---
 
@@ -255,40 +296,9 @@ Se abre en [http://localhost:5555](http://localhost:5555) — conectado a la bas
 
 ### Fuentes de Imágenes
 
-- ✅ **URLs Online** (`http://`, `https://`)
+- ✅ **URLs Online** (`http://`, `https://`) — incluye Supabase Storage
 - ✅ **Rutas Locales** (`/images/...`)
 - ✅ **Base64** (`data:image/...`)
-
-### Ejemplo: Imágenes Online
-
-```typescript
-// En prisma/seed.ts
-{
-  profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-  logoImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe',
-}
-```
-
-### Ejemplo: Imágenes Locales
-
-1. Coloca las imágenes en `public/images/`
-2. Usa la ruta en `prisma/seed.ts`:
-
-```typescript
-{
-  profileImage: '/images/profile.jpg',
-  logoImage: '/images/logo.png',
-}
-```
-
-⚠️ **Importante:** las rutas locales deben empezar con `/`
-
-### Componentes de Imagen
-
-- **`ImageWrapper`** - Para imágenes generales (proyectos, tutoriales, perfil)
-- **`LogoImage`** - Específicamente para logotipos
-
-Ambos incluyen manejo automático de errores, fallback personalizable, loading states y lazy loading opcional.
 
 📖 Guía completa: **[IMAGES_GUIDE.md](IMAGES_GUIDE.md)**
 
@@ -304,7 +314,7 @@ Resumen rápido:
 
 1. Repo conectado a Vercel, con `main` como rama de producción
 2. Base de datos PostgreSQL provisionada en Supabase
-3. Variables `DATABASE_URL` y `DIRECT_URL` configuradas en Vercel (Production + Preview + Development)
+3. Variables `DATABASE_URL`, `DIRECT_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL` configuradas en Vercel (Production + Preview + Development)
 4. Cada push a una rama genera un **Preview Deployment**; cada merge a `main` despliega a producción automáticamente
 
 Para desplegar cambios nuevos, sigue el flujo Gitflow documentado en [DEPLOYMENT.md](DEPLOYMENT.md#-6-flujo-gitflow-para-futuros-cambios).
@@ -340,6 +350,8 @@ Crea un archivo `.env` en la raíz del proyecto (ver plantilla en `.env.example`
 ```env
 DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true"
 DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
+RESEND_API_KEY="re_tu_api_key"
+CONTACT_EMAIL="tu-email@ejemplo.com"
 NODE_ENV=development
 ```
 
@@ -355,53 +367,36 @@ Next.js tiene Hot Module Reload, por lo que:
 
 ## 📊 Modelos de Datos
 
-### Experience
-```typescript
-{
-  id: string
-  title: string
-  company: string
-  location?: string
-  description: string
-  startDate: string      // "May 14" o "May 2014"
-  endDate?: string
-  isCurrent: boolean
-  order: number
-  published: boolean
-}
-```
-
 ### Profile
 ```typescript
 {
   id: string
   firstName: string
   lastName: string
-  title: string
+  title: string            // título largo (ej. usado en el Hero)
+  titleProfile?: string    // título corto (ej. usado en "Sobre Mí")
   email: string
   phone?: string
+  whatsappMessage?: string // mensaje predefinido del link de WhatsApp
   linkedin?: string
   github?: string
   location?: string
   bio?: string
-  profileImage?: string  // URL de foto de perfil
-  logoImage?: string     // URL del logo
-  techStack?: string     // JSON array de tecnologías
+  profileImage?: string    // URL de foto de perfil
+  logoImage?: string       // URL del logo
+  techStack?: string       // JSON array de tecnologías
   availability: boolean
 }
 ```
 
-### Project
+### SectionHeader
 ```typescript
 {
   id: string
+  key: string          // "sobre-mi" | "servicios" | "experiencia" | "formacion" | "portafolio" | "tutoriales" | "contacto"
   title: string
   description: string
-  image: string          // URL de imagen
-  githubUrl?: string
-  tags: string           // JSON array
   order: number
-  published: boolean
 }
 ```
 
@@ -418,23 +413,68 @@ Next.js tiene Hot Module Reload, por lo que:
 }
 ```
 
+### Experience
+```typescript
+{
+  id: string
+  title: string
+  company: string
+  location?: string
+  description: string
+  startDate: string
+  endDate?: string
+  isCurrent: boolean
+  order: number
+  published: boolean
+}
+```
+
+### Education
+```typescript
+{
+  id: string
+  title: string          // ej. "Ingeniería de Sistemas"
+  institution: string
+  type: string            // "Pregrado" | "Maestría" | "Curso" | "Certificación" | "Diplomado"
+  location?: string
+  description?: string
+  startDate: string
+  endDate?: string
+  isCurrent: boolean
+  order: number
+  published: boolean
+}
+```
+
+### Project
+```typescript
+{
+  id: string
+  title: string
+  description: string
+  image: string           // URL de imagen
+  githubUrl?: string
+  tags: string             // JSON array
+  order: number
+  published: boolean
+}
+```
+
 ### Tutorial
 ```typescript
 {
   id: string
   title: string
   description: string
-  level: string          // Principiante, Intermedio, Avanzado
+  level: string            // Principiante, Intermedio, Avanzado
   duration: string
   category: string
   youtubeUrl?: string
-  image?: string         // URL de imagen
+  image?: string
   order: number
   published: boolean
 }
 ```
-
-
 
 ---
 
@@ -443,7 +483,6 @@ Next.js tiene Hot Module Reload, por lo que:
 ### "bun: command not found"
 
 ```powershell
-# PowerShell como Administrador
 irm bun.sh/install.ps1 | iex
 ```
 
@@ -460,15 +499,14 @@ bun run db:seed
 2. Ejecuta `bun run db:seed` para actualizar
 3. Revisa la consola del navegador para errores de carga
 
-### Los cambios no se reflejan
+### El formulario de contacto no envía el correo
 
-1. Presiona `Ctrl + S` para guardar archivos
-2. Si persiste, recarga el navegador con `F5`
-3. Verifica que el servidor esté corriendo
+1. Confirma que `RESEND_API_KEY` y `CONTACT_EMAIL` estén en tu `.env` (local) y en Vercel (Production + Preview)
+2. Revisa que la cuenta de Resend esté activa y la key no haya expirado
+3. Sin dominio verificado en Resend, el correo solo llega a la dirección con la que te registraste
 
 ### Puerto 3000 en uso
 
-Cierra la otra aplicación usando el puerto 3000, o cambia el puerto en `package.json`:
 ```json
 "dev": "next dev -p 3001"
 ```
@@ -478,11 +516,10 @@ Cierra la otra aplicación usando el puerto 3000, o cambia el puerto en `package
 ```bash
 bun run lint
 ```
-La mayoría son advertencias, no críticas — el proyecto funciona incluso con advertencias.
 
 ### Errores de conexión a la base de datos
 
-Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas en `.env`, y que la contraseña esté correctamente percent-encodeada si tiene caracteres especiales. Ver la sección de troubleshooting detallada en **[DEPLOYMENT.md](DEPLOYMENT.md#-7-troubleshooting-encontrado)** (incluye errores de Turbopack en Windows, datos JSON corruptos, y keys duplicadas en React).
+Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas, y que la contraseña esté percent-encodeada si tiene caracteres especiales. Ver detalle completo en **[DEPLOYMENT.md](DEPLOYMENT.md#-7-troubleshooting-encontrado)**.
 
 ---
 
@@ -490,17 +527,16 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas en `.env`, y q
 
 ### Personalización
 
-1. **Editar perfil:** Modifica `prisma/seed.ts` y ejecuta `bun run db:seed`
-2. **Agregar proyectos:** Edita `prisma/seed.ts` en la sección de `projectsData`
-3. **Personalizar estilos:** Modifica `src/app/globals.css` y componentes
-4. **Cambiar colores:** Edita `tailwind.config.ts`
+1. **Editar perfil:** Modifica `prisma/seed.ts` (o Prisma Studio) y ejecuta `bun run db:seed`
+2. **Agregar proyectos/formación/tutoriales:** Edita el array correspondiente en `seed.ts`
+3. **Cambiar los títulos de sección:** Tabla `SectionHeader`
+4. **Personalizar estilos:** Modifica `src/app/globals.css` y componentes
 5. **Agregar dominio propio:** Configúralo desde el dashboard de Vercel
 
 ### Mejoras Sugeridas
 
 - [ ] Panel de administrador protegido con autenticación
 - [ ] Agregar analytics (Google Analytics, Plausible)
-- [ ] Implementar contacto con email real
 - [ ] Agregar blog personal
 - [ ] Optimizar imágenes con Next.js Image
 - [ ] Agregar pruebas unitarias
@@ -513,9 +549,9 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas en `.env`, y q
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Supabase Documentation](https://supabase.com/docs)
+- [Resend Documentation](https://resend.com/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com)
-- [TypeScript](https://www.typescriptlang.org/docs)
 
 ---
 

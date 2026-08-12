@@ -20,8 +20,10 @@ export interface Profile {
   firstName: string;
   lastName: string;
   title: string;
+  titleProfile?: string;
   email: string;
   phone?: string;
+  whatsappMessage?: string;
   linkedin?: string;
   github?: string;
   location?: string;
