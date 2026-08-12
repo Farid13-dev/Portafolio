@@ -3,27 +3,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ImageWrapper } from '@/components/ui/image-wrapper';
-import { Tutorial } from '@/hooks/use-portfolio-data';
+import { Tutorial, SectionHeaderData } from '@/hooks/use-portafolio-data';
 import { BookOpen, Youtube, ExternalLink } from 'lucide-react';
 
 interface TutorialsSectionProps {
   tutorials: Tutorial[];
+  header?: SectionHeaderData;
   isFullPage?: boolean;
   onNavigate?: () => void;
 }
 
-export const TutorialsSection = memo(({ tutorials, isFullPage = false, onNavigate }: TutorialsSectionProps) => {
+export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, onNavigate }: TutorialsSectionProps) => {
   return (
-    <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-            <span className="text-primary">Tutoriales</span> y Recursos{isFullPage ? ' Completos' : ''}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Comparto conocimiento a través de tutoriales prácticos y guías paso a paso
-          </p>
-        </div>
+      <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
+              <span className="text-primary">{header?.title ?? 'Tutoriales'}</span>{!isFullPage && ' y Recursos'}
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              {header?.description ?? 'Comparto conocimiento a través de tutoriales prácticos y guías paso a paso'}
+            </p>
+          </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tutorials.map((tutorial, index) => (

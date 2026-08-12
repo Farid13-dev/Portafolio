@@ -9,33 +9,33 @@ async function main() {
   const profile = await prisma.profile.upsert({
     where: { id: 'default' },
     update: {
-      firstName: 'Oliver Farid',
-      lastName: 'Rodriguez Morales',
+      firstName: 'Oliver',
+      lastName: 'Rodriguez',
       title: 'Ingeniero de Sistemas | Backend Developer',
       email: 'oliver1006507@gmail.com',
       phone: '57-302-543-1466',
-      linkedin: 'www.linkedin.com/in/oliver-farid-rodriguez-morales-a30629326',
+      linkedin: 'https://www.linkedin.com/in/oliver-farid-rodriguez-morales-a30629326/',
       github: 'https://github.com/Farid13-dev',
       location: 'Florencia - Caquetá, Colombia',
       bio: 'Ingeniero de Sistemas especializado en el desarrollo de soluciones backend con Python (Django) y Java (Spring Boot). Me enfoco en la construcción de APIs REST robustas, la gestión eficiente de bases de datos relacionales y la integración de sistemas con Inteligencia Artificial.',
       techStack: JSON.stringify(['Python','Django', 'Java', 'Spring Boot', 'PostgreSQL', 'Oracle', 'APIs REST' , 'RAG', 'LLM']),
-      profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&crop=face',
+      profileImage: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/img/FotoPefil.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWcvRm90b1BlZmlsLmpwZWciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg2NDg4Mjc1LCJleHAiOjE4MTgwMjQyNzV9.26cXVvByFJPySnTBJGf6KT2LNarR2X_p5pMdow7Gjms',
       logoImage: '/images/logo1.ico',
       availability: true
     },
     create: {
       id: 'default',
-      firstName: 'Oliver Farid',
-      lastName: 'Rodriguez Morales',
+      firstName: 'Oliver',
+      lastName: 'Rodriguez',
       title: 'Ingeniero de Sistemas | Backend Developer',
       email: 'oliver1006507@gmail.com',
       phone: '57-302-543-1466',
-      linkedin: 'https://www.linkedin.com/in/oliver-rodriguez-a30629326',
-      github: 'https://github.com/oliver-rodriguez',
+      linkedin: 'https://www.linkedin.com/in/oliver-farid-rodriguez-morales-a30629326/',
+      github: 'https://github.com/Farid13-dev',
       location: 'Florencia - Caquetá, Colombia',
       bio: 'Ingeniero de Sistemas especializado en el desarrollo de soluciones backend con Python (Django) y Java (Spring Boot). Me enfoco en la construcción de APIs REST robustas, la gestión eficiente de bases de datos relacionales y la integración de sistemas con Inteligencia Artificial.',
       techStack: JSON.stringify(['Python','Django', 'Java', 'Spring Boot', 'PostgreSQL', 'Oracle', 'APIs REST' , 'RAG', 'LLM']),
-      profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&crop=face',
+      profileImage: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/img/FotoPefil.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWcvRm90b1BlZmlsLmpwZWciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg2NDg4Mjc1LCJleHAiOjE4MTgwMjQyNzV9.26cXVvByFJPySnTBJGf6KT2LNarR2X_p5pMdow7Gjms',
       logoImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop',
       availability: true
     }
@@ -299,24 +299,34 @@ async function main() {
   // Crear experiencias
   const experiencesData = [
     {
-      title: 'Programador Web Full Stack',
-      company: 'Secretaria de Desarrollo Agroalimentario y Rural (SDAyR)',
+      title: 'Auxiliar Administrativo',
+      company: 'Instituto Colombiano de Bienestar Familiar (ICBF)',
       location: 'Florencia - Caquetá',
-      description: 'Desde Mayo del 2014 he desarrollado y dado mantenimiento a un total de 13 proyectos en esta dependencia, por mencionar los más importantes se encuentran MATRi y RiegoTec.',
-      startDate: 'May 14',
-      endDate: null,
-      isCurrent: true,
+      description: 'Apoyé la digitalización y gestión de datos del servicio "Somos Familia, Somos Comunidad" del ICBF, diseñando una plantilla en Excel con macros para automatizar solicitudes de refrigerios en 6 equipos de campo, y administrando la calidad de datos del registro de 650 familias (~1.950 integrantes). Gestioné el repositorio documental en la nube (OneDrive) con trazabilidad entre equipos, brindé soporte técnico funcional capacitando a los equipos en las herramientas digitales, y coordiné la logística que articulaba la información de campo con los reportes para la Dirección de Familia y Comunidades.',
+      startDate: '09 May 2025',
+      endDate: '06 Dec 2025',
+      isCurrent: false,
       order: 1
     },
     {
-      title: 'Programador Senior',
-      company: 'Ant Factory Systems',
-      location: 'Puebla, Pue.',
-      description: 'Se desarrolló e implementó el sistema SILOS y se creó la página principal de la Feria del Préstamo.',
-      startDate: 'Oct 13',
-      endDate: 'May 14',
+      title: 'Recuentista',
+      company: 'Departamento Administrativo Nacional de Estadística (DANE)',
+      location: 'Florencia - Caquetá',
+      description: 'Operé un sistema de captura de datos móvil (DMC) para el registro y georreferenciación de unidades de vivienda, sincronizando información en tiempo real con un aplicativo web corporativo. Ejecuté controles de calidad de datos mediante revisitas de verificación y validación en campo, gestionando copias de seguridad diarias y reportando inconsistencias cartográficas para garantizar la integridad del marco geoestadístico nacional.',
+      startDate: '16 Feb 2024',
+      endDate: '31 Dec 2025',
       isCurrent: false,
       order: 2
+    },
+    {
+      title: 'Desarrollador de back-end e Investigador (Proyecto de Grado)',
+      company: 'Universidad de la Amazonia',
+      location: 'Florencia - Caquetá',
+      description: 'Lideré el desarrollo del backend y la arquitectura de un sistema conversacional con IA para democratizar el acceso a información institucional, implementando una arquitectura RAG con Milvus para búsqueda semántica y GPT-4 para generación de respuestas. Integré módulos de accesibilidad bidireccional (Whisper y PiperTTS) y pipelines de extracción de texto con EasyOCR, validando el prototipo con 30 usuarios finales mediante pruebas de rendimiento y usabilidad. Stack: Python, LangChain, GPT-4, Milvus, Angular, Docker.',
+      startDate: '01 Ago 2024',
+      endDate: '24 Jul 2025',
+      isCurrent: false,
+      order: 3
     }
   ];
 
@@ -330,6 +340,62 @@ async function main() {
       }
     });
     console.log('✅ Experience created:', experience.title, 'at', experience.company);
+  }
+
+  // Crear encabezados de sección
+  const sectionHeadersData = [
+    { key: 'servicios', title: 'Mis Servicios', description: 'Soluciones completas de desarrollo de software adaptadas a tus necesidades', order: 1 },
+    { key: 'experiencia', title: 'Experiencia Laboral', description: 'Me gradué en el 2025, a partir de esa fecha he tenido la oportunidad de colaborar con varias empresas importantes.', order: 2 },
+    { key: 'formacion', title: 'Formación Académica', description: 'Mi trayectoria educativa y formación continua', order: 3 },
+    { key: 'portafolio', title: 'Mi Portafolio', description: 'Proyectos destacados que he desarrollado', order: 4 },
+    { key: 'tutoriales', title: 'Tutoriales', description: 'Contenido educativo que he creado para la comunidad', order: 5 },
+    { key: 'contacto', title: 'Contáctame', description: '¿Tienes un proyecto en mente? Hablemos', order: 6 }
+  ];
+
+  for (const headerData of sectionHeadersData) {
+    const header = await prisma.sectionHeader.upsert({
+      where: { key: headerData.key },
+      update: headerData,
+      create: headerData
+    });
+    console.log('✅ Section header created:', header.key);
+  }
+
+  // Crear formación académica
+  const educationData = [
+    {
+      title: 'Ingeniería de Sistemas',
+      institution: 'Universidad de la Amazonia',
+      type: 'Pregrado',
+      location: 'Florencia - Caquetá',
+      description: 'Descripción breve, enfoque, proyecto de grado, etc.',
+      startDate: 'Ago 2019',
+      endDate: 'Ago 2025',
+      isCurrent: false,
+      order: 1
+    },
+    {
+      title: 'Maestría en Ingeniería de Software',
+      institution: 'Universidad de los Andes',
+      type: 'Maestría',
+      description: 'Descripción breve del curso',
+      startDate: 'Feb 2026',
+      endDate: 'Dec 2027',
+      isCurrent: true,
+      order: 2
+    }
+  ];
+
+  for (const eduData of educationData) {
+    const education = await prisma.education.upsert({
+      where: { id: `education-${eduData.order}` },
+      update: eduData,
+      create: {
+        id: `education-${eduData.order}`,
+        ...eduData
+      }
+    });
+    console.log('✅ Education created:', education.title);
   }
 
   console.log('🎉 Seed completed successfully!');

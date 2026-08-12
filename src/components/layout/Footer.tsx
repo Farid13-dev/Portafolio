@@ -2,7 +2,7 @@
 
 import {memo, useMemo} from 'react';
 import {Mail, Linkedin, Github, Briefcase} from 'lucide-react';
-import {Profile} from '@/hooks/use-portfolio-data';
+import {Profile} from '@/hooks/use-portafolio-data';
 import {LogoImage} from '@/components/ui/image-wrapper';
 
 interface FooterProps {
@@ -14,6 +14,7 @@ const sections = [
     {id: 'inicio', label: 'Inicio'},
     {id: 'servicios', label: 'Servicios'},
     {id: 'experiencia', label: 'Experiencia'},
+    {id: 'formacion', label: 'Formación Académica'},
     {id: 'portafolio', label: 'Portafolio'},
     {id: 'tutoriales', label: 'Tutoriales'},
     {id: 'contacto', label: 'Contacto'}
@@ -106,7 +107,7 @@ export const Footer = memo(function Footer({profile, scrollToSection}: FooterPro
                             </h3>
                         </div>
                         <p className="text-muted-foreground">
-                            Ingeniero de Software apasionado por crear soluciones tecnológicas innovadoras.
+                            Ingeniero de Sistemas apasionado por crear soluciones tecnológicas innovadoras.
                         </p>
                     </div>
                     <div>
