@@ -100,3 +100,27 @@ model Experience {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model SectionHeader {
+  id          String  @id @default(cuid())
+  key         String  @unique   // "servicios", "experiencia", "formacion", "portafolio", "tutoriales", "contacto"
+  title       String
+  description String
+  order       Int     @default(0)
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  title       String   // ej. "Ingeniería de Sistemas"
+  institution String   // ej. "Universidad de la Amazonia"
+  type        String   // "Carrera" | "Posgrado" | "Curso" | "Certificación" | "Diplomado"
+  location    String?
+  description String?
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

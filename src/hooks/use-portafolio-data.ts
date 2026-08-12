@@ -1,6 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 
 // Types
+
+export interface Experience {
+  id: string;
+  title: string;
+  company: string;
+  location?: string;
+  description: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  order: number;
+  published: boolean;
+}
+
 export interface Profile {
   id: string;
   firstName: string;
@@ -18,6 +32,17 @@ export interface Profile {
   availability: boolean;
 }
 
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  githubUrl?: string;
+  tags: string[];
+  order: number;
+  published: boolean;
+}
+
 export interface Service {
   id: string;
   title: string;
@@ -28,15 +53,9 @@ export interface Service {
   published: boolean;
 }
 
-export interface Project {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  githubUrl?: string;
-  tags: string[];
-  order: number;
-  published: boolean;
+export interface SkillGroup {
+  category: string;
+  items: string[];
 }
 
 export interface Tutorial {
@@ -52,17 +71,20 @@ export interface Tutorial {
   published: boolean;
 }
 
-export interface SkillGroup {
-  category: string;
-  items: string[];
+export interface SectionHeaderData {
+  title: string;
+  description: string;
 }
 
-export interface Experience {
+export type SectionHeaders = Record<string, SectionHeaderData>;
+
+export interface Education {
   id: string;
   title: string;
-  company: string;
+  institution: string;
+  type: string;
   location?: string;
-  description: string;
+  description?: string;
   startDate: string;
   endDate?: string;
   isCurrent: boolean;
@@ -165,6 +187,34 @@ export function useExperiences() {
         throw new Error('Failed to fetch experiences');
       }
       return response.json() as Promise<Experience[]>;
+    },
+    ...queryConfig,
+  });
+}
+
+export function useSectionHeaders() {
+  return useQuery({
+    queryKey: ['section-headers'],
+    queryFn: async () => {
+      const response = await fetch('/api/section-headers');
+      if (!response.ok) {
+        throw new Error('Failed to fetch section headers');
+      }
+      return response.json() as Promise<SectionHeaders>;
+    },
+    ...queryConfig,
+  });
+}
+
+export function useEducation() {
+  return useQuery({
+    queryKey: ['education'],
+    queryFn: async () => {
+      const response = await fetch('/api/education');
+      if (!response.ok) {
+        throw new Error('Failed to fetch education');
+      }
+      return response.json() as Promise<Education[]>;
     },
     ...queryConfig,
   });

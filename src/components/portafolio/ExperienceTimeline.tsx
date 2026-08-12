@@ -1,6 +1,6 @@
 'use client';
 
-import { Experience } from '@/hooks/use-portfolio-data';
+import { Experience } from '@/hooks/use-portafolio-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Calendar } from 'lucide-react';

@@ -1,6 +1,6 @@
 # 🚀 Portafolio - Oliver Farid Rodriguez Morales
 
-Portafolio profesional de Ingeniero de Software Full Stack construido con Next.js 16, TypeScript, Prisma y SQLite.
+Portafolio profesional de Ingeniero de Software Full Stack construido con Next.js 16, TypeScript, Prisma y PostgreSQL.
 
 ---
 
@@ -14,34 +14,34 @@ Portafolio profesional de Ingeniero de Software Full Stack construido con Next.j
 6. [Imágenes](#-imágenes)
 7. [Despliegue](#-despliegue)
 8. [Desarrollo Local](#-desarrollo-local)
-9. [Troubleshooting](#-troubleshooting)
+9. [Modelos de Datos](#-modelos-de-datos)
+10. [Troubleshooting](#-troubleshooting)
+11. [Próximos Pasos](#-próximos-pasos)
 
 ---
 
 ## ⚡ Inicio Rápido
 
-### Windows (Recomendado)
-
 ```bash
-# Ejecutar el script de inicialización (hace TODO en un solo comando)
+# Instalar dependencias
+bun install
 
-```
+# Generar Prisma Client
+bun run db:generate
 
-Este script realiza automáticamente:
-- ✅ Verifica Bun
-- ✅ Instala dependencias
-- ✅ Genera Prisma Client
-- ✅ Crea la base de datos
-- ✅ Puebla con todos los datos
-- ✅ Verifica el código
+# Crear tablas en la base de datos
+bun run db:push
 
-Luego ejecuta el servidor:
+# Poblar con datos iniciales
+bun run db:seed
 
-```bash
+# Iniciar servidor de desarrollo
 bun run dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+> Necesitas un archivo `.env` con `DATABASE_URL` y `DIRECT_URL` apuntando a tu base de datos PostgreSQL antes del primer paso. Ver [Base de Datos](#-base-de-datos).
 
 ---
 
@@ -57,7 +57,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ### Backend
 - **Prisma 6** - ORM type-safe
-- **SQLite** - Base de datos (desarrollo local)
+- **PostgreSQL (Supabase)** - Base de datos en producción y desarrollo
 - **Next.js API Routes** - Backend integrado
 
 ### Estado y Datos
@@ -66,7 +66,8 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 - **React Hook Form** - Formularios optimizados
 
 ### DevOps
-- **Docker** - Contenedores (para producción)
+- **Vercel** - Hosting y despliegue continuo
+- **Docker** - Contenedores (opcional, para self-hosting)
 - **ESLint** - Linting de código
 - **TypeScript** - Validación de tipos
 
@@ -76,16 +77,10 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ```
 Portafolio/
-├── db/
-│   └── custom.db                         # Base de datos SQLite (gitignored)
-├── public/                               # Archivos estáticos
 ├── prisma/
-│   ├── schema.prisma                     # Esquema de la base de datos
+│   ├── schema.prisma                     # Esquema de la base de datos (PostgreSQL)
 │   └── seed.ts                           # Datos iniciales
-├── scripts/                              # Scripts útiles
-|    ├── backup-sqlite.sh                 # Backup de la base de datos
-|    ├── restore-sqlite.sh                # Restaurar backup
-|    └── migrate-to-postgres.js           # Migrar a PostgreSQL
+├── public/                               # Archivos estáticos
 ├── src/
 │   ├── app/                                   # Next.js App Router
 │   │   ├── api/                               # API Routes
@@ -102,47 +97,41 @@ Portafolio/
 │   ├── components/
 │   │   ├── portfolio/                         # Componentes del portafolio
 │   │   │   ├── AboutSection.tsx
-│   │   │   └── ContactForm.tsx
+│   │   │   ├── ContactForm.tsx
 │   │   │   ├── ExperienceSection.tsx
-|   |   |   ├── ExperienceTimeline.tsx
+│   │   │   ├── ExperienceTimeline.tsx
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── LoadingSkeleton.tsx
 │   │   │   ├── PortfolioSection.tsx
 │   │   │   ├── ServicesSection.tsx
-│   │   │   ├── TutorialsSection.tsx
+│   │   │   └── TutorialsSection.tsx
 │   │   ├── layout/                            # Componentes de layout
 │   │   │   ├── Navigation.tsx
 │   │   │   └── Footer.tsx
 │   │   ├── providers/
-│   │   │   ├── providers.tsx
+│   │   │   └── providers.tsx
 │   │   └── ui/                                # Componentes shadcn/ui
 │   │
-│   ├── hooks/
-│   │   ├── use-mobile.ts                      #Hooks de datos con TanStack Query
-│   │   ├── use-portfolio-data.ts              #Hook para notificaciones toast
-│   │   └── use-toast.ts                       #Hook para detectar mobile
-│   │
-│   └── lib/
-│       ├── schema.prisma                      # Cliente prismna
-│       └── seed.ts                            # Datos iniciales
+│   └── hooks/
+│       ├── use-mobile.ts                      # Hook para detectar mobile
+│       ├── use-portafolio-data.ts              # Hooks de datos con TanStack Query
+│       └── use-toast.ts                       # Hook para notificaciones toast
 │
-│
-│
-├── upload/                              # Archivos subidos             
+├── upload/                              # Archivos subidos
 ├── 📄.dockerignore
-├── 📄.env
+├── 📄.env                                # Variables de entorno (gitignored)
 ├── 📄.env.example
 ├── 📄.gitignore
 ├── 📄bun.lock
 ├── 📄Caddyfile
 ├── 📄components.json
 ├── 📄Dockerfile
+├── 📄DEPLOYMENT.md                       # Guía detallada del proceso de despliegue
 ├── 📄eslint.config.mjs
 ├── 📄IMAGES_GUIDE.md
 ├── 📄next.config.ts
 ├── 📄next-env.d.ts
 ├── 📄package.json
-├── 📄package-lock.json
 ├── 📄postcss.config.mjs
 ├── 📄PROJECT_STATUS.md
 ├── 📄README.md
@@ -173,7 +162,7 @@ bun run lint
 # Generar Prisma Client
 bun run db:generate
 
-# Crear tablas en la base de datos
+# Sincronizar el schema con la base de datos
 bun run db:push
 
 # Poblar con datos iniciales
@@ -197,9 +186,9 @@ bun run start
 
 ## 🗄️ Base de Datos
 
-### Esquema
+El proyecto usa **PostgreSQL alojado en Supabase**, tanto en desarrollo local como en producción (Vercel).
 
-El portafolio usa los siguientes modelos de Prisma:
+### Esquema
 
 - **Experience** - Experiencia laboral
 - **Profile** - Información personal y profesional
@@ -223,40 +212,39 @@ El script `seed.ts` incluye:
 | SkillCategories | 4 | Frontend, Backend, Database, DevOps & Tools |
 | Tutorials | 6 | Tutoriales con imágenes y videos de YouTube |
 
-### Cambiar Imagen de Perfil o Logo
+### Variables de Entorno Requeridas
 
-Edita `prisma/seed.ts` y cambia las URLs en la sección del Profile:
+```env
+# Pooling (runtime) — puerto 6543
+DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true"
 
-```typescript
-create: {
-  // ...
-  profileImage: 'https://tu-imagen-perfil.jpg',
-  logoImage: 'https://tu-logo.png',
-  // ...
-}
+# Conexión directa (migraciones/db:push) — puerto 5432
+DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
 ```
 
-Luego ejecuta:
+> Si la contraseña contiene caracteres especiales (`@`, `#`, `%`, etc.), deben percent-encodearse. Ver [DEPLOYMENT.md](DEPLOYMENT.md) para el detalle completo.
+
+### Editar Contenido del Portafolio
+
+Todo el contenido (perfil, proyectos, servicios, etc.) se administra editando `prisma/seed.ts` y volviendo a correr:
 
 ```bash
 bun run db:seed
 ```
 
-### Ver Datos con Prisma Studio
+O directamente con la interfaz visual:
 
 ```bash
 bunx prisma studio
 ```
 
-Se abrirá en [http://localhost:5555](http://localhost:5555).
+Se abre en [http://localhost:5555](http://localhost:5555) — conectado a la base de datos que tengas configurada en `.env` (local o producción, según cuál apuntes).
 
 ---
 
 ## 🖼️ Imágenes
 
 ### Formatos Soportados
-
-El portafolio soporta múltiples formatos de imagen:
 
 - ✅ **PNG** - Ideal para logos y gráficos con transparencia
 - ✅ **JPG/JPEG** - Ideal para fotografías
@@ -267,15 +255,11 @@ El portafolio soporta múltiples formatos de imagen:
 
 ### Fuentes de Imágenes
 
-Puedes usar imágenes de diferentes fuentes:
+- ✅ **URLs Online** (`http://`, `https://`)
+- ✅ **Rutas Locales** (`/images/...`)
+- ✅ **Base64** (`data:image/...`)
 
-- ✅ **URLs Online** (http://, https://)
-- ✅ **Rutas Locales** (/images/, ../, etc.)
-- ✅ **Base64** (data:image/...)
-
-### Imágenes Online (URLs)
-
-Las imágenes online son las más sencillas de usar:
+### Ejemplo: Imágenes Online
 
 ```typescript
 // En prisma/seed.ts
@@ -285,22 +269,9 @@ Las imágenes online son las más sencillas de usar:
 }
 ```
 
-### Imágenes Locales
+### Ejemplo: Imágenes Locales
 
-Para usar imágenes locales:
-
-1. Coloca las imágenes en `public/images/`:
-
-```
-Portafolio/
-├── public/
-│   └── images/
-│       ├── profile.jpg
-│       ├── logo.png
-│       ├── project-1.jpg
-│       └── tutorial-1.png
-```
-
+1. Coloca las imágenes en `public/images/`
 2. Usa la ruta en `prisma/seed.ts`:
 
 ```typescript
@@ -310,154 +281,33 @@ Portafolio/
 }
 ```
 
-⚠️ **Importante:** Las rutas locales deben empezar con `/`
-
-### Imágenes Base64
-
-Para convertir una imagen a base64 y usarla:
-
-```typescript
-{
-  profileImage: 'data:image/png;base64,iVBORw0KGgoAAAANS...',
-  logoImage: 'data:image/png;base64,iVBORw0KGgoAAAANS...',
-}
-```
-
-### Cambiar Imágenes
-
-Edita `prisma/seed.ts`:
-
-```typescript
-// Profile
-{
-  profileImage: 'https://tu-nueva-foto.jpg',  // URL o ruta local
-  logoImage: '/images/tu-logo.png',
-}
-
-// Projects
-{
-  image: '/images/projects/mi-proyecto.jpg',
-}
-
-// Tutorials
-{
-  image: 'https://example.com/tutorial.jpg',
-}
-```
-
-Luego ejecuta:
-
-```bash
-bun run db:seed
-```
+⚠️ **Importante:** las rutas locales deben empezar con `/`
 
 ### Componentes de Imagen
-
-El proyecto usa componentes optimizados:
 
 - **`ImageWrapper`** - Para imágenes generales (proyectos, tutoriales, perfil)
 - **`LogoImage`** - Específicamente para logotipos
 
-Ambos incluyen:
-- ✅ Manejo automático de errores
-- ✅ Fallback personalizable
-- ✅ Loading states
-- ✅ Lazy loading opcional
+Ambos incluyen manejo automático de errores, fallback personalizable, loading states y lazy loading opcional.
 
-### Más Información
-
-Para una guía completa sobre imágenes, consulta: **[IMAGES_GUIDE.md](IMAGES_GUIDE.md)**
+📖 Guía completa: **[IMAGES_GUIDE.md](IMAGES_GUIDE.md)**
 
 ---
 
 ## 🚀 Despliegue
 
-### Opción 1: Render.com (Recomendado para SQLite)
+El proyecto está desplegado en **Vercel**, con base de datos **PostgreSQL en Supabase**, usando flujo **Gitflow** (`main` / `develop` / `feature/*`).
 
-**Ventajas:**
-- ✅ Soporta discos persistentes (necesario para SQLite)
-- ✅ Gratis para uso personal
-- ✅ Deploy automático desde GitHub
+📖 **Guía completa del proceso, paso a paso:** **[DEPLOYMENT.md](DEPLOYMENT.md)**
 
-**Pasos:**
+Resumen rápido:
 
-1. **Subir código a GitHub:**
-   ```bash
-   git add .
-   git commit -m "Ready to deploy"
-   git push
-   ```
+1. Repo conectado a Vercel, con `main` como rama de producción
+2. Base de datos PostgreSQL provisionada en Supabase
+3. Variables `DATABASE_URL` y `DIRECT_URL` configuradas en Vercel (Production + Preview + Development)
+4. Cada push a una rama genera un **Preview Deployment**; cada merge a `main` despliega a producción automáticamente
 
-2. **Crear cuenta en [Render](https://render.com)**
-
-3. **Crear Web Service:**
-   - Conecta tu repositorio de GitHub
-   - Runtime: **Docker**
-   - Variables de entorno:
-     ```
-     NODE_ENV=production
-     DATABASE_URL=file:./db/custom.db
-     PORT=3000
-     ```
-
-4. **Configurar Disco Persistente (IMPORTANTE):**
-   - En la configuración del Web Service
-   - Sección "Disks"
-   - Agregar disco:
-     - Name: `data`
-     - Mount Path: `./db`
-     - Size: `1 GB`
-
-5. **Deploy**
-
-⚠️ **Sin el disco persistente, perderás los datos en cada deploy.**
-
-### Opción 2: Migrar a PostgreSQL (Para Producción)
-
-SQLite es excelente para desarrollo, pero para producción recomendado usar PostgreSQL.
-
-**Migración a Supabase (gratis):**
-
-1. Crear proyecto en [Supabase](https://supabase.com)
-2. Copiar la URL de conexión
-3. Actualizar `.env`:
-   ```env
-   DATABASE_URL="postgresql://postgres:TU_PASSWORD@db.TU_PROYECTO.supabase.co:5432/postgres"
-   ```
-4. Cambiar `prisma/schema.prisma`:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-5. Ejecutar:
-   ```bash
-   bun run db:generate
-   bun run db:push
-   bun run db:seed
-   ```
-
-### Opción 3: VPS / Servidor Propio
-
-Para más control, puedes desplegar en un VPS (DigitalOcean, Linode, etc.):
-
-```bash
-# Clonar el proyecto
-git clone https://github.com/tu-usuario/portafolio.git
-cd portafolio
-
-# Instalar dependencias
-bun install
-
-# Configurar variables de entorno
-nano .env
-# Agrega: DATABASE_URL=file:./db/custom.db
-
-# Build y ejecutar
-bun run build
-pm2 start "bun run start" --name portafolio
-```
+Para desplegar cambios nuevos, sigue el flujo Gitflow documentado en [DEPLOYMENT.md](DEPLOYMENT.md#-6-flujo-gitflow-para-futuros-cambios).
 
 ---
 
@@ -465,118 +315,61 @@ pm2 start "bun run start" --name portafolio
 
 ### Configuración en WebStorm (Windows)
 
-1. **Abrir el proyecto:**
-   - File → Open
-   - Seleccionar carpeta del proyecto
-
+1. **Abrir el proyecto:** File → Open → seleccionar carpeta del proyecto
 2. **Instalar Bun** (si no está instalado):
-   - Abrir PowerShell como Administrador
-   - Ejecutar: `irm bun.sh/install.ps1 | iex`
-
-3. **Ejecutar inicialización:**
-   - Terminal (`Alt + F12`)
-   - Ejecutar: ``
-
+   ```powershell
+   irm bun.sh/install.ps1 | iex
+   ```
+3. **Instalar dependencias y preparar la base de datos:**
+   ```powershell
+   bun install
+   bun run db:generate
+   bun run db:push
+   bun run db:seed
+   ```
 4. **Ejecutar el servidor:**
-   - `bun run dev`
-   - O crear Run Configuration en WebStorm
-
-5. **Abrir en navegador:**
-   - [http://localhost:3000](http://localhost:3000)
+   ```powershell
+   bun run dev
+   ```
+5. **Abrir en navegador:** [http://localhost:3000](http://localhost:3000)
 
 ### Variables de Entorno
 
-Crea un archivo `.env` en la raíz del proyecto:
+Crea un archivo `.env` en la raíz del proyecto (ver plantilla en `.env.example`):
 
 ```env
-# Base de datos SQLite (desarrollo local)
-DATABASE_URL=file:./db/custom.db
-
-# Entorno
+DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
 NODE_ENV=development
 ```
-
-Ver `.env.example` para más opciones.
 
 ### Desarrollo Iterativo
 
 Next.js tiene Hot Module Reload, por lo que:
-- Los cambios se reflejan automáticamente
+- Los cambios en el código se reflejan automáticamente
 - No necesitas recargar el navegador
-- Los cambios en la base de datos requieren re-ejecutar `bun run db:push`
-
----
-
-## 🐛 Troubleshooting
-
-### Problema: "bun: command not found"
-
-**Solución:**
-```powershell
-# PowerShell como Administrador
-irm bun.sh/install.ps1 | iex
-```
-
-### Problema: Base de datos vacía
-
-**Solución:**
-```bash
-# Ejecutar el script de inicialización
-
-
-# O manualmente:
-bun run db:push
-bun run db:seed
-```
-
-### Problema: Imágenes no se muestran
-
-**Solución:**
-1. Verifica que las URLs en `prisma/seed.ts` sean válidas
-2. Ejecuta `bun run db:seed` para actualizar
-3. Revisa la consola del navegador para errores de carga
-
-### Problema: Los cambios no se reflejan
-
-**Solución:**
-1. Presiona `Ctrl + S` para guardar archivos
-2. Si persiste, recarga el navegador con `F5`
-3. Verifica que el servidor esté corriendo
-
-### Problema: "Database file not found"
-
-**Solución:**
-```bash
-# Crear carpeta
-mkdir db
-
-# Crear base de datos
-bun run db:push
-```
-
-### Problema: Puerto 3000 en uso
-
-**Solución:**
-- Cierra la otra aplicación usando el puerto 3000
-- O cambia el puerto en `package.json`:
-  ```json
-  "dev": "next dev -p 3001"
-  ```
-
-### Problema: Errores de linting
-
-**Solución:**
-```bash
-# Ver errores
-bun run lint
-
-# La mayoría son advertencias, no críticas
-# El proyecto funciona incluso con advertencias
-```
+- Los cambios en el schema de la base de datos requieren re-ejecutar `bun run db:push`
+- Los cambios en el contenido (`seed.ts`) requieren re-ejecutar `bun run db:seed`
 
 ---
 
 ## 📊 Modelos de Datos
+
+### Experience
+```typescript
+{
+  id: string
+  title: string
+  company: string
+  location?: string
+  description: string
+  startDate: string      // "May 14" o "May 2014"
+  endDate?: string
+  isCurrent: boolean
+  order: number
+  published: boolean
+}
+```
 
 ### Profile
 ```typescript
@@ -598,19 +391,6 @@ bun run lint
 }
 ```
 
-### Service
-```typescript
-{
-  id: string
-  title: string
-  description: string
-  icon: string           // Nombre del icono Lucide
-  features: string       // JSON array
-  order: number
-  published: boolean
-}
-```
-
 ### Project
 ```typescript
 {
@@ -620,6 +400,19 @@ bun run lint
   image: string          // URL de imagen
   githubUrl?: string
   tags: string           // JSON array
+  order: number
+  published: boolean
+}
+```
+
+### Service
+```typescript
+{
+  id: string
+  title: string
+  description: string
+  icon: string           // Nombre del icono Lucide
+  features: string       // JSON array
   order: number
   published: boolean
 }
@@ -641,21 +434,55 @@ bun run lint
 }
 ```
 
-### Experience
-```typescript
-{
-  id: string
-  title: string
-  company: string
-  location?: string
-  description: string
-  startDate: string      // "May 14" o "May 2014"
-  endDate?: string
-  isCurrent: boolean
-  order: number
-  published: boolean
-}
+
+
+---
+
+## 🐛 Troubleshooting
+
+### "bun: command not found"
+
+```powershell
+# PowerShell como Administrador
+irm bun.sh/install.ps1 | iex
 ```
+
+### Base de datos vacía
+
+```bash
+bun run db:push
+bun run db:seed
+```
+
+### Imágenes no se muestran
+
+1. Verifica que las URLs en `prisma/seed.ts` sean válidas
+2. Ejecuta `bun run db:seed` para actualizar
+3. Revisa la consola del navegador para errores de carga
+
+### Los cambios no se reflejan
+
+1. Presiona `Ctrl + S` para guardar archivos
+2. Si persiste, recarga el navegador con `F5`
+3. Verifica que el servidor esté corriendo
+
+### Puerto 3000 en uso
+
+Cierra la otra aplicación usando el puerto 3000, o cambia el puerto en `package.json`:
+```json
+"dev": "next dev -p 3001"
+```
+
+### Errores de linting
+
+```bash
+bun run lint
+```
+La mayoría son advertencias, no críticas — el proyecto funciona incluso con advertencias.
+
+### Errores de conexión a la base de datos
+
+Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas en `.env`, y que la contraseña esté correctamente percent-encodeada si tiene caracteres especiales. Ver la sección de troubleshooting detallada en **[DEPLOYMENT.md](DEPLOYMENT.md#-7-troubleshooting-encontrado)** (incluye errores de Turbopack en Windows, datos JSON corruptos, y keys duplicadas en React).
 
 ---
 
@@ -667,11 +494,11 @@ bun run lint
 2. **Agregar proyectos:** Edita `prisma/seed.ts` en la sección de `projectsData`
 3. **Personalizar estilos:** Modifica `src/app/globals.css` y componentes
 4. **Cambiar colores:** Edita `tailwind.config.ts`
-5. **Agregar dominio:** Configura en tu plataforma de hosting
+5. **Agregar dominio propio:** Configúralo desde el dashboard de Vercel
 
 ### Mejoras Sugeridas
 
-- [ ] Migrar a PostgreSQL para producción
+- [ ] Panel de administrador protegido con autenticación
 - [ ] Agregar analytics (Google Analytics, Plausible)
 - [ ] Implementar contacto con email real
 - [ ] Agregar blog personal
@@ -685,6 +512,7 @@ bun run lint
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
+- [Supabase Documentation](https://supabase.com/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com)
 - [TypeScript](https://www.typescriptlang.org/docs)
@@ -697,8 +525,6 @@ Este proyecto es de propiedad de Oliver Farid Rodriguez Morales.
 
 ---
 
-**Desarrollado con ❤️ usando Next.js, TypeScript y Prisma.**
+**Desarrollado con ❤️ usando Next.js, TypeScript, Prisma y PostgreSQL.**
 
----
-
-**¿Necesitas ayuda? Revisa la sección [Troubleshooting](#-troubleshooting) o revisa los logs del servidor.**
+**¿Necesitas ayuda?** Revisa la sección [Troubleshooting](#-troubleshooting) o el detalle completo en [DEPLOYMENT.md](DEPLOYMENT.md).

@@ -1,22 +1,22 @@
 # 📋 Estado General del Proyecto
 
-**Fecha:** Febrero 2025
-**Versión:** 1.0.0
-**Estado:** ✅ **PRODUCCIÓN LISTA PARA USO**
+**Fecha de última actualización:** Agosto 2026
+**Versión:** 1.1.0
+**Estado:** ✅ **EN PRODUCCIÓN**
 
 ---
 
 ## 📊 Resumen Ejecutivo
 
-| Aspecto | Estado | Calidad | Nota |
-|---------|--------|---------|------|
+| Aspecto | Estado | Calidad |
+|---------|--------|---------|
 | **Código** | ✅ Sin errores | ⭐⭐⭐⭐⭐ |
-| **Base de Datos** | ✅ Con datos | ⭐⭐⭐⭐⭐ |
+| **Base de Datos** | ✅ PostgreSQL (Supabase), con datos | ⭐⭐⭐⭐⭐ |
 | **Documentación** | ✅ Completa | ⭐⭐⭐⭐⭐ |
 | **Rendimiento** | ✅ Optimizado | ⭐⭐⭐⭐⭐ |
 | **Responsivo** | ✅ Mobile-first | ⭐⭐⭐⭐⭐ |
 | **Accesibilidad** | ✅ WCAG AA | ⭐⭐⭐⭐ |
-| **Despliegue** | ✅ Listo | ⭐⭐⭐⭐ |
+| **Despliegue** | ✅ En producción (Vercel) | ⭐⭐⭐⭐⭐ |
 
 ---
 
@@ -39,13 +39,14 @@
 |---------------|--------|-------------|
 | **Navegación** | ✅ | Menu desktop y móvil responsive, con scroll suave a secciones |
 | **API Routes** | ✅ | 6 endpoints RESTful (profile, services, projects, tutorials, skills, experiences) |
-| **Base de Datos** | ✅ | SQLite con Prisma ORM, seed con todos los datos |
+| **Base de Datos** | ✅ | PostgreSQL (Supabase) con Prisma ORM, seed con todos los datos |
 | **Imágenes** | ✅ | Soporta PNG, JPG, WebP, SVG, GIF, URLs online, locales y Base64 |
 | **Responsive** | ✅ | Mobile-first, breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px) |
 | **Accesibilidad** | ✅ | Skip link, ARIA labels, roles, keyboard navigation, focus management |
 | **Estado de Carga** | ✅ | Skeletons, loading states, error handling |
 | **Optimizaciones** | ✅ | React.memo, useMemo, useCallback, caché extendido, preload de imágenes |
 | **Footer Sticky** | ✅ | Footer pegado al bottom con min-h-screen flex flex-col |
+| **CI/CD** | ✅ | Deploy automático en Vercel vía Gitflow (main / develop / feature) |
 
 ---
 
@@ -53,16 +54,10 @@
 
 ```
 Portafolio/
-├── db/
-│   └── custom.db                         # Base de datos SQLite (gitignored)
-├── public/                               # Archivos estáticos
 ├── prisma/
-│   ├── schema.prisma                     # Esquema de la base de datos
+│   ├── schema.prisma                     # Esquema de la base de datos (PostgreSQL)
 │   └── seed.ts                           # Datos iniciales
-├── scripts/                              # Scripts útiles
-|    ├── backup-sqlite.sh                 # Backup de la base de datos
-|    ├── restore-sqlite.sh                # Restaurar backup
-|    └── migrate-to-postgres.js           # Migrar a PostgreSQL
+├── public/                               # Archivos estáticos
 ├── src/
 │   ├── app/                                   # Next.js App Router
 │   │   ├── api/                               # API Routes
@@ -79,47 +74,41 @@ Portafolio/
 │   ├── components/
 │   │   ├── portfolio/                         # Componentes del portafolio
 │   │   │   ├── AboutSection.tsx
-│   │   │   └── ContactForm.tsx
+│   │   │   ├── ContactForm.tsx
 │   │   │   ├── ExperienceSection.tsx
-|   |   |   ├── ExperienceTimeline.tsx
+│   │   │   ├── ExperienceTimeline.tsx
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── LoadingSkeleton.tsx
 │   │   │   ├── PortfolioSection.tsx
 │   │   │   ├── ServicesSection.tsx
-│   │   │   ├── TutorialsSection.tsx
+│   │   │   └── TutorialsSection.tsx
 │   │   ├── layout/                            # Componentes de layout
 │   │   │   ├── Navigation.tsx
 │   │   │   └── Footer.tsx
 │   │   ├── providers/
-│   │   │   ├── providers.tsx
+│   │   │   └── providers.tsx
 │   │   └── ui/                                # Componentes shadcn/ui
 │   │
-│   ├── hooks/
-│   │   ├── use-mobile.ts                      #Hooks de datos con TanStack Query
-│   │   ├── use-portfolio-data.ts              #Hook para notificaciones toast
-│   │   └── use-toast.ts                       #Hook para detectar mobile
-│   │
-│   └── lib/
-│       ├── schema.prisma                      # Cliente prismna
-│       └── seed.ts                            # Datos iniciales
+│   └── hooks/
+│       ├── use-mobile.ts                      # Hook para detectar mobile
+│       ├── use-portafolio-data.ts              # Hooks de datos con TanStack Query
+│       └── use-toast.ts                       # Hook para notificaciones toast
 │
-│
-│
-├── upload/                              # Archivos subidos             
+├── upload/                              # Archivos subidos
 ├── 📄.dockerignore
-├── 📄.env
+├── 📄.env                                # Variables de entorno (gitignored)
 ├── 📄.env.example
 ├── 📄.gitignore
 ├── 📄bun.lock
 ├── 📄Caddyfile
 ├── 📄components.json
 ├── 📄Dockerfile
+├── 📄DEPLOYMENT.md                       # Guía del proceso de despliegue
 ├── 📄eslint.config.mjs
 ├── 📄IMAGES_GUIDE.md
 ├── 📄next.config.ts
 ├── 📄next-env.d.ts
 ├── 📄package.json
-├── 📄package-lock.json
 ├── 📄postcss.config.mjs
 ├── 📄PROJECT_STATUS.md
 ├── 📄README.md
@@ -149,11 +138,12 @@ Portafolio/
 
 ### Backend
 - **Prisma 6.19.2** - ORM type-safe
-- **SQLite** - Base de datos de desarrollo
+- **PostgreSQL (Supabase)** - Base de datos en desarrollo y producción
 - **Next.js API Routes** - Backend integrado
 
 ### DevOps
-- **Docker** - Contenedores (producción)
+- **Vercel** - Hosting y despliegue continuo
+- **Docker** - Contenedores (opcional, self-hosting)
 - **ESLint** - Linting de código
 - **PostCSS** - Procesamiento de CSS
 
@@ -173,10 +163,9 @@ Portafolio/
 
 ### Estado de Datos
 
-- **Archivo**: `db/custom.db`
-- **Tamaño**: 2.0 MB
-- **Estado**: ✅ Con todos los datos del seed
-- **Última actualización**: Febrero 2025
+- **Proveedor**: Supabase (PostgreSQL)
+- **Estado**: ✅ Con todos los datos del seed, migrados sin pérdida desde SQLite
+- **Conexión**: Pooling (runtime) + directa (migraciones), vía Prisma
 
 ### Datos Incluidos en Seed
 
@@ -209,13 +198,13 @@ Portafolio/
 ### Espaciado
 - **Padding**: Consistente (p-4, p-6, etc.)
 - **Gaps**: Espaciado apropiado entre elementos
-- **Margins**: Margenes generosos para respiración
+- **Margins**: Márgenes generosos para respiración
 - **Responsive**: Se adapta a todos los tamaños de pantalla
 
 ### Interactividad
 - **Hover states**: Todos los elementos interactivos
 - **Focus states**: Todos los elementos focusables
-- **Active states: Estados claros para elementos activos
+- **Active states**: Estados claros para elementos activos
 - **Transitions**: Transiciones suaves (0.3s por defecto)
 - **Animations**: Animaciones sutiles, no distractivas
 
@@ -223,7 +212,7 @@ Portafolio/
 
 ## ⚡ Rendimiento
 
-### Métricas de Carga
+### Métricas de Carga (referencia, entorno local)
 
 | Métrica | Valor | Estado |
 |---------|------|--------|
@@ -232,6 +221,8 @@ Portafolio/
 | **Page Load (desde caché)** | ~100-300ms | ✅ Muy rápido |
 | **Compilation Time** | 131-180ms | ✅ Rápido |
 | **Total APIs** | 6 | ✅ Optimizado |
+
+> Nota: en producción (Vercel), la latencia de las API routes depende de la ubicación de la región de Supabase respecto a la función serverless — revisar si se necesita optimizar la región elegida.
 
 ### Caché Configurado
 
@@ -265,7 +256,7 @@ Portafolio/
 ### Adaptaciones
 - ✅ Menu hamburguesa en móvil
 - ✅ Grid adaptable: 1 col → 2 cols → 3 cols
-- ✅ Textos escalables con `clamp()` o `text-{size}` classes
+- ✅ Textos escalables con `clamp()` o clases `text-{size}`
 - ✅ Tamaños de botones adaptables (`size="sm"`, `size="lg"`)
 - ✅ Padding y márgenes responsivos
 - ✅ Iconos de tamaño apropiado
@@ -294,34 +285,28 @@ Portafolio/
 ### Variables de Entorno
 
 ```env
-# Base de datos
-DATABASE_URL=file:./db/custom.db
+# Base de datos (PostgreSQL / Supabase)
+DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
 
 # Entorno
 NODE_ENV=development
-
-# Puerto
-PORT=3000
 ```
 
 ### Scripts Disponibles
 
 ```bash
 # Desarrollo
-bun run dev           # Servidor de desarrollo
-bun run lint          # Verificar código
+bun run dev            # Servidor de desarrollo
+bun run lint           # Verificar código
 bun run db:generate    # Generar Prisma Client
-bun run db:push       # Crear tablas
-bun run db:seed       # Poblar datos
-bunx prisma studio    # Interfaz gráfica de BD
+bun run db:push        # Sincronizar schema con la BD
+bun run db:seed        # Poblar datos
+bunx prisma studio     # Interfaz gráfica de BD
 
 # Producción
-bun run build         # Construir para producción
-bun run start          # Iniciar servidor de producción
-
-# Utilidades
-bun run db:migrate    # Migraciones (para cambios de schema)
-bun run db:reset      # Reset de base de datos
+bun run build          # Construir para producción
+bun run start           # Iniciar servidor de producción
 ```
 
 ---
@@ -333,10 +318,9 @@ bun run db:reset      # Reset de base de datos
 | Archivo | Propósito | Estado |
 |---------|-----------|--------|
 | **README.md** | Documentación principal del proyecto | ✅ Completo |
-| **PROJECT_SUMMARY.md** | Resumen visual del proyecto | ✅ Completo |
+| **DEPLOYMENT.md** | Guía del proceso de migración y despliegue | ✅ Completo |
 | **IMAGES_GUIDE.md** | Guía completa de imágenes | ✅ Completo |
-| **PERFORMANCE.md** | Optimizaciones de rendimiento | ✅ Completo |
-| **UPDATES.md** | Historial de cambios recientes | ✅ Completo |
+| **PROJECT_STATUS.md** | Este documento — estado general | ✅ Completo |
 | **.env.example** | Plantilla de configuración | ✅ Completo |
 
 ### Código Documentado
@@ -351,7 +335,7 @@ bun run db:reset      # Reset de base de datos
 ## ✅ Checklist de Calidad
 
 ### Código
-- [x] Sin errores de ESLint (0 errors, 0 warnings)
+- [x] Sin errores de ESLint
 - [x] TypeScript strict mode habilitado
 - [x] Sin tipos `any` no intencionales
 - [x] Variables de entorno tipadas
@@ -369,7 +353,7 @@ bun run db:reset      # Reset de base de datos
 - [x] Responsive en todos los tamaños
 - [x] Animaciones suaves y profesionales
 - [x] Colores y tipografía consistentes
-- [x] Espaciado y equilibrado
+- [x] Espaciado equilibrado
 - [x] Componentes shadcn/ui bien integrados
 
 ### Rendimiento
@@ -378,7 +362,7 @@ bun run db:reset      # Reset de base de datos
 - [x] Sin memory leaks
 - [x] Componentes optimizados con memo
 - [x] Imágenes con lazy/priority loading
-- [x] API responses rápidas (5-21ms)
+- [x] API responses rápidas
 
 ### Accesibilidad
 - [x] WCAG 2.1 AA compliant
@@ -387,36 +371,39 @@ bun run db:reset      # Reset de base de datos
 - [x] Focus indicators visibles
 - [x] Alt text en todas las imágenes
 
+### Infraestructura
+- [x] Base de datos migrada a PostgreSQL (Supabase)
+- [x] Desplegado en Vercel
+- [x] Flujo Gitflow configurado (main / develop / feature)
+- [x] Variables de entorno configuradas en Vercel (Production + Preview)
+- [x] Preview Deployments funcionando por rama
+
 ---
 
 ## 🚀 Estado de Despliegue
 
-### Listo para Desplegar
-
-| Plataforma | Estado | Requiere |
+| Entorno | Estado | Plataforma |
 |-----------|--------|----------|
-| **Local (desarrollo)** | ✅ | `bun run dev` |
-| **Render.com** | ✅ Solo configurar disco persistente | Configurar disco `./db` |
-| **VPS/DigitalOcean** | ✅ | Clonar + `bun install` + `bun run build` |
-| **Migrar a PostgreSQL** | ✅ | Cambiar schema + usar Supabase/Neon |
+| **Local (desarrollo)** | ✅ | `bun run dev`, conectado a Supabase |
+| **Preview** | ✅ | Vercel (cualquier rama que no sea `main`) |
+| **Producción** | ✅ **EN VIVO** | Vercel + Supabase (PostgreSQL) |
 
-### Archivos Necesarios
-
-- ✅ Dockerfile incluido
-- ✅ .env.example incluido
-- ✅ .gitignore configurado correctamente
-- ✅ Scripts de backup incluidos
+Ver el proceso completo de configuración en **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 ---
 
-## 🐛 Problemas Conocidos
+## 🐛 Problemas Conocidos (resueltos)
 
 | Problema | Estado | Solución |
 |---------|--------|----------|
-| **Logo muestra "OFRM" primero** | ✅ SOLUCIONADO | Ahora usa preload + fade-in suave |
-| **Latencia al recargar** | ✅ OPTIMIZADO | Caché extendido, no recarga al cambiar pestaña |
-| **Componentes re-renderizan** | ✅ OPTIMIZADO | React.memo + useMemo + useCallback |
-| **Imágenes cargan lentamente** | ✅ OPTIMIZADO | Priority loading + lazy loading + fade-in |
+| **Logo muestra "OFRM" primero** | ✅ Resuelto | Preload + fade-in suave |
+| **Latencia al recargar** | ✅ Resuelto | Caché extendido, no recarga al cambiar pestaña |
+| **Componentes re-renderizan** | ✅ Resuelto | React.memo + useMemo + useCallback |
+| **Imágenes cargan lentamente** | ✅ Resuelto | Priority loading + lazy loading + fade-in |
+| **Turbopack "junction point" error en Windows** | ✅ Resuelto | Limpieza de caché `.next` y `node_modules/.prisma` |
+| **`techStack` con JSON inválido** | ✅ Resuelto | Reset de BD con seed generando JSON válido |
+| **Keys duplicadas en React (Skills)** | ✅ Resuelto | Keys compuestas con índice en el `.map()` |
+| **SQLite incompatible con Vercel (serverless)** | ✅ Resuelto | Migración completa a PostgreSQL (Supabase) |
 
 ---
 
@@ -424,24 +411,17 @@ bun run db:reset      # Reset de base de datos
 
 ### Archivos
 
-- **Archivos TypeScript**: 75 (en src/)
+- **Archivos TypeScript**: ~75 (en `src/`)
 - **Componentes React**: ~15 componentes del portafolio
 - **Componentes shadcn/ui**: 40+ componentes UI
 - **API Routes**: 6 endpoints
 - **Hooks personalizados**: 3 hooks
-- **Documentación**: 5 archivos markdown
-
-### Líneas de Código
-
-- **Total (src/)**: ~5,000+ líneas
-- **Estimado**: ~3,000 líneas de código propio (sin dependencias)
-- **Test Coverage**: No configurado (pendiente si se necesita)
+- **Documentación**: 4 archivos markdown
 
 ### Dependencias
 
-- **Total paquetes**: 40+
 - **Prisma**: 6.19.2
-- **Next.js**: 16.1.1
+- **Next.js**: 16.1.x
 - **React**: 19.0.0
 - **TypeScript**: 5.x
 - **Tailwind CSS**: 4.x
@@ -450,53 +430,16 @@ bun run db:reset      # Reset de base de datos
 
 ## 🎯 Próximos Pasos Recomendados
 
-### Opcionales
-
-1. **Testing** - Agregar pruebas unitarias y E2E
-2. **Analytics** - Integrar Google Analytics o Plausible
-3. **Blog** - Agregar sección de blog personal
-4. **Contacto Real** - Implementar envío de correos reales
-5. **Dominio Personal** - Configurar dominio propio
-6. **Migrar a PostgreSQL** - Para producción si es necesario
-
-### Mejoras Continuas
-
-1. **Monitoreo** - Configurar alertas de error
-2. **SEO** - Optimizar meta tags para mejores resultados en buscadores
-3. **PWA** - Agregar Service Worker para offline support
-4. **Optimización** - Analizar con Lighthouse para Core Web Vitals
-
----
-
-## 🎁 Estado Final
-
-### General
-
-| Aspecto | Estado | Nota |
-|---------|--------|------|
-| **Proyecto** | ✅ PRODUCCIÓN LISTA | ⭐⭐⭐⭐⭐ |
-| **Código** | ✅ LIMPIO Y OPTIMIZADO | ⭐⭐⭐⭐⭐ |
-| **Funcionalidad** | ✅ COMPLETA | ⭐⭐⭐⭐⭐ |
-| **Diseño** | ✅ PROFESIONAL | ⭐⭐⭐⭐⭐ |
-| **Rendimiento** | ✅ OPTIMIZADO | ⭐⭐⭐⭐⭐ |
-| **Documentación** | ✅ COMPLETA | ⭐⭐⭐⭐⭐ |
-| **Despliegue** | ✅ LISTO | ⭐⭐⭐⭐⭐ |
-
-### Estado Final del Proyecto
-
-```
-✅ Código optimizado sin errores
-✅ Base de datos con todos los datos
-✅ Logo con preload y fade-in suave
-✅ Caché extendido para datos
-✅ Componentes con React.memo
-✅ Imágenes con carga optimizada
-✅ Responsive en todos los dispositivos
-✅ Accesibilidad WCAG AA
-✅ Documentación completa
-✅ Listo para desplegar
-✅ Script de inicialización funcional
-```
+1. **Panel de administrador** - Ruta protegida con autenticación para editar contenido sin usar Prisma Studio
+2. **Testing** - Agregar pruebas unitarias y E2E
+3. **Analytics** - Integrar Google Analytics o Plausible
+4. **Blog** - Agregar sección de blog personal
+5. **Contacto Real** - Implementar envío de correos reales
+6. **Dominio Personal** - Configurar dominio propio en Vercel
+7. **Monitoreo** - Configurar alertas de error (ej. Sentry)
+8. **SEO** - Optimizar meta tags
+9. **PWA** - Agregar Service Worker para soporte offline
+10. **CI** - Agregar linting/tests automáticos en GitHub Actions antes de cada merge
 
 ---
 
@@ -505,10 +448,8 @@ bun run db:reset      # Reset de base de datos
 ### Documentación
 
 - **Principal**: `README.md` - Guía completa del proyecto
+- **Despliegue**: `DEPLOYMENT.md` - Proceso de migración y despliegue paso a paso
 - **Imágenes**: `IMAGES_GUIDE.md` - Guía de uso de imágenes
-- **Rendimiento**: `PERFORMANCE.md` - Optimizaciones aplicadas
-- **Resumen**: `PROJECT_SUMMARY.md` - Resumen visual
-- **Cambios**: `UPDATES.md` - Historial de cambios
 - **Configuración**: `.env.example` - Plantilla de variables
 
 ### Comandos Útiles
@@ -520,33 +461,22 @@ bun run dev
 # Verificar código
 bun run lint
 
-# Ver datos
+# Ver datos (Prisma Studio, conectado a la BD del .env activo)
 bunx prisma studio
-
-# Backup de BD
-./scripts/backup-sqlite.sh
-
-# Migrar a PostgreSQL
-./scripts/migrate-to-postgres.js
 ```
 
 ---
 
 ## 💬 Conclusión
 
-**ESTADO DEL PROYECTO: EXCELENTE ⭐⭐⭐⭐⭐⭐**
+El portafolio está **completo, migrado a PostgreSQL, y desplegado en producción en Vercel**, con un flujo de trabajo Gitflow funcionando para futuros cambios.
 
-Tu portafolio está completo, profesional y listo para uso. Cumple con todos los requisitos de calidad:
-
-✅ **Código limpio y optimizado**
-✅ **Funcionalidad completa**
-✅ **Rendimiento optimizado**
-✅ **Diseño profesional**
-✅ **Documentación exhaustiva**
-✅ **Listo para desplegar**
-
-**Puedes usar el proyecto con confianza para presentarlo a empleadores o clientes.** 🚀
+✅ Código limpio y optimizado
+✅ Base de datos en la nube (Supabase)
+✅ Despliegue automatizado por rama
+✅ Documentación actualizada y consistente
+✅ Listo para seguir iterando con nuevas funcionalidades
 
 ---
 
-**¿Necesitas alguna otra mejora o tienes preguntas específicas?**
+**¿Siguiente funcionalidad a construir?** Considera empezar por el panel de administrador — ya tienes la base de datos y el flujo de despliegue listos para soportarlo.

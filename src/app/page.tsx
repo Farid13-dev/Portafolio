@@ -7,17 +7,27 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronRight, Mail, Phone, MapPin, Linkedin, Github, Code, CheckCircle2 } from 'lucide-react';
-import { useProfile, useServices, useProjects, useTutorials, useSkills, useExperiences } from '@/hooks/use-portfolio-data';
-import { ExperienceTimeline } from '@/components/portfolio/ExperienceTimeline';
-import { ServicesSection } from '@/components/portfolio/ServicesSection';
-import { ExperienceSection } from '@/components/portfolio/ExperienceSection';
-import { PortfolioSection } from '@/components/portfolio/PortfolioSection';
-import { TutorialsSection } from '@/components/portfolio/TutorialsSection';
-import { ContactForm } from '@/components/portfolio/ContactForm';
-import { HeroSection } from '@/components/portfolio/HeroSection';
-import { AboutSection } from '@/components/portfolio/AboutSection';
+import {
+  useProfile,
+  useServices,
+  useProjects,
+  useTutorials,
+  useSkills,
+  useExperiences,
+  useEducation,
+  useSectionHeaders
+} from '@/hooks/use-portafolio-data';
+import { ExperienceTimeline } from '@/components/portafolio/ExperienceTimeline';
+import { ServicesSection } from '@/components/portafolio/ServicesSection';
+import { ExperienceSection } from '@/components/portafolio/ExperienceSection';
+import { PortfolioSection } from '@/components/portafolio/PortfolioSection';
+import { TutorialsSection } from '@/components/portafolio/TutorialsSection';
+import { ContactForm } from '@/components/portafolio/ContactForm';
+import { HeroSection } from '@/components/portafolio/HeroSection';
+import { AboutSection } from '@/components/portafolio/AboutSection';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
+import {EducationSection} from "@/components/portafolio/EducationSection";
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,22 +41,23 @@ export default function Portfolio() {
   const { data: tutorials = [], isLoading: isLoadingTutorials } = useTutorials();
   const { data: skills = [], isLoading: isLoadingSkills } = useSkills();
   const { data: experiences = [], isLoading: isLoadingExperiences } = useExperiences();
-
+  const { data: education = [], isLoading: isLoadingEducation } = useEducation();
+  const { data: sectionHeaders } = useSectionHeaders();
 
 
   // Page navigation with query params - initialize from URL
-  const [currentPage, setCurrentPage] = useState<'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales'>(() => {
+  const [currentPage, setCurrentPage] = useState<'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const page = params.get('page') as 'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales' | null;
-      if (page && ['home', 'servicios', 'experiencia', 'portafolio', 'tutoriales'].includes(page)) {
+      const page = params.get('page') as 'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales' | null;
+      if (page && ['home', 'servicios', 'experiencia', 'formacion', 'portafolio', 'tutoriales'].includes(page)) {
         return page;
       }
     }
     return 'home';
   });
 
-  const navigateToPage = (page: 'home' | 'servicios' | 'experiencia' | 'portafolio' | 'tutoriales') => {
+  const navigateToPage = (page: 'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales') => {
     const url = new URL(window.location.href);
     if (page === 'home') {
       url.searchParams.delete('page');
@@ -70,6 +81,7 @@ export default function Portfolio() {
     { id: 'inicio', label: 'Inicio' },
     { id: 'servicios', label: 'Servicios' },
     { id: 'experiencia', label: 'Experiencia' },
+    { id: 'formacion', label: 'Formación Académica' },
     { id: 'portafolio', label: 'Portafolio' },
     { id: 'tutoriales', label: 'Tutoriales' },
     { id: 'contacto', label: 'Contacto' }
@@ -163,6 +175,7 @@ export default function Portfolio() {
           <section id="servicios">
             <ServicesSection
               services={services}
+              header={sectionHeaders?.servicios}
               isFullPage={false}
               onNavigate={() => navigateToPage('servicios')}
             />
@@ -174,10 +187,23 @@ export default function Portfolio() {
           <section id="experiencia">
             <ExperienceSection
               experiences={experiences}
+              header={sectionHeaders?.experiencia}
               isFullPage={false}
               onNavigate={() => navigateToPage('experiencia')}
             />
           </section>
+        )}
+
+        {/* Education Section */}
+        {currentPage === 'home' && (
+            <section id="formacion">
+              <EducationSection
+                  education={education}
+                  header={sectionHeaders?.formacion}
+                  isFullPage={false}
+                  onNavigate={() => navigateToPage('formacion')}
+              />
+            </section>
         )}
 
         {/* Portfolio Section */}
@@ -185,6 +211,7 @@ export default function Portfolio() {
           <section id="portafolio">
             <PortfolioSection
               projects={projects}
+              header={sectionHeaders?.portafolio}
               isFullPage={false}
               onNavigate={() => navigateToPage('portafolio')}
             />
@@ -196,6 +223,7 @@ export default function Portfolio() {
           <section id="tutoriales">
             <TutorialsSection
               tutorials={tutorials}
+              header={sectionHeaders?.tutoriales}
               isFullPage={false}
               onNavigate={() => navigateToPage('tutoriales')}
             />
@@ -212,6 +240,7 @@ export default function Portfolio() {
       {currentPage === 'servicios' && (
         <ServicesSection
           services={services}
+          header={sectionHeaders?.servicios}
           isFullPage={true}
         />
       )}
@@ -219,13 +248,23 @@ export default function Portfolio() {
       {currentPage === 'experiencia' && (
         <ExperienceSection
           experiences={experiences}
+          header={sectionHeaders?.experiencia}
           isFullPage={true}
         />
+      )}
+
+      {currentPage === 'formacion' && (
+          <EducationSection
+              education={education}
+              header={sectionHeaders?.formacion}
+              isFullPage={true}
+          />
       )}
 
       {currentPage === 'portafolio' && (
         <PortfolioSection
           projects={projects}
+          header={sectionHeaders?.portafolio}
           isFullPage={true}
         />
       )}
@@ -233,6 +272,7 @@ export default function Portfolio() {
       {currentPage === 'tutoriales' && (
         <TutorialsSection
           tutorials={tutorials}
+          header={sectionHeaders?.tutoriales}
           isFullPage={true}
         />
       )}

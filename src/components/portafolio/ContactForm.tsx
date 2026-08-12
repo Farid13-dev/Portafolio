@@ -6,7 +6,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Mail, Phone, MapPin, Linkedin, Github, CheckCircle2, ChevronRight} from 'lucide-react';
-import {Profile} from '@/hooks/use-portfolio-data';
+import {Profile} from '@/hooks/use-portafolio-data';
 
 interface ContactFormProps {
     profile: Profile | undefined;
