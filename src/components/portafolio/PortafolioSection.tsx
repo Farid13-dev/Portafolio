@@ -13,13 +13,13 @@ interface PortfolioSectionProps {
   onNavigate?: () => void;
 }
 
-export const PortfolioSection = memo(({ projects, header, isFullPage = false, onNavigate }: PortfolioSectionProps) => {
+export const PortafolioSection = memo(({ projects, header, isFullPage = false, onNavigate }: PortfolioSectionProps) => {
   return (
       <section className={isFullPage ? 'py-20' : 'py-20 bg-background'}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-              Mi <span className="text-primary">{header?.title ?? 'Portafolio'}</span>
+              <span className="text-primary">{header?.title ?? 'Portafolio'}</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {header?.description ?? 'Proyectos destacados que demuestran mi experiencia y habilidades'}
@@ -79,4 +79,4 @@ export const PortfolioSection = memo(({ projects, header, isFullPage = false, on
   );
 });
 
-PortfolioSection.displayName = 'PortfolioSection';
+PortafolioSection.displayName = 'PortafolioSection';

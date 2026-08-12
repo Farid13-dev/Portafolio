@@ -98,8 +98,8 @@ export const Footer = memo(function Footer({profile, scrollToSection}: FooterPro
                                 />
                             ) : (
                                 <span className="text-2xl font-bold text-primary">
-                  OF<span className="text-primary/60">RM</span>
-                </span>
+                                    OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
+                                </span>
                             )}
                             <h3 className="text-xl font-bold">
                                 {profile?.firstName || 'Oliver Farid'} <span

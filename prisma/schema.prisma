@@ -8,13 +8,46 @@ datasource db {
   directUrl = env("DIRECT_URL")         // directa, puerto 5432 — para db:push
 }
 
+model Education {
+  id          String   @id @default(cuid())
+  title       String   // ej. "Ingeniería de Sistemas"
+  institution String   // ej. "Universidad de la Amazonia"
+  type        String   // "Carrera" | "Posgrado" | "Curso" | "Certificación" | "Diplomado"
+  location    String?
+  description String?
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  description String
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Profile {
   id           String   @id @default(cuid())
   firstName    String
   lastName     String
   title        String
+  titleProfile String?
   email        String
   phone        String?
+  whatsappMessage String?
   linkedin     String?
   github       String?
   location     String?
@@ -25,18 +58,6 @@ model Profile {
   availability Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-}
-
-model Service {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  icon        String
-  features    String
-  order       Int      @default(0)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model Project {
@@ -52,15 +73,12 @@ model Project {
   updatedAt   DateTime @updatedAt
 }
 
-model Tutorial {
+model Service {
   id          String   @id @default(cuid())
   title       String
   description String
-  level       String
-  duration    String
-  category    String
-  youtubeUrl  String?
-  image       String?
+  icon        String
+  features    String
   order       Int      @default(0)
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -86,21 +104,6 @@ model Skill {
   category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
-model Experience {
-  id          String   @id @default(cuid())
-  title       String
-  company     String
-  location    String?
-  description String
-  startDate   String
-  endDate     String?
-  isCurrent   Boolean  @default(false)
-  order       Int      @default(0)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
 model SectionHeader {
   id          String  @id @default(cuid())
   key         String  @unique   // "servicios", "experiencia", "formacion", "portafolio", "tutoriales", "contacto"
@@ -109,18 +112,19 @@ model SectionHeader {
   order       Int     @default(0)
 }
 
-model Education {
+model Tutorial {
   id          String   @id @default(cuid())
-  title       String   // ej. "Ingeniería de Sistemas"
-  institution String   // ej. "Universidad de la Amazonia"
-  type        String   // "Carrera" | "Posgrado" | "Curso" | "Certificación" | "Diplomado"
-  location    String?
-  description String?
-  startDate   String
-  endDate     String?
-  isCurrent   Boolean  @default(false)
+  title       String
+  description String
+  level       String
+  duration    String
+  category    String
+  youtubeUrl  String?
+  image       String?
   order       Int      @default(0)
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+

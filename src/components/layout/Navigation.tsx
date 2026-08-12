@@ -87,13 +87,13 @@ export const Navigation = memo(function Navigation({
               {profile?.logoImage ? (
                 <LogoImage
                   src={profile.logoImage}
-                  alt="Farid.ing Logo"
+                  alt="OliverFarid.ing Logo"
                   className="h-16 w-auto"
-                  fallbackText="Farid.ing"
+                  fallbackText="OliverFarid.ing"
                 />
               ) : (
                 <span className="text-2xl font-bold text-primary">
-                  OF<span className="text-primary/60">RM</span>
+                  OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
                 </span>
               )}
             </a>
