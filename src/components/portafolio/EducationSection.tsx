@@ -13,7 +13,7 @@ interface EducationSectionProps {
 
 export const EducationSection = memo(({ education, header, isFullPage = false, onNavigate }: EducationSectionProps) => {
     return (
-        <section className={isFullPage ? 'py-20' : 'py-20 bg-background'}>
+        <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
         <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>

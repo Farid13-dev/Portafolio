@@ -5,37 +5,65 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {Mail, Phone, MapPin, Linkedin, Github, CheckCircle2, ChevronRight} from 'lucide-react';
-import {Profile} from '@/hooks/use-portafolio-data';
+import {Mail, Phone, MapPin, Linkedin, Github, CheckCircle2, ChevronRight, Loader2} from 'lucide-react';
+import {Profile, SectionHeaderData} from '@/hooks/use-portafolio-data';
+import { buildWhatsappLink } from '@/lib/whatsapp';
 
 interface ContactFormProps {
     profile: Profile | undefined;
+    header?: SectionHeaderData;
 }
 
-export function ContactForm({profile}: ContactFormProps) {
+export function ContactForm({profile, header}: ContactFormProps) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         subject: '',
         message: ''
     });
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        alert('¡Mensaje enviado con éxito! Te contactaré pronto.');
-        setFormData({name: '', email: '', subject: '', message: ''});
+        setStatus('loading');
+        setErrorMessage('');
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'No se pudo enviar el mensaje');
+            }
+
+            setStatus('success');
+            setFormData({name: '', email: '', subject: '', message: ''});
+
+            // Vuelve al estado normal después de unos segundos
+            setTimeout(() => setStatus('idle'), 5000);
+        } catch (error) {
+            setStatus('error');
+            setErrorMessage(error instanceof Error ? error.message : 'Ocurrió un error inesperado');
+        }
     };
+
+    const whatsappLink = buildWhatsappLink(profile);
 
     return (
         <section id="contacto" className="py-20 bg-background">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold mb-4">
-                        <span className="text-primary">Contáctame</span>
+                        <span className="text-primary">{header?.title ?? 'Contáctame'}</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        ¿Tienes un proyecto en mente? ¡Hablemos y hagamos realidad tus ideas!
+                        {header?.description ?? '¿Tienes un proyecto en mente? ¡Hablemos y hagamos realidad tus ideas!'}
                     </p>
                 </div>
 
@@ -73,7 +101,9 @@ export function ContactForm({profile}: ContactFormProps) {
                                         <div>
                                             <p className="font-medium">Teléfono</p>
                                             <a
-                                                href={`tel:${profile.phone.replace(/\D/g, '')}`}
+                                                href={whatsappLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="text-muted-foreground hover:text-primary"
                                             >
                                                 {profile.phone}
@@ -169,6 +199,7 @@ export function ContactForm({profile}: ContactFormProps) {
                                         value={formData.name}
                                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                                         required
+                                        disabled={status === 'loading'}
                                     />
                                 </div>
                                 <div>
@@ -182,6 +213,7 @@ export function ContactForm({profile}: ContactFormProps) {
                                         value={formData.email}
                                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                                         required
+                                        disabled={status === 'loading'}
                                     />
                                 </div>
                                 <div>
@@ -194,6 +226,7 @@ export function ContactForm({profile}: ContactFormProps) {
                                         value={formData.subject}
                                         onChange={(e) => setFormData({...formData, subject: e.target.value})}
                                         required
+                                        disabled={status === 'loading'}
                                     />
                                 </div>
                                 <div>
@@ -202,16 +235,40 @@ export function ContactForm({profile}: ContactFormProps) {
                                     </label>
                                     <Textarea
                                         id="message"
-                                        placeholder="Escribe tu mensaje aquí..."
-                                        rows={5}
+                                        placeholder="Cuéntame brevemente sobre tu proyecto, idea o necesidad..."
                                         value={formData.message}
-                                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                         required
+                                        disabled={status === 'loading'}
+                                        className="h-40 overflow-y-auto resize-none"
                                     />
                                 </div>
-                                <Button type="submit" className="w-full" size="lg">
-                                    Enviar Mensaje
-                                    <ChevronRight className="ml-2 h-4 w-4"/>
+
+                                {status === 'success' && (
+                                    <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950/30 rounded-md p-3">
+                                        <CheckCircle2 className="h-4 w-4 flex-shrink-0"/>
+                                        ¡Mensaje enviado con éxito! Te contactaré pronto.
+                                    </div>
+                                )}
+
+                                {status === 'error' && (
+                                    <div className="text-sm text-destructive bg-destructive/10 rounded-md p-3">
+                                        {errorMessage || 'No se pudo enviar el mensaje. Intenta de nuevo.'}
+                                    </div>
+                                )}
+
+                                <Button type="submit" className="w-full" size="lg" disabled={status === 'loading'}>
+                                    {status === 'loading' ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                                            Enviando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Enviar Mensaje
+                                            <ChevronRight className="ml-2 h-4 w-4"/>
+                                        </>
+                                    )}
                                 </Button>
                             </form>
                         </CardContent>
