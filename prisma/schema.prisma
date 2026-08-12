@@ -8,24 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")         // directa, puerto 5432 — para db:push
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Profile {
   id           String   @id @default(cuid())
   firstName    String
@@ -110,6 +92,30 @@ model Experience {
   company     String
   location    String?
   description String
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SectionHeader {
+  id          String  @id @default(cuid())
+  key         String  @unique   // "servicios", "experiencia", "formacion", "portafolio", "tutoriales", "contacto"
+  title       String
+  description String
+  order       Int     @default(0)
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  title       String   // ej. "Ingeniería de Sistemas"
+  institution String   // ej. "Universidad de la Amazonia"
+  type        String   // "Carrera" | "Posgrado" | "Curso" | "Certificación" | "Diplomado"
+  location    String?
+  description String?
   startDate   String
   endDate     String?
   isCurrent   Boolean  @default(false)

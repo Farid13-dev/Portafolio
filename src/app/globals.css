@@ -125,7 +125,7 @@
   }
 }
 
-/* Design tokens for portfolio */
+/* Design tokens for portafolio */
 :root {
   /* Portfolio accent colors (emerald/teal theme - warm and professional) */
   --portfolio-accent: oklch(0.55 0.15 160);

@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ImageWrapper } from '@/components/ui/image-wrapper';
 import { Mail, Phone, Linkedin, Github, ChevronRight, User } from 'lucide-react';
-import { Profile } from '@/hooks/use-portfolio-data';
+import { Profile } from '@/hooks/use-portafolio-data';
 
 interface HeroSectionProps {
   profile: Profile | undefined;

@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useMemo } from 'react';
 import { Menu, X, Briefcase } from 'lucide-react';
-import { Profile } from '@/hooks/use-portfolio-data';
+import { Profile } from '@/hooks/use-portafolio-data';
 import { LogoImage } from '@/components/ui/image-wrapper';
 
 interface NavigationProps {
@@ -17,6 +17,7 @@ const sections = [
   { id: 'inicio', label: 'Inicio' },
   { id: 'servicios', label: 'Servicios' },
   { id: 'experiencia', label: 'Experiencia' },
+  { id: 'formacion', label: 'Formación Académica' },
   { id: 'portafolio', label: 'Portafolio' },
   { id: 'tutoriales', label: 'Tutoriales' },
   { id: 'contacto', label: 'Contacto' }

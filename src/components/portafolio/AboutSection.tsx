@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, MapPin, Linkedin, Code } from 'lucide-react';
-import { Profile, SkillGroup } from '@/hooks/use-portfolio-data';
+import { Profile, SkillGroup } from '@/hooks/use-portafolio-data';
 
 interface AboutSectionProps {
   profile: Profile | undefined;

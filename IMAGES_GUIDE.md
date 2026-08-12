@@ -15,9 +15,9 @@ Tu portafolio soporta múltiples formatos y fuentes de imágenes.
 - ✅ **ICO** - Iconos
 
 ### Fuentes de Imágenes
-- ✅ **URLs Online** (http://, https://)
-- ✅ **Rutas Locales** (/images/, ../, etc.)
-- ✅ **Base64** (data:image/...)
+- ✅ **URLs Online** (`http://`, `https://`)
+- ✅ **Rutas Locales** (`/images/...`)
+- ✅ **Base64** (`data:image/...`)
 
 ---
 
@@ -83,6 +83,19 @@ Para convertir una imagen a base64:
 
 #### Método A: Línea de comandos
 
+**PowerShell (Windows):**
+
+```powershell
+# Genera solo el string base64
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("tu-imagen.png")) | Out-File imagen.txt
+
+# O crea directamente el data URL completo (ajusta el tipo MIME según tu imagen)
+$base64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes("tu-imagen.png"))
+"data:image/png;base64,$base64" | Out-File imagen-base64.txt
+```
+
+**macOS / Linux:**
+
 ```bash
 # Convertir imagen a base64
 base64 -i tu-imagen.png > imagen.txt
@@ -115,6 +128,8 @@ reader.readAsDataURL(file);
 }
 ```
 
+> ⚠️ Base64 aumenta el tamaño del dato ~33% respecto al archivo original. Para imágenes grandes, prefiere URLs online o archivos locales en `public/`.
+
 ---
 
 ## 🔧 Configurar Imágenes en la Base de Datos
@@ -145,6 +160,8 @@ const profile = await prisma.profile.upsert({
 bun run db:seed
 ```
 
+> Esto aplica los cambios tanto en tu base de datos local como en producción, según cuál `DATABASE_URL` tengas activa en tu `.env` al momento de correr el comando.
+
 ---
 
 ## 📝 Agregar Imágenes a Otros Contenidos
@@ -157,7 +174,7 @@ En `prisma/seed.ts`, busca `projectsData`:
 const projectsData = [
   {
     title: 'Mi Proyecto',
-    image: '/images/project-1.jpg',  // ← Imagen local
+    image: '/images/projects/project-1.jpg',  // ← Imagen local
     // o
     image: 'https://example.com/project.jpg',  // ← Imagen online
     githubUrl: 'https://github.com/tu-usuario/tu-proyecto',
@@ -176,7 +193,7 @@ En `prisma/seed.ts`, busca `tutorialsData`:
 const tutorialsData = [
   {
     title: 'Mi Tutorial',
-    image: '/images/tutorial-1.png',  // ← Imagen local
+    image: '/images/tutorials/tutorial-1.png',  // ← Imagen local
     // o
     image: 'https://example.com/tutorial.jpg',  // ← Imagen online
     youtubeUrl: 'https://youtube.com/watch?v=xxx',
@@ -211,7 +228,7 @@ Usado para imágenes generales (proyectos, tutoriales, perfil):
 - `src` - URL o ruta de la imagen
 - `alt` - Texto alternativo (accesibilidad)
 - `className` - Clases de Tailwind
-- `loading` - "eager" (inmediato) o "lazy" (carga diferida)
+- `loading` - `"eager"` (inmediato) o `"lazy"` (carga diferida)
 - `fallback` - Elemento personalizado si falla la carga
 - `showFallback` - Mostrar/ocultar fallback
 
@@ -247,9 +264,10 @@ Usado específicamente para logotipos:
 4. El formato no es soportado
 
 **Soluciones:**
-```bash
-# 1. Verificar que la imagen exista
-ls public/images/tu-imagen.jpg
+
+```powershell
+# 1. Verificar que la imagen exista (PowerShell)
+Test-Path public\images\tu-imagen.jpg
 
 # 2. Verificar la URL en el navegador
 # Abre la URL de la imagen directamente
@@ -283,7 +301,7 @@ profileImage: 'data:image/png;base64,iVBORw0KGgoAAAANS...';
 2. La ruta no empieza con `/`
 
 **Solución:**
-```bash
+```
 # Estructura correcta
 Portafolio/
 ├── public/

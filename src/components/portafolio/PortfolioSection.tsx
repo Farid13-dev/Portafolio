@@ -3,27 +3,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ImageWrapper } from '@/components/ui/image-wrapper';
-import { Project } from '@/hooks/use-portfolio-data';
+import { Project, SectionHeaderData } from '@/hooks/use-portafolio-data';
 import { Github, ExternalLink } from 'lucide-react';
 
 interface PortfolioSectionProps {
   projects: Project[];
+  header?: SectionHeaderData;
   isFullPage?: boolean;
   onNavigate?: () => void;
 }
 
-export const PortfolioSection = memo(({ projects, isFullPage = false, onNavigate }: PortfolioSectionProps) => {
+export const PortfolioSection = memo(({ projects, header, isFullPage = false, onNavigate }: PortfolioSectionProps) => {
   return (
-    <section className={isFullPage ? 'py-20' : 'py-20 bg-background'}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-            Mi <span className="text-primary">Portafolio{isFullPage ? ' Completo' : ''}</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Proyectos destacados que demuestran mi experiencia y habilidades
-          </p>
-        </div>
+      <section className={isFullPage ? 'py-20' : 'py-20 bg-background'}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
+              Mi <span className="text-primary">{header?.title ?? 'Portafolio'}</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              {header?.description ?? 'Proyectos destacados que demuestran mi experiencia y habilidades'}
+            </p>
+          </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
