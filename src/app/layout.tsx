@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Farid.ing",
+    title: "OliverFarid.ing",
     description: "Portafolio de Oliver Farid Rodríguez Morales - Ingeniero de Software",
     keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
     authors: [{name: "Oliver Farid Rodriguez Morales"}],
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
         ],
     },
     openGraph: {
-        title: "Farid.ing - Portafolio",
+        title: "OliverFarid.ing - Portafolio",
         description: "Ingeniero de Software apasionado por crear soluciones tecnológicas innovadoras",
         url: "https://tudominio.com",
-        siteName: "Farid.ing",
+        siteName: "OliverFarid.ing",
         type: "website",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Farid.ing - Portafolio",
+        title: "OliverFarid.ing - Portafolio",
         description: "Ingeniero de Software apasionado por crear soluciones tecnológicas innovadoras",
     },
 };
