@@ -128,10 +128,11 @@ Portafolio/
 │   │
 │   └── lib/
 │       ├── db.ts                              # Cliente Prisma (patrón singleton)
-│       ├── utils.ts
+│       ├── rate-limit.ts                      # Rate limiting (3 envíos cada 5 min)
+│       ├── utils.ts                     
 │       └── whatsapp.ts                        # Helper para construir links de WhatsApp
 │
-├── 📄.env                                # Variables de entorno (gitignored)
+├── 📄.env                                      # Variables de entorno (gitignored)
 ├── 📄.env.example
 ├── 📄.gitignore
 ├── 📄bun.lock
@@ -259,13 +260,16 @@ bun run db:seed
 
 ---
 
-## 📧 Formulario de Contacto y WhatsApp
+# 📧 Formulario de Contacto y WhatsApp
 
-### Envío de correo (Resend)
+## Envío de correo (Resend)
 
-El formulario de contacto (`ContactForm.tsx`) envía un correo real a través de la API route `src/app/api/contact/route.ts`, usando [Resend](https://resend.com).
+El formulario de contacto (`ContactForm.tsx`) envía un correo real a través de la API route `src/app/api/contact/route.ts`, usando [Resend](https://resend.com/).
 
-**Variables de entorno requeridas:**
+### Variables de entorno requeridas
+
+Archivo `.env`:
+
 ```env
 RESEND_API_KEY="re_tu_api_key"
 CONTACT_EMAIL="tu-email@ejemplo.com"
@@ -273,14 +277,36 @@ CONTACT_EMAIL="tu-email@ejemplo.com"
 
 > Sin verificar un dominio propio en Resend, solo se pueden enviar correos hacia la dirección con la que te registraste en la cuenta — suficiente para este caso de uso, ya que el destinatario eres tú mismo.
 
-El correo incluye: datos del remitente con avatar de iniciales, asunto, mensaje, y un botón para responder directo desde el cliente de correo. El contenido del formulario se sanitiza (`escapeHtml`) antes de insertarse en el HTML del correo, para evitar inyección de código.
+### Seguridad y anti-spam
 
-### Enlaces a WhatsApp
+La API incluye varias capas de protección para evitar spam y abuso:
+
+- **Validación de longitud mínima:** nombre ≥ 10 caracteres, asunto ≥ 15, mensaje ≥ 100. Esto filtra mensajes de una sola palabra o bots genéricos.
+- **Sanitización:** todo el contenido se limpia (`sanitize`) y escapa (`escapeHtml`) antes de insertarse en el HTML del correo, evitando inyección de código.
+- **Honeypot:** campo oculto `website` en el formulario. Si un bot lo completa, la API rechaza la petición automáticamente.
+- **Rate limiting:** máximo 3 envíos por IP cada 5 minutos, implementado con un store en memoria (`src/lib/rate-limit.ts`).
+- **Detección de spam por patrones:** la API evalúa el mensaje contra patrones comunes (URLs, términos promocionales, cripto, etc.). Si el puntaje es alto, se rechaza.
+
+### Responsive del correo
+
+El template HTML del correo está optimizado para verse bien tanto en escritorio como en móvil:
+
+- `meta viewport` y media queries para reducir padding y ajustar el ancho en pantallas < 600 px.
+- Ancho máximo configurable (por defecto `820px` en desktop, `100%` en móvil).
+- Botón de respuesta y texto con `word-break` para evitar desbordes.
+
+### UX del formulario
+
+- Validación en tiempo real con errores por campo (borde rojo + mensaje).
+- Contador de caracteres en el mensaje (`0/5000`).
+- Botón de envío se deshabilita mientras hay errores o está cargando.
+- Estados visuales de éxito/error con auto-limpieza tras 5 segundos.
+
+## Enlaces a WhatsApp
 
 El teléfono del perfil no abre el marcador (`tel:`), sino WhatsApp directo con un mensaje predefinido. Esto se centraliza en `src/lib/whatsapp.ts` (`buildWhatsappLink`), usado tanto en `HeroSection.tsx` como en `ContactForm.tsx` — evita duplicar la lógica en ambos componentes.
 
 El mensaje predefinido se puede personalizar por perfil mediante el campo `Profile.whatsappMessage`; si está vacío, se usa un mensaje por defecto.
-
 ---
 
 ## 🖼️ Imágenes
