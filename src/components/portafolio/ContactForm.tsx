@@ -137,8 +137,8 @@ export function ContactForm({ profile, header }: ContactFormProps) {
                     <h2 className="font-bold mb-4 text-4xl">
                         <span className="text-primary">{header?.title ?? 'Contáctame'}</span>
                     </h2>
-                    <p className="max-w-2xl mx-auto text-muted-foreground text-xl">
-                        {header?.description ?? '¿Tienes un proyecto en mente? ¡Hablemos y hagamos realidad tus ideas!'}
+                    <p className="max-w-2xl mx-auto text-muted-foreground text-xl whitespace-pre-line">
+                        {(header?.description ?? '¿Hablamos?\nEstoy disponible para oportunidades laborales y proyectos de desarrollo backend.').replace(/\\n/g, '\n')}
                     </p>
                 </div>
 

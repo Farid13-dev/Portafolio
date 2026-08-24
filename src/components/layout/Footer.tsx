@@ -107,7 +107,7 @@ export const Footer = memo(function Footer({profile, scrollToSection}: FooterPro
                             </h3>
                         </div>
                         <p className="text-muted-foreground">
-                            Ingeniero de Sistemas apasionado por crear soluciones tecnológicas innovadoras.
+                            Ingeniero de Sistemas enfocado en desarrollo backend y sistemas con IA.
                         </p>
                     </div>
                     <div>
