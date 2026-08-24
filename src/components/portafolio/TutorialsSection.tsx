@@ -26,7 +26,13 @@ export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, o
             </p>
           </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={`grid grid-cols-1 gap-6 mx-auto ${
+                tutorials.length <= 3
+                    ? 'md:grid-cols-2 max-w-4xl'
+                    : tutorials.length <= 6
+                        ? 'md:grid-cols-2 lg:grid-cols-3 max-w-6xl'
+                        : 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl'
+            }`}>
           {tutorials.map((tutorial, index) => (
             <Card key={tutorial.id || index} className="overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl group">
               {tutorial.image && (

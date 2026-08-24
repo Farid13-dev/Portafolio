@@ -2,11 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { ChevronRight, Mail, Phone, MapPin, Linkedin, Github, Code, CheckCircle2 } from 'lucide-react';
 import {
   useProfile,
   useServices,
@@ -17,7 +12,7 @@ import {
   useEducation,
   useSectionHeaders
 } from '@/hooks/use-portafolio-data';
-import { ExperienceTimeline } from '@/components/portafolio/ExperienceTimeline';
+
 import { ServicesSection } from '@/components/portafolio/ServicesSection';
 import { ExperienceSection } from '@/components/portafolio/ExperienceSection';
 import { PortafolioSection } from '@/components/portafolio/PortafolioSection';
@@ -43,6 +38,7 @@ export default function Portfolio() {
   const { data: experiences = [], isLoading: isLoadingExperiences } = useExperiences();
   const { data: education = [], isLoading: isLoadingEducation } = useEducation();
   const { data: sectionHeaders } = useSectionHeaders();
+  const [returnToSection, setReturnToSection] = useState<string | null>(null);
 
   // Page navigation with query params - initialize from URL
   const [currentPage, setCurrentPage] = useState<'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales'>(() => {
@@ -56,21 +52,34 @@ export default function Portfolio() {
     return 'home';
   });
 
-  const navigateToPage = (page: 'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales') => {
+  const navigateToPage = (page: 'home' | 'servicios' | 'experiencia' | 'formacion' | 'portafolio' | 'tutoriales', fromSection?: string) => {
     const url = new URL(window.location.href);
     if (page === 'home') {
       url.searchParams.delete('page');
       setCurrentPage('home');
-      setActiveSection('inicio');
-      // Force scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Close mobile menu if open
+
+      if (returnToSection) {
+        const sectionId = returnToSection;
+        setReturnToSection(null);
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            setActiveSection(sectionId);
+          }
+        }, 100);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveSection('inicio');
+      }
+
       if (isMenuOpen) {
         setIsMenuOpen(false);
       }
     } else {
       url.searchParams.set('page', page);
       setCurrentPage(page);
+      setReturnToSection(fromSection || page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     window.history.pushState({}, '', url);
@@ -180,7 +189,7 @@ export default function Portfolio() {
               services={services}
               header={sectionHeaders?.servicios}
               isFullPage={false}
-              onNavigate={() => navigateToPage('servicios')}
+              onNavigate={() => navigateToPage('servicios', 'servicios')}
             />
           </section>
         )}
@@ -192,7 +201,7 @@ export default function Portfolio() {
               experiences={experiences}
               header={sectionHeaders?.experiencia}
               isFullPage={false}
-              onNavigate={() => navigateToPage('experiencia')}
+              onNavigate={() => navigateToPage('experiencia', 'experiencia')}
             />
           </section>
         )}
@@ -204,7 +213,7 @@ export default function Portfolio() {
                   education={education}
                   header={sectionHeaders?.formacion}
                   isFullPage={false}
-                  onNavigate={() => navigateToPage('formacion')}
+                  onNavigate={() => navigateToPage('formacion', 'formacion')}
               />
             </section>
         )}
@@ -216,7 +225,7 @@ export default function Portfolio() {
               projects={projects}
               header={sectionHeaders?.portafolio}
               isFullPage={false}
-              onNavigate={() => navigateToPage('portafolio')}
+              onNavigate={() => navigateToPage('portafolio', 'portafolio')}
             />
           </section>
         )}
@@ -228,7 +237,7 @@ export default function Portfolio() {
               tutorials={tutorials}
               header={sectionHeaders?.tutoriales}
               isFullPage={false}
-              onNavigate={() => navigateToPage('tutoriales')}
+              onNavigate={() => navigateToPage('tutoriales', 'tutoriales')}
             />
           </section>
         )}
