@@ -18,7 +18,7 @@ export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, o
       <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
+            <h1 className={isFullPage ? 'text-4xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
               <span className="text-primary">{header?.title ?? 'Tutoriales'}</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -26,7 +26,13 @@ export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, o
             </p>
           </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={`grid grid-cols-1 gap-6 mx-auto ${
+                tutorials.length <= 3
+                    ? 'md:grid-cols-2 max-w-4xl'
+                    : tutorials.length <= 6
+                        ? 'md:grid-cols-2 lg:grid-cols-3 max-w-6xl'
+                        : 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl'
+            }`}>
           {tutorials.map((tutorial, index) => (
             <Card key={tutorial.id || index} className="overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl group">
               {tutorial.image && (
