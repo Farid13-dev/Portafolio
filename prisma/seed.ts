@@ -14,8 +14,8 @@ async function main() {
     title: 'Ingeniero de Sistemas | Backend Developer',
     titleProfile: 'Ingeniero de Sistemas',
     location: 'Florencia - Caquetá, Colombia',
-    bio: 'Ingeniero de Sistemas especializado en el desarrollo de soluciones backend con Python (Django) y Java (Spring Boot). Me enfoco en la construcción de APIs REST robustas, la gestión eficiente de bases de datos relacionales y la integración de sistemas con Inteligencia Artificial.',
-    techStack: JSON.stringify(['Python', 'Django', 'Java', 'Spring Boot', 'PostgreSQL', 'Oracle', 'APIs REST', 'RAG', 'LLM']),
+    bio: 'Ingeniero de Sistemas con enfoque en desarrollo backend (Python/Django, Java/Spring Boot) y experiencia construyendo sistemas con Inteligencia Artificial. En mi proyecto de grado lideré la arquitectura de un sistema conversacional con IA: implementé una arquitectura RAG con Milvus para búsqueda semántica, integré GPT-4 para generación de respuestas, y validé el prototipo con 30 usuarios reales. También tengo experiencia en gestión y calidad de datos a escala, cubriendo el registro de 650+ familias en ICBF y georreferenciación en DANE. Actualmente curso la Maestría en Ingeniería de Software en la Universidad de los Andes.',
+    techStack: JSON.stringify(['Backend Developer', 'Python', 'Django', 'Java', 'Spring Boot', 'RAG', 'LLM']),
     email: 'oliver1006507@gmail.com',
     phone: '57-302-543-1466',
     whatsappMessage: 'Hola Oliver, vi tu portafolio y me gustaría hablar sobre un proyecto.',
@@ -39,11 +39,11 @@ async function main() {
   const sectionHeadersData = [
     { key: 'sobre-mi', title: 'Sobre Mí', description: '', order: 0 },
     { key: 'servicios', title: 'Mis Servicios', description: 'Soluciones completas de desarrollo de software adaptadas a tus necesidades', order: 1 },
-    { key: 'experiencia', title: 'Experiencia Laboral', description: 'Me gradué en el 2025, a partir de esa fecha he tenido la oportunidad de colaborar con varias empresas importantes.', order: 2 },
+    { key: 'experiencia', title: 'Experiencia Laboral', description: 'Mi trayectoria profesional combina desarrollo de software con IA y gestión de datos a escala en entidades nacionales.', order: 2 },
     { key: 'formacion', title: 'Formación Académica', description: 'Mi trayectoria educativa y formación continua', order: 3 },
-    { key: 'portafolio', title: 'Mi Portafolio', description: 'Proyectos destacados que he desarrollado', order: 4 },
-    { key: 'tutoriales', title: 'Tutoriales', description: 'Contenido educativo que he creado para la comunidad', order: 5 },
-    { key: 'contacto', title: 'Contáctame', description: '¿Tienes un proyecto en mente? Hablemos', order: 6 },
+    { key: 'portafolio', title: 'Mi Portafolio', description: 'Proyectos destacados que demuestran mi experiencia y habilidades', order: 4 },
+    { key: 'tutoriales', title: 'Tutoriales', description: 'Próximamente compartiré tutoriales prácticos sobre desarrollo backend y sistemas con IA', order: 5 },
+    { key: 'contacto', title: 'Contáctame', description: '¿Hablamos?\nEstoy disponible para oportunidades laborales y proyectos de desarrollo backend.', order: 6 },
   ];
 
   for (const headerData of sectionHeadersData) {
@@ -60,61 +60,57 @@ async function main() {
   // ─────────────────────────────────────────────
   const servicesData = [
     {
-      title: 'Desarrollo Web',
-      description: 'Sitios web y aplicaciones web modernas, responsivas y optimizadas para SEO.',
-      icon: 'Layout',
-      features: ['React/Next.js', 'Diseño Responsivo', 'Optimización SEO', 'Web Apps'],
+      title: 'Backend & APIs',
+      description: 'Diseño y desarrollo de APIs REST robustas y escalables con Python/Django y Java/Spring Boot, incluyendo autenticación, validación y documentación.',
+      icon: 'Server',
+      features: ['REST APIs', 'GraphQL', 'Autenticación', 'Documentación'],
       order: 1,
     },
     {
-      title: 'Aplicaciones Móviles',
-      description: 'Desarrollo de aplicaciones móviles multiplataforma con experiencia nativa.',
-      icon: 'Smartphone',
-      features: ['React Native', 'PWA', 'Apps Híbridas', 'UI/UX'],
+      title: 'Bases de Datos',
+      description: 'Diseño, implementación y optimización de bases de datos relacionales, con enfoque en integridad, rendimiento y escalabilidad.',
+      icon: 'Database',
+      features: ['PostgreSQL', 'Oracle', 'Modelado de datos', 'Optimización'],
       order: 2,
     },
     {
-      title: 'Backend & APIs',
-      description: 'Arquitectura de backend robusta y APIs escalables para tus aplicaciones.',
-      icon: 'Server',
-      features: ['REST APIs', 'GraphQL', 'Microservicios', 'Autenticación'],
+      title: 'Sistemas con Inteligencia Artificial',
+      description: 'Integración de modelos de lenguaje (LLMs) y arquitecturas RAG para construir sistemas conversacionales inteligentes con accesibilidad.',
+      icon: 'Brain',
+      features: ['RAG', 'LangChain', 'GPT-4', 'Búsqueda semántica'],
       order: 3,
     },
     {
-      title: 'Bases de Datos',
-      description: 'Diseño e implementación de bases de datos optimizadas y escalables.',
-      icon: 'Database',
-      features: ['SQL', 'NoSQL', 'Optimización', 'Migración'],
+      title: 'Desarrollo Web',
+      description: 'Desarrollo de interfaces web modernas como complemento al backend cuando el proyecto lo requiere.',
+      icon: 'Layout',
+      features: ['React/Next.js', 'Angular', 'TypeScript', 'Diseño responsivo'],
       order: 4,
-    },
-    {
-      title: 'Cloud & DevOps',
-      description: 'Implementación de soluciones en la nube y automatización de procesos.',
-      icon: 'Cloud',
-      features: ['AWS', 'Docker', 'CI/CD', 'Monitoreo'],
-      order: 5,
-    },
-    {
-      title: 'Consultoría Técnica',
-      description: 'Asesoramiento en arquitectura de software y mejores prácticas.',
-      icon: 'Code',
-      features: ['Code Review', 'Arquitectura', 'Mentoring', 'Auditoría'],
-      order: 6,
     },
   ];
 
   for (const serviceData of servicesData) {
+    const { features, ...rest } = serviceData;
+    const featuresJson = JSON.stringify(features);
     const service = await prisma.service.upsert({
-      where: { id: `service-${serviceData.order}` },
-      update: {},
+      where: { id: `service-${rest.order}` },
+      update: { ...rest, features: featuresJson },
       create: {
-        id: `service-${serviceData.order}`,
-        ...serviceData,
-        features: JSON.stringify(serviceData.features),
+        id: `service-${rest.order}`,
+        ...rest,
+        features: featuresJson,
       },
     });
     console.log('✅ Service created:', service.title);
   }
+
+  // Eliminar servicios antiguos que ya no existen
+  await prisma.service.deleteMany({
+    where: {
+      id: { in: ['service-5', 'service-6'] },
+    },
+  });
+  console.log('🗑️ Old services removed (5, 6)');
 
   // ─────────────────────────────────────────────
   // Experiencia laboral
@@ -124,7 +120,7 @@ async function main() {
       title: 'Auxiliar Administrativo',
       company: 'Instituto Colombiano de Bienestar Familiar (ICBF)',
       location: 'Florencia - Caquetá',
-      description: 'Apoyé la digitalización y gestión de datos del servicio "Somos Familia, Somos Comunidad" del ICBF, diseñando una plantilla en Excel con macros para automatizar solicitudes de refrigerios en 6 equipos de campo, y administrando la calidad de datos del registro de 650 familias (~1.950 integrantes). Gestioné el repositorio documental en la nube (OneDrive) con trazabilidad entre equipos, brindé soporte técnico funcional capacitando a los equipos en las herramientas digitales, y coordiné la logística que articulaba la información de campo con los reportes para la Dirección de Familia y Comunidades.',
+      description: 'Apoyé la digitalización y gestión de datos del servicio "Somos Familia, Somos Comunidad". Diseñé una plantilla en Excel con macros (VBA) para automatizar solicitudes de refrigerios en 6 equipos de campo. Administré la calidad de datos del registro de 650 familias (~1.950 integrantes), validando consistencia y corrigiendo errores de captura. Gestioné el repositorio documental en la nube (OneDrive) con trazabilidad entre equipos.',
       startDate: '09 May 2025',
       endDate: '06 Dec 2025',
       isCurrent: false,
@@ -155,7 +151,7 @@ async function main() {
   for (const experienceData of experiencesData) {
     const experience = await prisma.experience.upsert({
       where: { id: `experience-${experienceData.order}` },
-      update: {},
+      update: experienceData,
       create: {
         id: `experience-${experienceData.order}`,
         ...experienceData,
@@ -173,7 +169,7 @@ async function main() {
       institution: 'Universidad de la Amazonia',
       type: 'Pregrado',
       location: 'Florencia - Caquetá',
-      description: 'Descripción breve, enfoque, proyecto de grado, etc.',
+      description: 'Formación integral en ingeniería de sistemas, combinando ciencias básicas, fundamentos de ingeniería y componentes tecnológicos, investigativos y socio-humanistas, orientada al diseño y aplicación de soluciones computacionales con impacto en el entorno.',
       startDate: 'Ago 2019',
       endDate: 'Ago 2025',
       isCurrent: false,
@@ -183,8 +179,8 @@ async function main() {
       title: 'Maestría en Ingeniería de Software',
       institution: 'Universidad de los Andes',
       type: 'Maestría',
-      location: undefined,
-      description: 'Descripción breve del curso',
+      location: 'Bogotá (D.C)',
+      description: 'Formación orientada a liderar equipos y proyectos de ingeniería de software mediante inteligencia artificial, tecnologías emergentes y metodologías ágiles, con un enfoque práctico alineado a las necesidades actuales de la industria.',
       startDate: 'Feb 2026',
       endDate: 'Dec 2027',
       isCurrent: true,
@@ -209,149 +205,66 @@ async function main() {
   // ─────────────────────────────────────────────
   const projectsData = [
     {
-      title: 'Sistema de Gestión Empresarial',
-      description: 'Plataforma completa para gestión de negocios con dashboard analítico y reportes en tiempo real.',
+      title: 'Portafolio Profesional',
+      description: 'Plataforma web para presentar de forma profesional mi trayectoria, servicios y proyectos, con un canal de contacto directo y seguro para potenciales clientes o empleadores.',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/sistema-gestion-empresarial',
-      tags: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL'],
+      githubUrl: 'https://github.com/Farid13-dev/Portafolio',
+      tags: ['Next.js 16', 'TypeScript', 'Prisma', 'PostgreSQL', 'Resend'],
       order: 1,
     },
     {
-      title: 'E-commerce Moderno',
-      description: 'Tienda en línea con pasarela de pagos, gestión de inventario y panel administrativo.',
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/ecommerce-moderno',
-      tags: ['React', 'Node.js', 'Stripe', 'MongoDB'],
+      title: 'Chatbot RAG',
+      description: 'Prototipo de Chatbot asistido por tecnologías de inteligencia artificial para el acceso inclusivo a la información del estatuto estudiantil en la UDLA.',
+      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop',
+      githubUrl: 'https://github.com/Farid13-dev/Chatbot-RAG',
+      tags: ['Python', 'Angular', 'Milvus', 'Docker', 'GPT4', 'TTS', 'OCR', 'ASR'],
       order: 2,
-    },
-    {
-      title: 'App de Gestión de Tareas',
-      description: 'Aplicación de productividad con sincronización en tiempo real y colaboración en equipo.',
-      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/gestor-tareas',
-      tags: ['Next.js', 'WebSocket', 'SQLite', 'Tailwind'],
-      order: 3,
-    },
-    {
-      title: 'Plataforma de Cursos Online',
-      description: 'Sistema LMS completo con reproducción de video, quizzes y certificados.',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/plataforma-cursos',
-      tags: ['React', 'Node.js', 'AWS S3', 'PostgreSQL'],
-      order: 4,
-    },
-    {
-      title: 'Dashboard Analítico',
-      description: 'Panel de control con visualización de datos y reportes automatizados.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/dashboard-analitico',
-      tags: ['Next.js', 'Chart.js', 'PostgreSQL', 'API REST'],
-      order: 5,
-    },
-    {
-      title: 'Sistema de Reservas',
-      description: 'Plataforma de reservas con calendario interactivo y gestión de disponibilidad.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/oliver-rodriguez/sistema-reservas',
-      tags: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      order: 6,
     },
   ];
 
+  // Eliminar proyectos ficticios antiguos
+  await prisma.project.deleteMany({
+    where: {
+      id: { in: ['project-3', 'project-4', 'project-5', 'project-6'] },
+    },
+  });
+  console.log('🗑️ Old placeholder projects removed');
+
   for (const projectData of projectsData) {
+    const { tags, ...rest } = projectData;
+    const tagsJson = JSON.stringify(tags);
     const project = await prisma.project.upsert({
-      where: { id: `project-${projectData.order}` },
-      update: {},
+      where: { id: `project-${rest.order}` },
+      update: { ...rest, tags: tagsJson },
       create: {
-        id: `project-${projectData.order}`,
-        ...projectData,
-        tags: JSON.stringify(projectData.tags),
+        id: `project-${rest.order}`,
+        ...rest,
+        tags: tagsJson,
       },
     });
     console.log('✅ Project created:', project.title);
   }
 
   // ─────────────────────────────────────────────
-  // Tutoriales
+  // Tutoriales (vacío por ahora)
   // ─────────────────────────────────────────────
-  const tutorialsData = [
-    {
-      title: 'Introducción a Next.js 16',
-      description: 'Aprende a crear aplicaciones web modernas con el último versión de Next.js.',
-      level: 'Principiante',
-      duration: '45 min',
-      category: 'Frontend',
-      youtubeUrl: 'https://youtube.com/watch?v=example-nextjs-16',
-      image: 'https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=800&h=600&fit=crop&q=80',
-      order: 1,
+  // Eliminar tutoriales placeholder antiguos
+  await prisma.tutorial.deleteMany({
+    where: {
+      id: { in: ['tutorial-1', 'tutorial-2', 'tutorial-3', 'tutorial-4', 'tutorial-5', 'tutorial-6'] },
     },
-    {
-      title: 'TypeScript para Desarrolladores JavaScript',
-      description: 'Guía completa para transicionar de JavaScript a TypeScript.',
-      level: 'Intermedio',
-      duration: '60 min',
-      category: 'JavaScript',
-      youtubeUrl: 'https://youtube.com/watch?v=example-typescript',
-      image: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=600&fit=crop&q=80',
-      order: 2,
-    },
-    {
-      title: 'Diseño de APIs RESTful',
-      description: 'Mejores prácticas para crear APIs escalables y mantenibles.',
-      level: 'Intermedio',
-      duration: '50 min',
-      category: 'Backend',
-      youtubeUrl: 'https://youtube.com/watch?v=example-rest-apis',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&q=80',
-      order: 3,
-    },
-    {
-      title: 'Tailwind CSS: Del Cero al Experto',
-      description: 'Domina el framework de CSS utility-first más popular.',
-      level: 'Principiante',
-      duration: '90 min',
-      category: 'CSS',
-      youtubeUrl: 'https://youtube.com/watch?v=example-tailwind',
-      image: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&h=600&fit=crop&q=80',
-      order: 4,
-    },
-    {
-      title: 'PostgreSQL Avanzado',
-      description: 'Técnicas avanzadas de optimización y diseño de bases de datos.',
-      level: 'Avanzado',
-      duration: '75 min',
-      category: 'Database',
-      youtubeUrl: 'https://youtube.com/watch?v=example-postgresql',
-      image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=600&fit=crop&q=80',
-      order: 5,
-    },
-    {
-      title: 'Deploy en AWS con Docker',
-      description: 'Despliega tus aplicaciones en la nube utilizando contenedores.',
-      level: 'Intermedio',
-      duration: '55 min',
-      category: 'DevOps',
-      youtubeUrl: 'https://youtube.com/watch?v=example-aws-docker',
-      image: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&h=600&fit=crop&q=80',
-      order: 6,
-    },
-  ];
-
-  for (const tutorialData of tutorialsData) {
-    const tutorial = await prisma.tutorial.upsert({
-      where: { id: `tutorial-${tutorialData.order}` },
-      update: tutorialData,
-      create: {
-        id: `tutorial-${tutorialData.order}`,
-        ...tutorialData,
-      },
-    });
-    console.log('✅ Tutorial created:', tutorial.title);
-  }
+  });
+  console.log('🗑️ Old placeholder tutorials removed');
 
   // ─────────────────────────────────────────────
   // Categorías de habilidades y habilidades
   // ─────────────────────────────────────────────
+
+  // Eliminar habilidades y categorías existentes para recrear limpias
+  await prisma.skill.deleteMany();
+  await prisma.skillCategory.deleteMany();
+  console.log('🗑️ Old skills cleared');
+
   const skillsData = [
     {
       category: 'Frontend',
@@ -365,20 +278,25 @@ async function main() {
     },
     {
       category: 'Database',
-      items: ['PostgreSQL', 'Oracle', 'MongoDB', 'Prisma', 'SQLite'],
+      items: ['PostgreSQL', 'Oracle', 'SQLite', 'Prisma', 'Milvus'],
       order: 3,
     },
     {
-      category: 'DevOps & Tools',
-      items: ['Git', 'Docker', 'AWS', 'CI/CD', 'Linux', 'Agile/Scrum'],
+      category: 'IA & Data',
+      items: ['LangChain', 'GPT-4', 'RAG', 'OCR', 'ASR', 'TTS'],
       order: 4,
+    },
+    {
+      category: 'DevOps & Tools',
+      items: ['Git', 'Docker', 'CI/CD', 'Agile/Scrum', 'Jira', 'TDD', 'Gitflow'],
+      order: 5,
     },
   ];
 
   for (const skillCategoryData of skillsData) {
     const category = await prisma.skillCategory.upsert({
       where: { name: skillCategoryData.category },
-      update: {},
+      update: { order: skillCategoryData.order },
       create: {
         name: skillCategoryData.category,
         order: skillCategoryData.order,
@@ -390,7 +308,7 @@ async function main() {
       const skillName = skillCategoryData.items[i];
       await prisma.skill.upsert({
         where: { id: `skill-${category.name}-${i}` },
-        update: {},
+        update: { name: skillName, order: i + 1 },
         create: {
           id: `skill-${category.name}-${i}`,
           name: skillName,
