@@ -27,8 +27,8 @@ export const ServicesSection = memo(({ services, header, isFullPage = false, onN
       <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className={isFullPage ? 'text-5xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-              {isFullPage ? 'Todos Mis ' : ''}<span className="text-primary">{header?.title ?? 'Mis Servicios'}</span>
+            <h1 className={isFullPage ? 'text-4xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
+              <span className="text-primary">{header?.title ?? 'Mis Servicios'}</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {header?.description ?? 'Soluciones completas de desarrollo de software adaptadas a tus necesidades'}
