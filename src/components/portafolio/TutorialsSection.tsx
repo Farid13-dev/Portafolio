@@ -48,7 +48,7 @@ export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, o
                 <CardTitle className="text-xl group-hover:text-primary transition-colors">
                   {tutorial.title}
                 </CardTitle>
-                <CardDescription className="text-base line-clamp-2">
+                <CardDescription className="text-base line-clamp-3">
                   {tutorial.description}
                 </CardDescription>
               </CardHeader>

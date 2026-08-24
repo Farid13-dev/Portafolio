@@ -40,7 +40,7 @@ export const PortafolioSection = memo(({ projects, header, isFullPage = false, o
               </div>
               <CardHeader>
                 <CardTitle className="text-xl">{project.title}</CardTitle>
-                <CardDescription className="text-base line-clamp-2">
+                <CardDescription className="text-base line-clamp-3">
                   {project.description}
                 </CardDescription>
               </CardHeader>
