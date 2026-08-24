@@ -35,22 +35,24 @@ export function AboutSection({ profile, skills, header }: AboutSectionProps) {
                   <Code className="h-5 w-5 text-primary" />
                   Habilidades Técnicas
                 </h3>
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="flex flex-wrap justify-center gap-4">
                   {skills.map((skillGroup) => (
-                    <Card key={skillGroup.category} className="bg-accent/30">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{skillGroup.category}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex flex-wrap gap-2">
-                          {skillGroup.items.map((skill, skillIndex) => (
-                              <Badge key={`${skillGroup.category}-${skillIndex}-${skill}`} variant="secondary">
-                                {skill}
-                              </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div key={skillGroup.category} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)]">
+                        <Card className="bg-accent/30 h-full">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base">{skillGroup.category}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                              {skillGroup.items.map((skill, skillIndex) => (
+                                  <Badge key={`${skillGroup.category}-${skillIndex}-${skill}`} variant="secondary">
+                                    {skill}
+                                  </Badge>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
                   ))}
                 </div>
               </div>
