@@ -45,6 +45,7 @@ model Profile {
   lastName     String
   title        String
   titleProfile String?
+  headline     String?  // titular del hero: frase con verbo, no el cargo
   email        String
   phone        String?
   whatsappMessage String?
@@ -54,6 +55,7 @@ model Profile {
   bio          String?
   profileImage String?
   logoImage    String?
+  cvUrl        String?  // URL pública del CV en PDF (Supabase Storage)
   techStack    String?
   availability Boolean  @default(true)
   createdAt    DateTime @default(now())
