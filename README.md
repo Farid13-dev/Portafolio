@@ -104,7 +104,6 @@ Portafolio/
 │   │   ├── formacion/page.tsx
 │   │   ├── portafolio/page.tsx
 │   │   ├── tutoriales/page.tsx
-│   │   ├── loading.tsx                   # Skeleton mientras carga una ruta
 │   │   ├── error.tsx                     # Pantalla de error con "Reintentar"
 │   │   ├── not-found.tsx                 # 404
 │   │   ├── sitemap.ts / robots.ts        # SEO
@@ -122,8 +121,7 @@ Portafolio/
 │   │   │   ├── PortafolioSection.tsx
 │   │   │   ├── TutorialsSection.tsx
 │   │   │   ├── ContactSection.tsx        # Información de contacto (servidor)
-│   │   │   ├── ContactFormFields.tsx     # Formulario (cliente, useActionState)
-│   │   │   └── LoadingSkeleton.tsx
+│   │   │   └── ContactFormFields.tsx     # Formulario (cliente, useActionState)
 │   │   ├── layout/
 │   │   │   ├── Navigation.tsx            # Cliente: menú móvil + scroll-spy (IntersectionObserver)
 │   │   │   ├── Footer.tsx

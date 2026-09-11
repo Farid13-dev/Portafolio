@@ -121,6 +121,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Altura del nav fijo: las anclas (#servicios, etc.) quedan justo debajo */
+    scroll-padding-top: 4rem;
   }
 }
 
