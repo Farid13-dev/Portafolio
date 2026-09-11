@@ -10,13 +10,17 @@ interface AboutSectionProps {
 }
 
 export function AboutSection({ profile, skills, header }: AboutSectionProps) {
+  const description = header?.description?.trim();
   return (
     <section id="sobre-mi" aria-labelledby="sobre-mi-title" className="bg-background py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <h2 id="sobre-mi-title" className="mb-12 text-center text-4xl font-bold text-balance">
-            <span className="text-primary">{header?.title ?? "Sobre Mí"}</span>
-          </h2>
+          <div className="mb-12 text-center">
+            <h2 id="sobre-mi-title" className="mb-4 text-4xl font-bold text-balance">
+              <span className="text-primary">{header?.title ?? "Sobre Mí"}</span>
+            </h2>
+            {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
+          </div>
           <Card className="border-2">
             <CardHeader>
               <CardTitle className="text-2xl">{profile?.titleProfile ?? "Ingeniero de Sistemas"}</CardTitle>

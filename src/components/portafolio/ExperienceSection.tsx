@@ -15,17 +15,16 @@ interface ExperienceSectionProps {
 export function ExperienceSection({ experiences, header, id, isFullPage = false, moreHref }: ExperienceSectionProps) {
   const Heading = isFullPage ? "h1" : "h2";
   const titleId = `${id ?? "experiencia"}-title`;
+  const description = header?.description?.trim();
 
   return (
     <section id={id} aria-labelledby={titleId} className={isFullPage ? "py-20" : "bg-background py-20"}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
-            Mi <span className="text-primary">{header?.title ?? "Experiencia"}</span>
+            <span className="text-primary">{header?.title ?? "Experiencia"}</span>
           </Heading>
-          {header?.description && (
-            <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{header.description}</p>
-          )}
+          {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
         </div>
 
         <div className="mx-auto max-w-4xl">

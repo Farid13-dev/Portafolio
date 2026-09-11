@@ -267,6 +267,11 @@ bun run db:seed
 
 > ⚠️ Tu `.env` local apunta a la misma base de datos que usa producción. Cualquier cambio hecho con Prisma Studio o `db:seed` desde tu máquina se refleja de inmediato en el sitio en vivo.
 
+### CV en PDF (botón "Descargar CV")
+
+El hero muestra el botón solo si `Profile.cvUrl` tiene valor. Para publicar el PDF:
+. Supabase → **Storage** → **New bucket** (p. ej. `docs`) marcado como **Public**.. Sube el archivo (p. ej. `cv-oliver-rodriguez.pdf`) y copia su **URL pública** (`…/storage/v1/object/public/docs/cv-oliver-rodriguez.pdf`).. Guarda esa URL en `Profile.cvUrl` (Prisma Studio o `prisma/seed.ts`). La home se regenera en la siguiente revalidación (máx. 1 h) o al redesplegar.
+
 ---
 
 # 📧 Formulario de Contacto y WhatsApp
@@ -416,6 +421,7 @@ Next.js tiene Hot Module Reload, por lo que:
   lastName: string
   title: string            // título largo (ej. usado en el Hero)
   titleProfile?: string    // título corto (ej. usado en "Sobre Mí")
+  headline?: string        // titular del hero (frase con verbo, no el cargo)
   email: string
   phone?: string
   whatsappMessage?: string // mensaje predefinido del link de WhatsApp
@@ -425,6 +431,7 @@ Next.js tiene Hot Module Reload, por lo que:
   bio?: string
   profileImage?: string    // URL de foto de perfil
   logoImage?: string       // URL del logo
+  cvUrl?: string           // URL pública del CV en PDF (Supabase Storage); muestra "Descargar CV"
   techStack?: string       // JSON array de tecnologías
   availability: boolean
 }
@@ -570,7 +577,7 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas, y que la cont
 
 1. **Editar perfil:** Modifica `prisma/seed.ts` (o Prisma Studio) y ejecuta `bun run db:seed`
 2. **Agregar proyectos/formación/tutoriales:** Edita el array correspondiente en `seed.ts`
-3. **Cambiar los títulos de sección:** Tabla `SectionHeader`
+3. **Cambiar los títulos de sección:** Tabla `SectionHeader` (título y descripción; la descripción es opcional: si se deja vacía, la sección no muestra subtítulo)
 4. **Personalizar estilos:** Modifica `src/app/globals.css` y componentes
 5. **Agregar dominio propio:** Configúralo desde el dashboard de Vercel
 
