@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {Service, SectionHeaderData} from '@/hooks/use-portafolio-data';
-import { Code, Layout, Smartphone, Server, Database, Cloud, Brain, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Code, Layout, Smartphone, Server, Database, Cloud, Brain, CheckCircle2, ExternalLink, type LucideIcon } from 'lucide-react';
 
 interface ServicesSectionProps {
   services: Service[];
@@ -12,7 +12,7 @@ interface ServicesSectionProps {
 }
 
 // Icon mapping
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, LucideIcon> = {
   'Layout': Layout,
   'Smartphone': Smartphone,
   'Server': Server,
@@ -56,7 +56,7 @@ export const ServicesSection = memo(({ services, header, isFullPage = false, onN
                         <ul className="space-y-2">
                           {service.features.map((feature, idx) => (
                               <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+                                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                                 {feature}
                               </li>
                           ))}

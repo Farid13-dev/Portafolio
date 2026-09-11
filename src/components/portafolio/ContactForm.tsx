@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, Linkedin, Github, CheckCircle2, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, Phone, Linkedin, Github, CheckCircle2, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
 import { Profile, SectionHeaderData } from '@/hooks/use-portafolio-data';
 import { buildWhatsappLink } from '@/lib/whatsapp';
 
@@ -152,7 +152,7 @@ export function ContactForm({ profile, header }: ContactFormProps) {
                             <CardContent className="space-y-4">
                                 {profile?.email && (
                                     <div className="flex gap-4 items-start">
-                                        <div className="bg-primary/10 flex flex-shrink-0 h-10 items-center justify-center rounded-lg w-10">
+                                        <div className="bg-primary/10 flex shrink-0 h-10 items-center justify-center rounded-lg w-10">
                                             <Mail className="h-5 text-primary w-5" />
                                         </div>
                                         <div>
@@ -165,7 +165,7 @@ export function ContactForm({ profile, header }: ContactFormProps) {
                                 )}
                                 {profile?.phone && (
                                     <div className="flex gap-4 items-start">
-                                        <div className="bg-primary/10 flex flex-shrink-0 h-10 items-center justify-center rounded-lg w-10">
+                                        <div className="bg-primary/10 flex shrink-0 h-10 items-center justify-center rounded-lg w-10">
                                             <Phone className="h-5 text-primary w-5" />
                                         </div>
                                         <div>
@@ -179,7 +179,7 @@ export function ContactForm({ profile, header }: ContactFormProps) {
 
                                 {profile?.linkedin && (
                                     <div className="flex gap-4 items-start">
-                                        <div className="bg-primary/10 flex flex-shrink-0 h-10 items-center justify-center rounded-lg w-10">
+                                        <div className="bg-primary/10 flex shrink-0 h-10 items-center justify-center rounded-lg w-10">
                                             <Linkedin className="h-5 text-primary w-5" />
                                         </div>
                                         <div>
@@ -192,7 +192,7 @@ export function ContactForm({ profile, header }: ContactFormProps) {
                                 )}
                                 {profile?.github && (
                                     <div className="flex gap-4 items-start">
-                                        <div className="bg-primary/10 flex flex-shrink-0 h-10 items-center justify-center rounded-lg w-10">
+                                        <div className="bg-primary/10 flex shrink-0 h-10 items-center justify-center rounded-lg w-10">
                                             <Github className="h-5 text-primary w-5" />
                                         </div>
                                         <div>
@@ -325,7 +325,7 @@ export function ContactForm({ profile, header }: ContactFormProps) {
 
                                 {status === 'success' && (
                                     <div className="bg-green-50 dark:bg-green-950/30 flex gap-2 items-center p-3 rounded-md text-green-600 text-sm">
-                                        <CheckCircle2 className="flex-shrink-0 h-4 w-4" />
+                                        <CheckCircle2 className="shrink-0 h-4 w-4" />
                                         ¡Mensaje enviado con éxito! Te contactaré pronto.
                                     </div>
                                 )}

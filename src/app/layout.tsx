@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "OliverFarid.ing",
     description: "Portafolio de Oliver Farid Rodríguez Morales - Ingeniero de Software",
-    keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
+    keywords: ["Ingeniero de Software", "Backend", "Next.js", "TypeScript", "React", "IA", "Colombia"],
     authors: [{name: "Oliver Farid Rodriguez Morales"}],
     icons: {
         icon: [

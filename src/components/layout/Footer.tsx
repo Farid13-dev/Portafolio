@@ -1,7 +1,7 @@
 'use client';
 
 import {memo, useMemo} from 'react';
-import {Mail, Linkedin, Github, Briefcase} from 'lucide-react';
+import {Mail, Linkedin, Github} from 'lucide-react';
 import {Profile} from '@/hooks/use-portafolio-data';
 import {LogoImage} from '@/components/ui/image-wrapper';
 

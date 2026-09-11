@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useCallback, useMemo } from 'react';
-import { Menu, X, Briefcase } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Profile } from '@/hooks/use-portafolio-data';
 import { LogoImage } from '@/components/ui/image-wrapper';
 
@@ -82,7 +82,7 @@ export const Navigation = memo(function Navigation({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo a la izquierda */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <a href="#inicio" className="flex items-center gap-3" aria-label="Ir a Inicio">
               {profile?.logoImage ? (
                 <LogoImage
