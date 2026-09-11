@@ -49,30 +49,39 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ## 🛠️ Tecnologías
 
 ### Frontend
-- **Next.js 16** - Framework React con App Router
-- **TypeScript 5** - Tipado estático
+- **Next.js 16** - App Router con **React Server Components** e **ISR** (las páginas se generan como HTML estático y se regeneran cada hora)
+- **React 19** - Server Actions y `useActionState` en el formulario de contacto
+- **TypeScript 5** - Tipado estricto, tipos derivados del schema de Prisma
 - **Tailwind CSS 4** - Estilos utility-first
-- **shadcn/ui** - Componentes UI accesibles
-- **Framer Motion** - Animaciones fluidas
-- **Lucide React** - Iconos modernos
+- **shadcn/ui** - Solo los componentes que se usan (button, card, badge, input, textarea)
+- **next/image**, **next/link**, **next/font** - Imágenes optimizadas (AVIF/WebP), navegación con prefetch y fuente Geist autoalojada
+- **next-themes** - Modo oscuro según el sistema
+- **Lucide React** - Iconos
 
 ### Backend
-- **Prisma 6** - ORM type-safe
+- **Prisma 6** - ORM type-safe, consultado directamente desde los Server Components (`src/lib/data.ts`)
 - **PostgreSQL (Supabase)** - Base de datos en producción y desarrollo
-- **Next.js API Routes** - Backend integrado
+- **Server Actions** - Envío del formulario de contacto (`src/app/actions/send-contact.ts`)
+- **Zod 4** - Esquema de validación compartido entre cliente y servidor
 - **Resend** - Envío de correos del formulario de contacto
 
-### Estado y Datos
-- **Zustand** - Estado global
-- **TanStack Query** - Caching y sincronización de datos
-- **React Hook Form** - Formularios optimizados
-
 ### DevOps
-- **Vercel** - Hosting y despliegue continuo
-- **ESLint** - Linting de código
-- **TypeScript** - Validación de tipos
+- **Vercel** - Hosting y despliegue continuo (preview por rama, producción desde `main`)
+- **GitHub Actions** - CI: lint, typecheck y build en cada PR a `develop`/`main`
+- **ESLint** (config por defecto de Next) y **TypeScript** estricto
 
 > El proyecto se despliega exclusivamente en Vercel. No usa Docker ni VPS propio.
+
+### Cómo fluyen los datos
+
+```
+Visita → Vercel sirve el HTML ya generado (ISR, revalidate 1h)
+                  ↑
+   next build / regeneración: page.tsx (Server Component)
+                  → src/lib/data.ts → Prisma → PostgreSQL
+```
+
+Ninguna visita ejecuta consultas a la base de datos ni peticiones `fetch` desde el navegador: el HTML llega completo (mejor SEO y LCP). Los únicos componentes cliente son `Navigation` (menú móvil + scroll-spy), `ContactFormFields` (formulario) y `SafeImage` (fallback de imagen).
 
 ---
 
@@ -80,77 +89,73 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ```
 Portafolio/
+├── .github/workflows/ci.yml              # CI: lint + typecheck + build
 ├── prisma/
 │   ├── schema.prisma                     # Esquema de la base de datos (PostgreSQL)
 │   └── seed.ts                           # Datos iniciales
 ├── public/
 │   └── images/                           # Imágenes estáticas locales
 ├── src/
-│   ├── app/                                   # Next.js App Router
-│   │   ├── api/                               # API Routes
-│   │   │   ├── contact/                       # Envío de correo (Resend)
-│   │   │   ├── education/                     # Formación académica
-│   │   │   ├── experiences/                   # Experiencia laboral
-│   │   │   ├── profile/                       # Perfil
-│   │   │   ├── projects/                      # Proyectos
-│   │   │   ├── section-headers/               # Encabezados dinámicos de sección
-│   │   │   ├── services/                      # Servicios
-│   │   │   ├── skills/                        # Habilidades
-│   │   │   └── tutorials/                     # Tutoriales
-│   │   ├── page.tsx                           # Página principal
-│   │   ├── layout.tsx                         # Layout raíz
-│   │   └── globals.css                        # Estilos globales
+│   ├── app/                              # Next.js App Router
+│   │   ├── layout.tsx                    # Layout raíz: nav + main + footer, metadata, ThemeProvider
+│   │   ├── page.tsx                      # Home (Server Component, ISR 1h)
+│   │   ├── servicios/page.tsx            # Rutas con página y metadata propias
+│   │   ├── experiencia/page.tsx
+│   │   ├── formacion/page.tsx
+│   │   ├── portafolio/page.tsx
+│   │   ├── tutoriales/page.tsx
+│   │   ├── loading.tsx                   # Skeleton mientras carga una ruta
+│   │   ├── error.tsx                     # Pantalla de error con "Reintentar"
+│   │   ├── not-found.tsx                 # 404
+│   │   ├── sitemap.ts / robots.ts        # SEO
+│   │   ├── opengraph-image.tsx           # Imagen Open Graph generada con los datos del perfil
+│   │   ├── actions/send-contact.ts       # Server Action del formulario de contacto
+│   │   └── globals.css                   # Estilos globales (Tailwind v4)
 │   │
 │   ├── components/
-│   │   ├── portafolio/                        # Componentes del portafolio
-│   │   │   ├── AboutSection.tsx
-│   │   │   ├── ContactForm.tsx
-│   │   │   ├── EducationSection.tsx
-│   │   │   ├── EducationTimeline.tsx
-│   │   │   ├── ExperienceSection.tsx
-│   │   │   ├── ExperienceTimeline.tsx
+│   │   ├── portafolio/                   # Secciones (Server Components)
 │   │   │   ├── HeroSection.tsx
-│   │   │   ├── LoadingSkeleton.tsx
-│   │   │   ├── PortafolioSection.tsx
+│   │   │   ├── AboutSection.tsx
 │   │   │   ├── ServicesSection.tsx
-│   │   │   └── TutorialsSection.tsx
-│   │   ├── layout/                            # Componentes de layout
-│   │   │   ├── Navigation.tsx
-│   │   │   └── Footer.tsx
-│   │   ├── providers/
-│   │   │   └── providers.tsx
-│   │   └── ui/                                # Componentes shadcn/ui
+│   │   │   ├── ExperienceSection.tsx / ExperienceTimeline.tsx
+│   │   │   ├── EducationSection.tsx / EducationTimeline.tsx
+│   │   │   ├── PortafolioSection.tsx
+│   │   │   ├── TutorialsSection.tsx
+│   │   │   ├── ContactSection.tsx        # Información de contacto (servidor)
+│   │   │   ├── ContactFormFields.tsx     # Formulario (cliente, useActionState)
+│   │   │   └── LoadingSkeleton.tsx
+│   │   ├── layout/
+│   │   │   ├── Navigation.tsx            # Cliente: menú móvil + scroll-spy (IntersectionObserver)
+│   │   │   ├── Footer.tsx
+│   │   │   └── BackToHome.tsx
+│   │   ├── providers/theme-provider.tsx  # next-themes
+│   │   └── ui/                           # shadcn/ui usados + SafeImage (next/image con fallback)
 │   │
-│   ├── hooks/
-│   │   ├── use-mobile.ts                      # Hook para detectar mobile
-│   │   ├── use-portafolio-data.ts             # Hooks de datos con TanStack Query
-│   │   └── use-toast.ts                       # Hook para notificaciones toast
+│   ├── lib/
+│   │   ├── data.ts                       # Fetchers con Prisma (server-only, React cache)
+│   │   ├── db.ts                         # Cliente Prisma (singleton)
+│   │   ├── navigation.ts                 # Definición única de las secciones
+│   │   ├── site.ts                       # URL y nombre del sitio
+│   │   ├── contact-schema.ts             # Zod: reglas del formulario
+│   │   ├── email.ts                      # Plantillas del correo
+│   │   ├── rate-limit.ts                 # 3 envíos cada 5 min por IP
+│   │   ├── whatsapp.ts                   # Link de WhatsApp
+│   │   └── utils.ts
 │   │
-│   └── lib/
-│       ├── db.ts                              # Cliente Prisma (patrón singleton)
-│       ├── rate-limit.ts                      # Rate limiting (3 envíos cada 5 min)
-│       ├── utils.ts                     
-│       └── whatsapp.ts                        # Helper para construir links de WhatsApp
+│   └── types/
+│       └── portafolio.ts                 # Tipos derivados del schema de Prisma
 │
-├── 📄.env                                      # Variables de entorno (gitignored)
-├── 📄.env.example
-├── 📄.gitignore
-├── 📄bun.lock
-├── 📄components.json
-├── 📄DEPLOYMENT.md                       # Guía detallada del proceso de despliegue
-├── 📄eslint.config.mjs
-├── 📄IMAGES_GUIDE.md
-├── 📄next.config.ts
-├── 📄next-env.d.ts
-├── 📄package.json
-├── 📄postcss.config.mjs
-├── 📄PROJECT_STATUS.md
-├── 📄README.md
-├── 📄tailwind.config.ts
-└── 📄tsconfig.json
+├── .env.example
+├── components.json
+├── DEPLOYMENT.md                         # Guía del proceso de despliegue
+├── eslint.config.mjs
+├── IMAGES_GUIDE.md
+├── next.config.ts                        # images.remotePatterns, reactStrictMode
+├── package.json
+├── postcss.config.mjs
+├── README.md
+└── tsconfig.json
 ```
-
-> `scripts/`, `upload/`, `Dockerfile`, `.dockerignore`, `Caddyfile` y `package-lock.json` fueron eliminados: los primeros dos ya no se usaban, y los de Docker/Caddy solo aplicaban a self-hosting con VPS, algo que este proyecto no usa (despliegue 100% en Vercel).
 
 ---
 
@@ -165,8 +170,9 @@ bun install
 # Iniciar servidor de desarrollo
 bun run dev
 
-# Verificar calidad de código
+# Verificar calidad de código (lo mismo que ejecuta el CI)
 bun run lint
+bun run typecheck
 ```
 
 ### Base de Datos
@@ -188,7 +194,7 @@ bunx prisma studio
 ### Producción
 
 ```bash
-# Construir para producción
+# Construir para producción (necesita DATABASE_URL: las páginas se generan leyendo la BD)
 bun run build
 
 # Iniciar servidor de producción
@@ -237,9 +243,14 @@ DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pool
 
 # Conexión directa (migraciones/db:push) — puerto 5432
 DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
+
+# Dominio público (metadata, sitemap, robots, Open Graph). En Vercel, si falta, se usa VERCEL_PROJECT_PRODUCTION_URL
+NEXT_PUBLIC_SITE_URL="https://tu-dominio.com"
 ```
 
 > Si la contraseña contiene caracteres especiales (`@`, `#`, `%`, etc.), deben percent-encodearse. Ver [DEPLOYMENT.md](DEPLOYMENT.md) para el detalle completo.
+>
+> Como las páginas se generan en `next build` (ISR), `DATABASE_URL` también debe estar disponible **durante el build** (en Vercel lo está; en GitHub Actions hay que añadirla como secret).
 
 ### Editar Contenido del Portafolio
 
@@ -264,7 +275,7 @@ bun run db:seed
 
 ## Envío de correo (Resend)
 
-El formulario de contacto (`ContactForm.tsx`) envía un correo real a través de la API route `src/app/api/contact/route.ts`, usando [Resend](https://resend.com/).
+El formulario de contacto (`ContactSection.tsx` + `ContactFormFields.tsx`) envía el correo mediante la **Server Action** `src/app/actions/send-contact.ts`, usando [Resend](https://resend.com/). Las reglas de validación viven en un único esquema de Zod (`src/lib/contact-schema.ts`) que usan tanto el cliente como el servidor.
 
 ### Variables de entorno requeridas
 
@@ -273,38 +284,36 @@ Archivo `.env`:
 ```env
 RESEND_API_KEY="re_tu_api_key"
 CONTACT_EMAIL="tu-email@ejemplo.com"
+CONTACT_FROM="Portafolio <onboarding@resend.dev>"   # opcional; en producción usa un dominio verificado
 ```
 
-> Sin verificar un dominio propio en Resend, solo se pueden enviar correos hacia la dirección con la que te registraste en la cuenta — suficiente para este caso de uso, ya que el destinatario eres tú mismo.
+> Sin verificar un dominio propio en Resend, `onboarding@resend.dev` solo puede enviar correos hacia la dirección con la que te registraste en la cuenta — suficiente para este caso de uso, ya que el destinatario eres tú mismo.
 
 ### Seguridad y anti-spam
 
-La API incluye varias capas de protección para evitar spam y abuso:
-
-- **Validación de longitud mínima:** nombre ≥ 10 caracteres, asunto ≥ 15, mensaje ≥ 100. Esto filtra mensajes de una sola palabra o bots genéricos.
-- **Sanitización:** todo el contenido se limpia (`sanitize`) y escapa (`escapeHtml`) antes de insertarse en el HTML del correo, evitando inyección de código.
-- **Honeypot:** campo oculto `website` en el formulario. Si un bot lo completa, la API rechaza la petición automáticamente.
-- **Rate limiting:** máximo 3 envíos por IP cada 5 minutos, implementado con un store en memoria (`src/lib/rate-limit.ts`).
-- **Detección de spam por patrones:** la API evalúa el mensaje contra patrones comunes (URLs, términos promocionales, cripto, etc.). Si el puntaje es alto, se rechaza.
+- **Validación con Zod:** nombre ≥ 2 caracteres, asunto ≥ 5, mensaje entre 20 y 5000, email válido. Misma regla en cliente y servidor.
+- **Escape de HTML:** el contenido se escapa (`escapeHtml` en `src/lib/email.ts`) antes de insertarse en el HTML del correo.
+- **Honeypot:** campo oculto `website` (fuera del árbol de accesibilidad). Si un bot lo completa, la acción responde "éxito" sin enviar nada.
+- **Rate limiting:** máximo 3 envíos por IP cada 5 minutos, con un store en memoria (`src/lib/rate-limit.ts`).
 
 ### Responsive del correo
 
-El template HTML del correo está optimizado para verse bien tanto en escritorio como en móvil:
+El template HTML del correo (`src/lib/email.ts`) está optimizado para escritorio y móvil:
 
 - `meta viewport` y media queries para reducir padding y ajustar el ancho en pantallas < 600 px.
-- Ancho máximo configurable (por defecto `820px` en desktop, `100%` en móvil).
+- Ancho máximo `820px` en desktop, `100%` en móvil.
 - Botón de respuesta y texto con `word-break` para evitar desbordes.
 
-### UX del formulario
+### UX y accesibilidad del formulario
 
-- Validación en tiempo real con errores por campo (borde rojo + mensaje).
-- Contador de caracteres en el mensaje (`0/5000`).
-- Botón de envío se deshabilita mientras hay errores o está cargando.
-- Estados visuales de éxito/error con auto-limpieza tras 5 segundos.
+- Funciona incluso sin JavaScript (`<form action>` + `useActionState`).
+- Errores por campo con `aria-invalid` y `aria-describedby`; mensajes de éxito/error con `role="status"` / `role="alert"`.
+- Si el servidor devuelve errores, los valores escritos se conservan; tras un envío correcto el formulario se limpia.
+- El botón muestra el estado de envío (`aria-busy`) y se deshabilita mientras se procesa.
 
 ## Enlaces a WhatsApp
 
-El teléfono del perfil no abre el marcador (`tel:`), sino WhatsApp directo con un mensaje predefinido. Esto se centraliza en `src/lib/whatsapp.ts` (`buildWhatsappLink`), usado tanto en `HeroSection.tsx` como en `ContactForm.tsx` — evita duplicar la lógica en ambos componentes.
+El teléfono del perfil no abre el marcador (`tel:`), sino WhatsApp directo con un mensaje predefinido. Esto se centraliza en `src/lib/whatsapp.ts` (`buildWhatsappLink`), usado tanto en `HeroSection.tsx` como en `ContactSection.tsx` — evita duplicar la lógica en ambos componentes.
 
 El mensaje predefinido se puede personalizar por perfil mediante el campo `Profile.whatsappMessage`; si está vacío, se usa un mensaje por defecto.
 ---
@@ -340,8 +349,14 @@ Resumen rápido:
 
 1. Repo conectado a Vercel, con `main` como rama de producción
 2. Base de datos PostgreSQL provisionada en Supabase
-3. Variables `DATABASE_URL`, `DIRECT_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL` configuradas en Vercel (Production + Preview + Development)
+3. Variables `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL` (y opcionalmente `CONTACT_FROM`) configuradas en Vercel (Production + Preview + Development)
 4. Cada push a una rama genera un **Preview Deployment**; cada merge a `main` despliega a producción automáticamente
+
+### CI (GitHub Actions)
+
+`.github/workflows/ci.yml` ejecuta **lint, typecheck y build** en cada push y pull request hacia `develop` y `main`. Para que el paso de build funcione en GitHub (las páginas leen la base de datos al generarse), añade en el repo **Settings → Secrets and variables → Actions** los secrets `DATABASE_URL` y `DIRECT_URL`; si faltan, el CI ejecuta lint y typecheck y marca el build como omitido (Vercel sigue construyendo en cada deploy).
+
+Flujo recomendado: `feature/*` → PR a `develop` (CI en verde + preview de Vercel) → PR de `develop` a `main` (producción).
 
 Para desplegar cambios nuevos, sigue el flujo Gitflow documentado en [DEPLOYMENT.md](DEPLOYMENT.md#-6-flujo-gitflow-para-futuros-cambios).
 
@@ -529,7 +544,7 @@ bun run db:seed
 
 1. Confirma que `RESEND_API_KEY` y `CONTACT_EMAIL` estén en tu `.env` (local) y en Vercel (Production + Preview)
 2. Revisa que la cuenta de Resend esté activa y la key no haya expirado
-3. Sin dominio verificado en Resend, el correo solo llega a la dirección con la que te registraste
+3. Sin dominio verificado en Resend, el correo solo llega a la dirección con la que te registraste (configura `CONTACT_FROM` cuando verifiques tu dominio)
 
 ### Puerto 3000 en uso
 
@@ -564,9 +579,9 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas, y que la cont
 - [ ] Panel de administrador protegido con autenticación
 - [ ] Agregar analytics (Google Analytics, Plausible)
 - [ ] Agregar blog personal
-- [ ] Optimizar imágenes con Next.js Image
+- [x] Optimizar imágenes con Next.js Image
 - [ ] Agregar pruebas unitarias
-- [ ] Configurar CI/CD con GitHub Actions
+- [x] Configurar CI/CD con GitHub Actions (`.github/workflows/ci.yml`)
 
 ---
 

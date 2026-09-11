@@ -129,7 +129,7 @@ bun run db:seed
 bun run dev
 ```
 
-Confirmar que todas las rutas API responden `200`: `/api/profile`, `/api/services`, `/api/projects`, `/api/tutorials`, `/api/skills`, `/api/experiences`, `/api/education`, `/api/section-headers`.
+Confirmar que la home (`/`) y las rutas `/servicios`, `/experiencia`, `/formacion`, `/portafolio` y `/tutoriales` cargan con los datos de la base de datos.
 
 ---
 
@@ -137,7 +137,7 @@ Confirmar que todas las rutas API responden `200`: `/api/profile`, `/api/service
 
 1. **Add New → Project** → seleccionar el repo `Portafolio` desde GitHub
 2. Dejar el **Root Directory** en default (raíz del repo)
-3. Primer deploy (va a fallar en las rutas `/api/*` porque aún no hay BD conectada — es esperado)
+3. Primer deploy (va a fallar en el build porque las páginas leen la base de datos al generarse y aún no hay BD conectada — es esperado)
 4. **Settings → Git** → confirmar que **Production Branch** = `main`
 5. **Settings → Environment Variables** → agregar:
    - `DATABASE_URL`
@@ -232,7 +232,7 @@ git push origin --delete feature/nombre-de-la-funcionalidad
    ```powershell
    bun add resend
    ```
-5. La lógica de envío vive en `src/app/api/contact/route.ts`, y el formulario (`ContactForm.tsx`) hace `fetch('/api/contact')` con estado de carga/éxito/error
+5. La lógica de envío vive en la Server Action `src/app/actions/send-contact.ts`; el formulario (`ContactFormFields.tsx`) la invoca con `useActionState`, con estado de carga/éxito/error y validación compartida en `src/lib/contact-schema.ts`
 
 > Sin verificar un dominio propio en Resend, el remitente usa `onboarding@resend.dev` y solo se puede enviar hacia la dirección con la que te registraste en la cuenta.
 

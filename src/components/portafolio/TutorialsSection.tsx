@@ -1,100 +1,112 @@
-import { memo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ImageWrapper } from '@/components/ui/image-wrapper';
-import { Tutorial, SectionHeaderData } from '@/hooks/use-portafolio-data';
-import { BookOpen, Youtube, ExternalLink } from 'lucide-react';
+import Link from "next/link";
+import { ArrowRight, BookOpen, Youtube } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SafeImage } from "@/components/ui/safe-image";
+import type { SectionHeaderData, Tutorial } from "@/types/portafolio";
 
 interface TutorialsSectionProps {
   tutorials: Tutorial[];
   header?: SectionHeaderData;
+  id?: string;
   isFullPage?: boolean;
-  onNavigate?: () => void;
+  moreHref?: string;
 }
 
-export const TutorialsSection = memo(({ tutorials, header, isFullPage = false, onNavigate }: TutorialsSectionProps) => {
-  return (
-      <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h1 className={isFullPage ? 'text-4xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-              <span className="text-primary">{header?.title ?? 'Tutoriales'}</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {header?.description ?? 'Comparto conocimiento a través de tutoriales prácticos y guías paso a paso'}
-            </p>
-          </div>
+export function TutorialsSection({ tutorials, header, id, isFullPage = false, moreHref }: TutorialsSectionProps) {
+  const Heading = isFullPage ? "h1" : "h2";
+  const titleId = `${id ?? "tutoriales"}-title`;
+  const gridClass =
+    tutorials.length <= 3
+      ? "md:grid-cols-2 max-w-4xl"
+      : tutorials.length <= 6
+        ? "md:grid-cols-2 lg:grid-cols-3 max-w-6xl"
+        : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl";
 
-            <div className={`grid grid-cols-1 gap-6 mx-auto ${
-                tutorials.length <= 3
-                    ? 'md:grid-cols-2 max-w-4xl'
-                    : tutorials.length <= 6
-                        ? 'md:grid-cols-2 lg:grid-cols-3 max-w-6xl'
-                        : 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl'
-            }`}>
-          {tutorials.map((tutorial, index) => (
-            <Card key={tutorial.id || index} className="overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl group">
-              {tutorial.image && (
-                <div className="aspect-video bg-muted relative overflow-hidden">
-                  <ImageWrapper
-                    src={tutorial.image}
-                    alt={tutorial.title}
-                    className="w-full h-full group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                </div>
-              )}
-              <CardHeader>
-                <div className="flex items-start justify-between mb-3">
-                  <Badge variant="secondary">{tutorial.category}</Badge>
-                  <Badge variant="outline">{tutorial.level}</Badge>
-                </div>
-                <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                  {tutorial.title}
-                </CardTitle>
-                  <CardDescription className="text-sm sm:text-base line-clamp-4 sm:line-clamp-3">
-                  {tutorial.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="h-4 w-4" />
-                      {tutorial.duration}
-                    </div>
-                  </div>
-                  {tutorial.youtubeUrl && (
-                    <a
-                      href={tutorial.youtubeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Youtube className="h-4 w-4" />
-                      Ver en YouTube
-                    </a>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+  return (
+    <section
+      id={id}
+      aria-labelledby={titleId}
+      className={isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
+            <span className="text-primary">{header?.title ?? "Tutoriales"}</span>
+          </Heading>
+          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+            {header?.description ?? "Comparto conocimiento a través de tutoriales prácticos y guías paso a paso"}
+          </p>
         </div>
 
-        {!isFullPage && onNavigate && (
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" onClick={onNavigate}>
-              Ver Todos los Tutoriales
-              <ExternalLink className="ml-2 h-4 w-4" />
+        {tutorials.length === 0 ? (
+          <p className="text-center text-muted-foreground">Próximamente.</p>
+        ) : (
+          <div className={`mx-auto grid grid-cols-1 gap-6 ${gridClass}`}>
+            {tutorials.map((tutorial) => (
+              <Card
+                key={tutorial.id}
+                className="group overflow-hidden border-2 transition-[border-color,box-shadow] hover:border-primary hover:shadow-xl"
+              >
+                {tutorial.image && (
+                  <div className="relative aspect-video overflow-hidden bg-muted">
+                    <SafeImage
+                      src={tutorial.image}
+                      alt={tutorial.title}
+                      fill
+                      sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" aria-hidden="true" />
+                  </div>
+                )}
+                <CardHeader>
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <Badge variant="secondary">{tutorial.category}</Badge>
+                    <Badge variant="outline">{tutorial.level}</Badge>
+                  </div>
+                  <CardTitle className="text-xl transition-colors group-hover:text-primary">{tutorial.title}</CardTitle>
+                  <CardDescription className="line-clamp-4 text-sm sm:line-clamp-3 sm:text-base">
+                    {tutorial.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <BookOpen className="h-4 w-4" aria-hidden="true" />
+                      {tutorial.duration}
+                    </p>
+                    {tutorial.youtubeUrl && (
+                      <a
+                        href={tutorial.youtubeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                      >
+                        <Youtube className="h-4 w-4" aria-hidden="true" />
+                        Ver en YouTube
+                        <span className="sr-only">: {tutorial.title}</span>
+                      </a>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {!isFullPage && moreHref && (
+          <div className="mt-12 text-center">
+            <Button size="lg" variant="outline" asChild>
+              <Link href={moreHref}>
+                Ver todos los tutoriales
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Link>
             </Button>
           </div>
         )}
       </div>
     </section>
   );
-});
-
-TutorialsSection.displayName = 'TutorialsSection';
+}

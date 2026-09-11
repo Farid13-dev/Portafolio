@@ -1,58 +1,63 @@
-import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
+import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import "./globals.css";
-import {Toaster} from "@/components/ui/toaster";
-import {Providers} from "@/components/providers/providers";
+import { Footer } from "@/components/layout/Footer";
+import { Navigation } from "@/components/layout/Navigation";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { getProfile } from "@/lib/data";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-    title: "OliverFarid.ing",
-    description: "Portafolio de Oliver Farid Rodríguez Morales - Ingeniero de Software",
-    keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
-    authors: [{name: "Oliver Farid Rodriguez Morales"}],
-    icons: {
-        icon: [
-            { url: "/images/gg.png", sizes: "256x256", type: "image/png" },
-        ],
-    },
-    openGraph: {
-        title: "OliverFarid.ing - Portafolio",
-        description: "Ingeniero de Software apasionado por crear soluciones tecnológicas innovadoras",
-        url: "https://tudominio.com",
-        siteName: "OliverFarid.ing",
-        type: "website",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "OliverFarid.ing - Portafolio",
-        description: "Ingeniero de Software apasionado por crear soluciones tecnológicas innovadoras",
-    },
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  keywords: ["Ingeniero de Software", "Backend", "Next.js", "TypeScript", "React", "IA", "Colombia"],
+  authors: [{ name: "Oliver Farid Rodríguez Morales" }],
+  icons: {
+    icon: [{ url: "/images/gg.png", sizes: "256x256", type: "image/png" }],
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    url: "/",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} - Portafolio`,
+    description: SITE_DESCRIPTION,
+    // La imagen la genera src/app/opengraph-image.tsx
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} - Portafolio`,
+    description: SITE_DESCRIPTION,
+  },
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
-    children: React.ReactNode;
-}>) {
-    return (
-        <html lang="es" suppressHydrationWarning>
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-        >
-        <Providers>
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const profile = await getProfile();
+
+  return (
+    // suppressHydrationWarning: next-themes añade la clase del tema en cliente
+    <html lang="es" suppressHydrationWarning data-scroll-behavior="smooth">
+      <body className={`${geistSans.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}>
+        <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only z-[100] rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+          >
+            Saltar al contenido principal
+          </a>
+          <Navigation logoImage={profile?.logoImage ?? null} />
+          <main id="main-content" tabIndex={-1} className="flex-1 pt-16">
             {children}
-            <Toaster/>
-        </Providers>
-        </body>
-        </html>
-    );
+          </main>
+          <Footer profile={profile} />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

@@ -209,47 +209,34 @@ const tutorialsData = [
 
 ## 🎨 Componentes de Imagen
 
-El proyecto usa componentes optimizados para imágenes:
+Todas las imágenes del sitio pasan por **`next/image`** (redimensionado, AVIF/WebP, `sizes`, carga diferida y `priority` para la foto del hero y el logo). Los hosts remotos permitidos se configuran en `next.config.ts` → `images.remotePatterns` (por defecto cualquier host `https`).
 
-### ImageWrapper
+### SafeImage
 
-Usado para imágenes generales (proyectos, tutoriales, perfil):
-
-```tsx
-<ImageWrapper
-  src="https://ejemplo.com/imagen.jpg"
-  alt="Descripción de la imagen"
-  className="w-full h-full"
-  loading="lazy"
-/>
-```
-
-**Propiedades:**
-- `src` - URL o ruta de la imagen
-- `alt` - Texto alternativo (accesibilidad)
-- `className` - Clases de Tailwind
-- `loading` - `"eager"` (inmediato) o `"lazy"` (carga diferida)
-- `fallback` - Elemento personalizado si falla la carga
-- `showFallback` - Mostrar/ocultar fallback
-
-### LogoImage
-
-Usado específicamente para logotipos:
+`src/components/ui/safe-image.tsx`: envoltorio de `next/image` que muestra un fallback si no hay `src` o la imagen falla al cargar. Acepta todas las props de `next/image`.
 
 ```tsx
-<LogoImage
-  src="/images/logo.png"
-  alt="Mi Logo"
-  className="h-10 w-auto"
-  fallbackText="LOGO"
-/>
+// Imagen que llena su contenedor (el contenedor debe ser `relative` y tener tamaño o aspect-ratio)
+<div className="relative aspect-video overflow-hidden">
+  <SafeImage
+    src={tutorial.image}
+    alt={tutorial.title}
+    fill
+    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+    className="object-cover"
+  />
+</div>
+
+// Imagen con dimensiones intrínsecas (logo)
+<SafeImage src={profile.logoImage} alt="" width={160} height={64} className="h-16 w-auto" />
+
+// Fallback personalizado y prioridad (imagen LCP)
+<SafeImage src={profile.profileImage} alt="Foto" fill sizes="128px" priority fallback={<User />} />
 ```
 
-**Propiedades:**
-- `src` - URL o ruta del logo
-- `alt` - Texto alternativo
-- `className` - Clases de Tailwind
-- `fallbackText` - Texto alternativo si falla la carga
+**Propiedades adicionales a las de `next/image`:**
+- `src` - URL, ruta local (`/images/...`) o `data:` (base64, se sirve sin optimizar). Admite `null`/`undefined`
+- `fallback` - Elemento a mostrar si no hay imagen o falla la carga (por defecto, un icono sobre fondo `bg-muted`)
 
 ---
 
