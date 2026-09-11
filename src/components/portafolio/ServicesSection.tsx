@@ -30,6 +30,7 @@ const iconMap: Record<string, LucideIcon> = { Layout, Smartphone, Server, Databa
 export function ServicesSection({ services, header, id, isFullPage = false, moreHref }: ServicesSectionProps) {
   const Heading = isFullPage ? "h1" : "h2";
   const titleId = `${id ?? "servicios"}-title`;
+  const description = header?.description?.trim();
   const gridClass =
     services.length <= 2
       ? "md:grid-cols-2 max-w-3xl"
@@ -48,9 +49,7 @@ export function ServicesSection({ services, header, id, isFullPage = false, more
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
             <span className="text-primary">{header?.title ?? "Mis Servicios"}</span>
           </Heading>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-            {header?.description ?? "Soluciones completas de desarrollo de software adaptadas a tus necesidades"}
-          </p>
+          {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
         </div>
 
         {services.length === 0 ? (

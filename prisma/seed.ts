@@ -24,7 +24,7 @@ async function main() {
     github: 'https://github.com/Farid13-dev',
     profileImage: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/img/FotoPefil.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWcvRm90b1BlZmlsLmpwZWciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg2NDg4Mjc1LCJleHAiOjE4MTgwMjQyNzV9.26cXVvByFJPySnTBJGf6KT2LNarR2X_p5pMdow7Gjms',
     logoImage: '',
-    cvUrl: null, // URL pública del PDF en Supabase Storage (bucket público), p. ej. https://<proyecto>.supabase.co/storage/v1/object/public/docs/cv.pdf
+    cvUrl: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/cv/cv-oliver-rodriguez.pdf?token=eyJraWQiOiI3ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJjdi9jdi1vbGl2ZXItcm9kcmlndWV6LnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODkxNjA2ODAsImV4cCI6MTgyMDY5NjY4MH0.7GREZZByB9JxrlWhUq_ia80gx3sl7Mh-YvTS21J6vow', // URL pública del PDF en Supabase Storage (bucket público), p. ej. https://<proyecto>.supabase.co/storage/v1/object/public/docs/cv.pdf
     availability: true,
   };
 
@@ -39,7 +39,7 @@ async function main() {
   // Encabezados de sección
   // ─────────────────────────────────────────────
   const sectionHeadersData = [
-    { key: 'sobre-mi', title: 'Sobre Mí', description: '', order: 0 },
+    { key: 'sobre-mi', title: 'Sobre Mí', description: 'Quién soy, cómo trabajo y las tecnologías que domino.', order: 0 },
     { key: 'servicios', title: 'Mis Servicios', description: 'Soluciones completas de desarrollo de software adaptadas a tus necesidades', order: 1 },
     { key: 'experiencia', title: 'Experiencia Laboral', description: 'Mi trayectoria profesional combina desarrollo de software con IA y gestión de datos a escala en entidades nacionales.', order: 2 },
     { key: 'formacion', title: 'Formación Académica', description: 'Mi trayectoria educativa y formación continua', order: 3 },

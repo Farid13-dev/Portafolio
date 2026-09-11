@@ -577,7 +577,7 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas, y que la cont
 
 1. **Editar perfil:** Modifica `prisma/seed.ts` (o Prisma Studio) y ejecuta `bun run db:seed`
 2. **Agregar proyectos/formación/tutoriales:** Edita el array correspondiente en `seed.ts`
-3. **Cambiar los títulos de sección:** Tabla `SectionHeader`
+3. **Cambiar los títulos de sección:** Tabla `SectionHeader` (título y descripción; la descripción es opcional: si se deja vacía, la sección no muestra subtítulo)
 4. **Personalizar estilos:** Modifica `src/app/globals.css` y componentes
 5. **Agregar dominio propio:** Configúralo desde el dashboard de Vercel
 

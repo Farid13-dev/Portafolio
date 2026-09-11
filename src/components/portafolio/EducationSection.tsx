@@ -15,6 +15,7 @@ interface EducationSectionProps {
 export function EducationSection({ education, header, id, isFullPage = false, moreHref }: EducationSectionProps) {
   const Heading = isFullPage ? "h1" : "h2";
   const titleId = `${id ?? "formacion"}-title`;
+  const description = header?.description?.trim();
 
   return (
     <section
@@ -25,11 +26,9 @@ export function EducationSection({ education, header, id, isFullPage = false, mo
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
-            Mi <span className="text-primary">{header?.title ?? "Formación Académica"}</span>
+            <span className="text-primary">{header?.title ?? "Formación Académica"}</span>
           </Heading>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-            {header?.description ?? "Mi trayectoria educativa y formación continua"}
-          </p>
+          {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
         </div>
 
         <div className="mx-auto max-w-4xl">
