@@ -1,23 +1,40 @@
-interface RateLimitStore {
-    count: number;
-    resetTime: number;
+interface RateLimitEntry {
+  count: number;
+  resetTime: number;
 }
 
-const store = new Map<string, RateLimitStore>();
+export interface RateLimitResult {
+  success: boolean;
+  /** Intentos que quedan en la ventana actual */
+  remaining: number;
+  /** Milisegundos hasta que se reinicia la ventana (0 si aún hay cupo) */
+  retryAfterMs: number;
+}
 
-export function rateLimit(ip: string, max: number = 3, windowMs: number = 300_000) {
-    const now = Date.now();
-    const record = store.get(ip);
+// Store en memoria: suficiente para un portafolio (cada instancia serverless lleva el suyo).
+const store = new Map<string, RateLimitEntry>();
+const MAX_ENTRIES = 1000;
 
-    if (!record || now > record.resetTime) {
-        store.set(ip, { count: 1, resetTime: now + windowMs });
-        return { success: true };
-    }
+function purgeExpired(now: number) {
+  for (const [key, entry] of store) {
+    if (now > entry.resetTime) store.delete(key);
+  }
+}
 
-    if (record.count >= max) {
-        return { success: false, message: 'Demasiados intentos. Intenta más tarde.' };
-    }
+export function rateLimit(key: string, max = 3, windowMs = 300_000): RateLimitResult {
+  const now = Date.now();
+  if (store.size > MAX_ENTRIES) purgeExpired(now);
 
-    record.count++;
-    return { success: true };
+  const entry = store.get(key);
+  if (!entry || now > entry.resetTime) {
+    store.set(key, { count: 1, resetTime: now + windowMs });
+    return { success: true, remaining: max - 1, retryAfterMs: 0 };
+  }
+
+  if (entry.count >= max) {
+    return { success: false, remaining: 0, retryAfterMs: entry.resetTime - now };
+  }
+
+  entry.count += 1;
+  return { success: true, remaining: max - entry.count, retryAfterMs: 0 };
 }

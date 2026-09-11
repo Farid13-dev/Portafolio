@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-// Única definición de reglas del formulario: la usan el cliente (mensajes) y el servidor (validación real).
+export const MESSAGE_MIN = 20;
+export const MESSAGE_MAX = 5000;
+
+// Única definición de reglas del formulario: el cliente la usa para avisar en vivo
+// y el servidor para la validación real antes de enviar.
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Escribe tu nombre").max(100, "Máximo 100 caracteres"),
   email: z.email("Ingresa un email válido").max(254, "Máximo 254 caracteres"),
@@ -8,18 +12,16 @@ export const contactSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(20, "Cuéntame un poco más (mínimo 20 caracteres)")
-    .max(5000, "Máximo 5000 caracteres"),
+    .min(MESSAGE_MIN, `Cuéntame un poco más (mínimo ${MESSAGE_MIN} caracteres)`)
+    .max(MESSAGE_MAX, `Máximo ${MESSAGE_MAX} caracteres`),
   website: z.string().optional(), // honeypot: debe llegar vacío
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
+export type ContactValues = Pick<ContactInput, "name" | "email" | "subject" | "message">;
 export type ContactFieldErrors = Partial<Record<keyof ContactInput, string[]>>;
-export type ContactValues = Partial<Pick<ContactInput, "name" | "email" | "subject" | "message">>;
 
 export type ContactState =
   | { status: "idle" }
   | { status: "success" }
-  | { status: "error"; message: string; fieldErrors?: ContactFieldErrors; values?: ContactValues };
-
-export const MESSAGE_MAX = 5000;
+  | { status: "error"; message: string; fieldErrors?: ContactFieldErrors };
