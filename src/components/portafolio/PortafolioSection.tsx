@@ -17,6 +17,7 @@ interface PortafolioSectionProps {
 export function PortafolioSection({ projects, header, id, isFullPage = false, moreHref }: PortafolioSectionProps) {
   const Heading = isFullPage ? "h1" : "h2";
   const titleId = `${id ?? "portafolio"}-title`;
+  const description = header?.description?.trim();
   const gridClass =
     projects.length <= 3
       ? "md:grid-cols-2 max-w-4xl"
@@ -31,9 +32,7 @@ export function PortafolioSection({ projects, header, id, isFullPage = false, mo
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
             <span className="text-primary">{header?.title ?? "Portafolio"}</span>
           </Heading>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-            {header?.description ?? "Proyectos destacados que demuestran mi experiencia y habilidades"}
-          </p>
+          {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
         </div>
 
         {projects.length === 0 ? (

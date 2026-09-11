@@ -17,6 +17,7 @@ interface TutorialsSectionProps {
 export function TutorialsSection({ tutorials, header, id, isFullPage = false, moreHref }: TutorialsSectionProps) {
   const Heading = isFullPage ? "h1" : "h2";
   const titleId = `${id ?? "tutoriales"}-title`;
+  const description = header?.description?.trim();
   const gridClass =
     tutorials.length <= 3
       ? "md:grid-cols-2 max-w-4xl"
@@ -35,9 +36,7 @@ export function TutorialsSection({ tutorials, header, id, isFullPage = false, mo
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
             <span className="text-primary">{header?.title ?? "Tutoriales"}</span>
           </Heading>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-            {header?.description ?? "Comparto conocimiento a través de tutoriales prácticos y guías paso a paso"}
-          </p>
+          {description && <p className="mx-auto max-w-2xl text-xl text-muted-foreground">{description}</p>}
         </div>
 
         {tutorials.length === 0 ? (

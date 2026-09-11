@@ -17,9 +17,8 @@ const linkClass = "text-muted-foreground transition-colors hover:text-primary br
 
 export function ContactSection({ profile, header }: ContactSectionProps) {
   const whatsappLink = buildWhatsappLink(profile);
-  const description =
-    header?.description ??
-    "¿Hablamos?\nEstoy disponible para oportunidades laborales y proyectos de desarrollo backend.";
+  // Los saltos de línea pueden llegar como "\n" literal desde la BD
+  const description = header?.description?.trim().replace(/\\n/g, "\n");
 
   return (
     <section id="contacto" aria-labelledby="contacto-title" className="bg-background py-20">
@@ -28,9 +27,9 @@ export function ContactSection({ profile, header }: ContactSectionProps) {
           <h2 id="contacto-title" className="mb-4 text-4xl font-bold text-balance">
             <span className="text-primary">{header?.title ?? "Contáctame"}</span>
           </h2>
-          <p className="mx-auto max-w-2xl whitespace-pre-line text-xl text-muted-foreground">
-            {description.replace(/\n/g, "\n")}
-          </p>
+          {description && (
+            <p className="mx-auto max-w-2xl whitespace-pre-line text-xl text-muted-foreground">{description}</p>
+          )}
         </div>
 
         <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
