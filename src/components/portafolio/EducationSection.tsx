@@ -1,44 +1,56 @@
-import { memo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Education, SectionHeaderData } from '@/hooks/use-portafolio-data';
-import { EducationTimeline } from './EducationTimeline';
-import { ExternalLink } from 'lucide-react';
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { EducationTimeline } from "./EducationTimeline";
+import type { Education, SectionHeaderData } from "@/types/portafolio";
 
 interface EducationSectionProps {
-    education: Education[];
-    header?: SectionHeaderData;
-    isFullPage?: boolean;
-    onNavigate?: () => void;
+  education: Education[];
+  header?: SectionHeaderData;
+  id?: string;
+  isFullPage?: boolean;
+  moreHref?: string;
 }
 
-export const EducationSection = memo(({ education, header, isFullPage = false, onNavigate }: EducationSectionProps) => {
-    return (
-        <section className={isFullPage ? 'py-20' : 'py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5'}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-        <h1 className={isFullPage ? 'text-4xl font-bold mb-4' : 'text-4xl font-bold mb-4'}>
-            Mi <span className="text-primary">{header?.title ?? 'Formación Académica'}</span>
-    </h1>
-    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-        {header?.description ?? 'Mi trayectoria educativa y formación continua'}
-    </p>
-    </div>
+export function EducationSection({ education, header, id, isFullPage = false, moreHref }: EducationSectionProps) {
+  const Heading = isFullPage ? "h1" : "h2";
+  const titleId = `${id ?? "formacion"}-title`;
 
-    <div className="max-w-4xl mx-auto">
-    <EducationTimeline education={education} />
-    </div>
-
-    {!isFullPage && onNavigate && (
-        <div className="text-center mt-12">
-        <Button size="lg" variant="outline" onClick={onNavigate}>
-        Ver Formación Completa
-    <ExternalLink className="ml-2 h-4 w-4" />
-        </Button>
+  return (
+    <section
+      id={id}
+      aria-labelledby={titleId}
+      className={isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">
+            Mi <span className="text-primary">{header?.title ?? "Formación Académica"}</span>
+          </Heading>
+          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+            {header?.description ?? "Mi trayectoria educativa y formación continua"}
+          </p>
         </div>
-    )}
-    </div>
-    </section>
-);
-});
 
-EducationSection.displayName = 'EducationSection';
+        <div className="mx-auto max-w-4xl">
+          {education.length === 0 ? (
+            <p className="text-center text-muted-foreground">Próximamente.</p>
+          ) : (
+            <EducationTimeline education={education} />
+          )}
+        </div>
+
+        {!isFullPage && moreHref && (
+          <div className="mt-12 text-center">
+            <Button size="lg" variant="outline" asChild>
+              <Link href={moreHref}>
+                Ver formación completa
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

@@ -1,134 +1,109 @@
-'use client';
+"use client";
 
-import { memo, useCallback, useMemo } from 'react';
-import { Menu, X, Briefcase } from 'lucide-react';
-import { Profile } from '@/hooks/use-portafolio-data';
-import { LogoImage } from '@/components/ui/image-wrapper';
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { SECTIONS, type SectionId } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 
 interface NavigationProps {
-  profile: Profile | undefined;
-  activeSection: string;
-  isMenuOpen: boolean;
-  setIsMenuOpen: (open: boolean) => void;
-  scrollToSection: (sectionId: string) => void;
+  logoImage: string | null;
 }
 
-const sections = [
-  { id: 'inicio', label: 'Inicio' },
-  { id: 'servicios', label: 'Servicios' },
-  { id: 'experiencia', label: 'Experiencia' },
-  { id: 'formacion', label: 'Formación Académica' },
-  { id: 'portafolio', label: 'Portafolio' },
-  { id: 'tutoriales', label: 'Tutoriales' },
-  { id: 'contacto', label: 'Contacto' }
-];
+export function Navigation({ logoImage }: NavigationProps) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>("inicio");
 
-export const Navigation = memo(function Navigation({ 
-  profile, 
-  activeSection, 
-  isMenuOpen, 
-  setIsMenuOpen, 
-  scrollToSection 
-}: NavigationProps) {
-  const handleMenuToggle = useCallback(() => {
-    setIsMenuOpen(!isMenuOpen);
-  }, [isMenuOpen, setIsMenuOpen]);
+  // Scroll-spy sin listener de scroll: el navegador avisa cuando una sección
+  // cruza la franja central de la ventana.
+  useEffect(() => {
+    if (!isHome) return;
 
-  const handleScrollToSection = useCallback((sectionId: string) => {
-    scrollToSection(sectionId);
-    setIsMenuOpen(false); // Cerrar menú móvil al hacer clic
-  }, [scrollToSection, setIsMenuOpen]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id as SectionId);
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
 
-  // Memoizar contenido del menú desktop
-  const desktopMenu = useMemo(() => (
-    sections.map((section) => (
-      <button
-        key={section.id}
-        onClick={() => handleScrollToSection(section.id)}
-        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-          activeSection === section.id
-            ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:text-primary hover:bg-accent'
-        }`}
-        aria-current={activeSection === section.id ? 'page' : undefined}
-        aria-label={`Ir a ${section.label}`}
-      >
-        {section.label}
-      </button>
-    ))
-  ), [activeSection, handleScrollToSection]);
+    for (const { id } of SECTIONS) {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
+  }, [isHome]);
 
-  // Memoizar contenido del menú móvil
-  const mobileMenu = useMemo(() => (
-    sections.map((section) => (
-      <button
-        key={section.id}
-        onClick={() => handleScrollToSection(section.id)}
-        className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
-          activeSection === section.id
-            ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:text-primary hover:bg-accent'
-        }`}
-        role="menuitem"
-        aria-label={`Ir a ${section.label}`}
-      >
-        {section.label}
-      </button>
-    ))
-  ), [activeSection, handleScrollToSection]);
+  const isActive = (id: SectionId) => isHome && activeSection === id;
+
+  const linkClass = (id: SectionId, mobile = false) =>
+    cn(
+      "rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+      mobile ? "block px-3 py-2 text-base" : "px-4 py-2 text-sm",
+      isActive(id) ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent hover:text-primary",
+    );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b" role="navigation" aria-label="Navegación principal">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo a la izquierda */}
-          <div className="flex-shrink-0">
-            <a href="#inicio" className="flex items-center gap-3" aria-label="Ir a Inicio">
-              {profile?.logoImage ? (
-                <LogoImage
-                  src={profile.logoImage}
-                  alt="OliverFarid.ing Logo"
-                  className="h-16 w-auto"
-                  fallbackText="OliverFarid.ing"
-                />
-              ) : (
-                <span className="text-2xl font-bold text-primary">
-                  OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
-                </span>
-              )}
-            </a>
-          </div>
+    <header className="fixed inset-x-0 top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav aria-label="Navegación principal" className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="shrink-0" aria-label="Ir al inicio">
+            {logoImage ? (
+              <Image src={logoImage} alt="" width={160} height={64} priority className="h-16 w-auto" />
+            ) : (
+              <span className="text-2xl font-bold text-primary">
+                OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
+              </span>
+            )}
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center">
-            <div className="flex items-center">
-              {desktopMenu}
-            </div>
-          </div>
+          <ul className="hidden items-center md:flex">
+            {SECTIONS.map(({ id, label }) => (
+              <li key={id}>
+                <Link href={`/#${id}`} className={linkClass(id)} aria-current={isActive(id) ? "location" : undefined}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={handleMenuToggle}
-              className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-accent"
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-menu"
-              aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            >
-              {isMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-primary focus-visible:outline-2 focus-visible:outline-ring md:hidden"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
+            <span className="sr-only">{isMenuOpen ? "Cerrar menú" : "Abrir menú"}</span>
+          </button>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div id="mobile-menu" className="md:hidden border-t bg-background" role="menu">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {mobileMenu}
-          </div>
+        <div id="mobile-menu" className="border-t bg-background md:hidden">
+          <ul className="space-y-1 px-2 pb-3 pt-2">
+            {SECTIONS.map(({ id, label }) => (
+              <li key={id}>
+                <Link
+                  href={`/#${id}`}
+                  className={linkClass(id, true)}
+                  aria-current={isActive(id) ? "location" : undefined}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-    </nav>
+    </header>
   );
-});
+}
