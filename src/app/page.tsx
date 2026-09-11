@@ -1,5 +1,5 @@
 import { AboutSection } from "@/components/portafolio/AboutSection";
-import { ContactForm } from "@/components/portafolio/ContactForm";
+import { ContactSection } from "@/components/portafolio/ContactSection";
 import { EducationSection } from "@/components/portafolio/EducationSection";
 import { ExperienceSection } from "@/components/portafolio/ExperienceSection";
 import { HeroSection } from "@/components/portafolio/HeroSection";
@@ -25,7 +25,7 @@ export default async function HomePage() {
       <EducationSection id="formacion" education={education} header={sectionHeaders.formacion} moreHref="/formacion" />
       <PortafolioSection id="portafolio" projects={projects} header={sectionHeaders.portafolio} moreHref="/portafolio" />
       <TutorialsSection id="tutoriales" tutorials={tutorials} header={sectionHeaders.tutoriales} moreHref="/tutoriales" />
-      <ContactForm profile={profile} header={sectionHeaders.contacto} />
+      <ContactSection profile={profile} header={sectionHeaders.contacto} />
     </>
   );
 }

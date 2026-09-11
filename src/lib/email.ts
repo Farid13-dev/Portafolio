@@ -1,138 +1,6 @@
-import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
-import { rateLimit } from '@/lib/rate-limit';
-import { headers } from 'next/headers';
+// Plantillas del correo que recibe el dueño del portafolio (HTML + texto plano).
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const VALIDATION_RULES = {
-    name: { min: 10, max: 100 },
-    email: { max: 254 },
-    subject: { min: 15, max: 200 },
-    message: { min: 100, max: 5000 },
-};
-
-function sanitize(str: string): string {
-    return str.trim().replace(/[<>]/g, '');
-}
-
-function validateInput(body: Record<string, unknown>): { valid: false; error: string } | { valid: true; data: { name: string; email: string; subject: string; message: string } } {
-    const { name, email, subject, message, website } = body;
-
-    // Honeypot: si el campo oculto tiene valor, es un bot
-    if (website && typeof website === 'string' && website.trim().length > 0) {
-        return { valid: false, error: 'Spam detectado' };
-    }
-
-    if (!name || !email || !subject || !message) {
-        return { valid: false, error: 'Todos los campos son requeridos' };
-    }
-
-    if (typeof name !== 'string' || typeof email !== 'string' || typeof subject !== 'string' || typeof message !== 'string') {
-        return { valid: false, error: 'Formato de datos inválido' };
-    }
-
-    const sName = sanitize(name);
-    const sEmail = sanitize(email).toLowerCase();
-    const sSubject = sanitize(subject);
-    const sMessage = sanitize(message);
-
-    if (sName.length < VALIDATION_RULES.name.min || sName.length > VALIDATION_RULES.name.max) {
-        return { valid: false, error: `El nombre debe tener entre ${VALIDATION_RULES.name.min} y ${VALIDATION_RULES.name.max} caracteres` };
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(sEmail) || sEmail.length > VALIDATION_RULES.email.max) {
-        return { valid: false, error: 'Ingresa un email válido' };
-    }
-
-    if (sSubject.length < VALIDATION_RULES.subject.min || sSubject.length > VALIDATION_RULES.subject.max) {
-        return { valid: false, error: `El asunto debe tener entre ${VALIDATION_RULES.subject.min} y ${VALIDATION_RULES.subject.max} caracteres` };
-    }
-
-    if (sMessage.length < VALIDATION_RULES.message.min || sMessage.length > VALIDATION_RULES.message.max) {
-        return { valid: false, error: `El mensaje debe tener entre ${VALIDATION_RULES.message.min} y ${VALIDATION_RULES.message.max} caracteres` };
-    }
-
-    // Anti-spam: detectar patrones de spam comunes
-    const spamPatterns = [
-        /https?:\/\//i,
-        /www\./i,
-        /\$[\d,]+/,
-        /(viagra|cialis|crypto|bitcoin|nft|forex|loan|credit|weight loss|earn money)/i,
-    ];
-    const spamScore = spamPatterns.reduce((acc, pattern) => acc + (pattern.test(sMessage) ? 1 : 0), 0);
-    if (spamScore >= 2) {
-        return { valid: false, error: 'El mensaje ha sido marcado como spam. Por favor evita enlaces o términos promocionales.' };
-    }
-
-    return { valid: true, data: { name: sName, email: sEmail, subject: sSubject, message: sMessage } };
-}
-
-export async function POST(request: Request) {
-    try {
-        // Rate limiting
-        const headersList = await headers();
-        const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-        const limit = rateLimit(ip, 3, 300_000); // 3 envíos cada 5 minutos
-
-        if (!limit.success) {
-            return NextResponse.json({ error: limit.message }, { status: 429 });
-        }
-
-        let body: Record<string, unknown>;
-        try {
-            body = await request.json();
-        } catch {
-            return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
-        }
-
-        const validation = validateInput(body);
-        if (!validation.valid) {
-            return NextResponse.json({ error: validation.error }, { status: 400 });
-        }
-
-        const { name, email, subject, message } = validation.data;
-        const destinationEmail = process.env.CONTACT_EMAIL;
-
-        if (!destinationEmail) {
-            console.error('CONTACT_EMAIL no está configurado');
-            return NextResponse.json({ error: 'Error de configuración del servidor' }, { status: 500 });
-        }
-
-        const receivedAt = new Date().toLocaleString('es-CO', {
-            dateStyle: 'long',
-            timeStyle: 'short',
-            timeZone: 'America/Bogota',
-        });
-
-        const initials = getInitials(name);
-
-        const html = buildEmailHtml({ name, email, subject, message, receivedAt, initials });
-        const text = buildEmailText({ name, email, subject, message, receivedAt });
-
-        const { data, error } = await resend.emails.send({
-            from: 'Portafolio <onboarding@resend.dev>',
-            to: destinationEmail,
-            replyTo: email,
-            subject: `[Portafolio] ${subject}`,
-            html,
-            text,
-        });
-
-        if (error) {
-            console.error('Error de Resend:', error);
-            return NextResponse.json({ error: 'No se pudo enviar el mensaje' }, { status: 500 });
-        }
-
-        return NextResponse.json({ success: true, id: data?.id });
-    } catch (error) {
-        console.error('Error en /api/contact:', error);
-        return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
-    }
-}
-
-function getInitials(name: string): string {
+export function getInitials(name: string): string {
     return name
         .trim()
         .split(/\s+/)
@@ -150,7 +18,7 @@ function escapeHtml(str: string): string {
         .replace(/'/g, '&#039;');
 }
 
-interface EmailData {
+export interface EmailData {
     name: string;
     email: string;
     subject: string;
@@ -159,7 +27,7 @@ interface EmailData {
     initials: string;
 }
 
-function buildEmailHtml({ name, email, subject, message, receivedAt, initials }: EmailData): string {
+export function buildEmailHtml({ name, email, subject, message, receivedAt, initials }: EmailData): string {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeSubject = escapeHtml(subject);
@@ -285,7 +153,7 @@ function buildEmailHtml({ name, email, subject, message, receivedAt, initials }:
   `.trim();
 }
 
-function buildEmailText({ name, email, subject, message, receivedAt }: Omit<EmailData, 'initials'>): string {
+export function buildEmailText({ name, email, subject, message, receivedAt }: Omit<EmailData, 'initials'>): string {
     return [
         'NUEVO MENSAJE DESDE TU PORTAFOLIO',
         '',
