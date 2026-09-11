@@ -1,4 +1,4 @@
-import { ChevronRight, Github, Linkedin, Phone, User } from "lucide-react";
+import { ChevronRight, FileDown, Github, Linkedin, Phone, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
@@ -70,6 +70,14 @@ export function HeroSection({ profile }: HeroSectionProps) {
           <Button size="lg" variant="outline" asChild>
             <a href="#contacto">Contactar</a>
           </Button>
+          {profile?.cvUrl && (
+            <Button size="lg" variant="secondary" asChild>
+              <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer">
+                <FileDown className="mr-2 h-4 w-4" aria-hidden="true" />
+                Descargar CV
+              </a>
+            </Button>
+          )}
         </div>
 
         <ul className="flex justify-center gap-2 text-muted-foreground" aria-label="Redes y contacto">
