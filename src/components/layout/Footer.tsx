@@ -1,133 +1,84 @@
-'use client';
-
-import {memo, useMemo} from 'react';
-import {Mail, Linkedin, Github} from 'lucide-react';
-import {Profile} from '@/hooks/use-portafolio-data';
-import {LogoImage} from '@/components/ui/image-wrapper';
+import Link from "next/link";
+import { Github, Linkedin, Mail } from "lucide-react";
+import { SafeImage } from "@/components/ui/safe-image";
+import { SECTIONS } from "@/lib/navigation";
+import type { Profile } from "@/types/portafolio";
 
 interface FooterProps {
-    profile: Profile | undefined;
-    scrollToSection: (sectionId: string) => void;
+  profile: Profile | null;
 }
 
-const sections = [
-    {id: 'inicio', label: 'Inicio'},
-    {id: 'servicios', label: 'Servicios'},
-    {id: 'experiencia', label: 'Experiencia'},
-    {id: 'formacion', label: 'Formación Académica'},
-    {id: 'portafolio', label: 'Portafolio'},
-    {id: 'tutoriales', label: 'Tutoriales'},
-    {id: 'contacto', label: 'Contacto'}
-];
+const socialLinkClass =
+  "flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring";
 
-export const Footer = memo(function Footer({profile, scrollToSection}: FooterProps) {
-    const year = useMemo(() => new Date().getFullYear(), []);
+export function Footer({ profile }: FooterProps) {
+  const year = new Date().getFullYear();
+  const firstName = profile?.firstName ?? "Oliver Farid";
+  const lastName = profile?.lastName ?? "Rodríguez Morales";
 
-    // Memoizar enlaces sociales
-    const socialLinks = useMemo(() => {
-        const links: React.ReactElement[] = [];
-        if (profile?.linkedin) {
-            links.push(
-                <a
-                    key="linkedin"
-                    href={profile.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-colors"
-                    aria-label="LinkedIn"
-                >
-                    <Linkedin className="h-5 w-5 text-primary"/>
-                </a>
-            );
-        }
-        if (profile?.email) {
-            links.push(
-                <a
-                    key="email"
-                    href={`mailto:${profile.email}`}
-                    className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-colors"
-                    aria-label="Email"
-                >
-                    <Mail className="h-5 w-5 text-primary"/>
-                </a>
-            );
-        }
-        if (profile?.github) {
-            links.push(
-                <a
-                    key="github"
-                    href={profile.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-colors"
-                    aria-label="GitHub"
-                >
-                    <Github className="h-5 w-5 text-primary"/>
-                </a>
-            );
-        }
-        return links;
-    }, [profile]);
-
-    // Memoizar secciones del footer
-    const sectionLinks = useMemo(() => (
-        sections.map((section) => (
-            <li key={section.id}>
-                <button
-                    onClick={() => scrollToSection(section.id)}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                    {section.label}
-                </button>
-            </li>
-        ))
-    ), [scrollToSection]);
-
-    return (
-        <footer className="bg-muted/50 border-t mt-auto">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid md:grid-cols-3 gap-8">
-                    <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            {profile?.logoImage ? (
-                                <LogoImage
-                                    src={profile.logoImage}
-                                    alt="Farid.ing Logo"
-                                    className="h-16 w-auto"
-                                    fallbackText="Farid.ing"
-                                />
-                            ) : (
-                                <span className="text-2xl font-bold text-primary">
-                                    OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
-                                </span>
-                            )}
-                            <h3 className="text-xl font-bold">
-                                {profile?.firstName || 'Oliver Farid'} <span
-                                className="text-primary">{profile?.lastName || 'Rodríguez Morales'}</span>
-                            </h3>
-                        </div>
-                        <p className="text-muted-foreground">
-                            Ingeniero de Sistemas enfocado en desarrollo backend y sistemas con IA.
-                        </p>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold mb-4">Secciones</h4>
-                        <ul className="space-y-2">
-                            {sectionLinks}
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold mb-4">Conéctate</h4>
-                        <div className="flex gap-4">
-                            {socialLinks}
-                        </div>
-                    </div>
-                </div>
-                <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-                    <p>© {year} {profile?.firstName || 'Oliver Farid'} {profile?.lastName || 'Rodríguez Morales'}. Todos
-                        los derechos reservados.</p>
-                </div>
+  return (
+    <footer className="mt-auto border-t bg-muted/50">
+      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid gap-8 md:grid-cols-3">
+          <div>
+            <div className="mb-4 flex items-center gap-3">
+              {profile?.logoImage ? (
+                <SafeImage src={profile.logoImage} alt="" width={160} height={64} className="h-16 w-auto" />
+              ) : null}
+              <p className="text-xl font-bold">
+                {firstName} <span className="text-primary">{lastName}</span>
+              </p>
             </div>
-        </footer>
-    );
-});
+            <p className="text-muted-foreground">
+              {profile?.title ?? "Ingeniero de Sistemas enfocado en desarrollo backend y sistemas con IA."}
+            </p>
+          </div>
+
+          <nav aria-labelledby="footer-sections">
+            <h2 id="footer-sections" className="mb-4 font-semibold">Secciones</h2>
+            <ul className="space-y-2">
+              {SECTIONS.map(({ id, label }) => (
+                <li key={id}>
+                  <Link href={`/#${id}`} className="text-muted-foreground transition-colors hover:text-primary">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <h2 className="mb-4 font-semibold">Conéctate</h2>
+            <ul className="flex gap-4">
+              {profile?.linkedin && (
+                <li>
+                  <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className={socialLinkClass}>
+                    <Linkedin className="h-5 w-5 text-primary" aria-hidden="true" />
+                  </a>
+                </li>
+              )}
+              {profile?.email && (
+                <li>
+                  <a href={`mailto:${profile.email}`} aria-label="Email" className={socialLinkClass}>
+                    <Mail className="h-5 w-5 text-primary" aria-hidden="true" />
+                  </a>
+                </li>
+              )}
+              {profile?.github && (
+                <li>
+                  <a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className={socialLinkClass}>
+                    <Github className="h-5 w-5 text-primary" aria-hidden="true" />
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 border-t pt-8 text-center text-muted-foreground">
+          <p>© {year} {firstName} {lastName}. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}

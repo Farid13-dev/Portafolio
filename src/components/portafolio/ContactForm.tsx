@@ -6,11 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, Phone, Linkedin, Github, CheckCircle2, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
-import { Profile, SectionHeaderData } from '@/hooks/use-portafolio-data';
+import type { Profile, SectionHeaderData } from '@/types/portafolio';
 import { buildWhatsappLink } from '@/lib/whatsapp';
 
 interface ContactFormProps {
-    profile: Profile | undefined;
+    profile: Profile | null;
     header?: SectionHeaderData;
 }
 

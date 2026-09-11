@@ -1,9 +1,7 @@
-'use client';
-
-import { Experience } from '@/hooks/use-portafolio-data';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Calendar } from 'lucide-react';
+import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Experience } from "@/types/portafolio";
 
 interface ExperienceTimelineProps {
   experiences: Experience[];
@@ -13,67 +11,53 @@ export function ExperienceTimeline({ experiences }: ExperienceTimelineProps) {
   return (
     <div className="relative">
       {/* Línea vertical */}
-      <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-primary/20" />
+      <div className="absolute left-0 h-full w-1 bg-primary/20 md:left-1/2 md:-translate-x-1/2" aria-hidden="true" />
 
-      <div className="space-y-8">
+      <ol className="space-y-8">
         {experiences.map((experience, index) => (
-          <div
+          <li
             key={experience.id}
-            className={`relative flex items-start md:items-center ${
-              index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-            }`}
+            className={`relative flex items-start md:items-center ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
           >
             {/* Punto en la línea */}
-            <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-12 h-12 bg-primary rounded-full flex items-center justify-center z-10 shadow-lg">
+            <div
+              className="absolute left-0 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-primary shadow-lg md:left-1/2 md:-translate-x-1/2"
+              aria-hidden="true"
+            >
               <Briefcase className="h-6 w-6 text-primary-foreground" />
             </div>
 
-            {/* Tarjeta de experiencia */}
-            <div className={`ml-16 md:ml-0 md:w-5/12 ${index % 2 === 0 ? 'md:mr-auto md:ml-12' : 'md:ml-auto md:mr-12'}`}>
-              <Card className="border-2 hover:border-primary/50 transition-all hover:shadow-lg group">
+            <div className={`ml-16 md:w-5/12 ${index % 2 === 0 ? "md:ml-12 md:mr-auto" : "md:ml-auto md:mr-12"}`}>
+              <Card className="group border-2 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-lg">
                 <CardContent className="p-6">
-                  {/* Fecha */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="h-4 w-4 text-primary" />
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
                     <span className="text-sm font-semibold text-primary">
                       {experience.startDate}
                       {experience.endDate && ` - ${experience.endDate}`}
-                      {experience.isCurrent && (
-                        <Badge variant="secondary" className="ml-2">
-                          Actual
-                        </Badge>
-                      )}
                     </span>
+                    {experience.isCurrent && <Badge variant="secondary">Actual</Badge>}
                   </div>
 
-                  {/* Título */}
-                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="mb-2 text-xl font-bold text-foreground transition-colors group-hover:text-primary">
                     {experience.title}
                   </h3>
+                  <p className="mb-2 text-lg font-medium text-primary">{experience.company}</p>
 
-                  {/* Empresa */}
-                  <p className="text-lg font-medium text-primary mb-2">
-                    {experience.company}
-                  </p>
-
-                  {/* Ubicación */}
                   {experience.location && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                      <MapPin className="h-4 w-4" />
+                    <p className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" aria-hidden="true" />
                       <span>{experience.location}</span>
-                    </div>
+                    </p>
                   )}
 
-                  {/* Descripción */}
-                  <p className="text-muted-foreground leading-relaxed">
-                    {experience.description}
-                  </p>
+                  <p className="leading-relaxed text-muted-foreground">{experience.description}</p>
                 </CardContent>
               </Card>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </div>
   );
 }
