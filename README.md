@@ -289,10 +289,10 @@ CONTACT_FROM="Portafolio <onboarding@resend.dev>"   # opcional; en producción u
 
 ### Seguridad y anti-spam
 
-- **Validación con Zod:** nombre ≥ 2 caracteres, asunto ≥ 5, mensaje entre 20 y 5000, email válido. Misma regla en cliente y servidor.
+- **Validación con Zod:** nombre ≥ 2 caracteres, asunto ≥ 5, mensaje entre 20 y 5000, email válido. La misma regla se ejecuta en vivo en el cliente (avisa campo a campo y mantiene el botón desactivado hasta que todo es válido) y de nuevo en el servidor antes de enviar.
 - **Escape de HTML:** el contenido se escapa (`escapeHtml` en `src/lib/email.ts`) antes de insertarse en el HTML del correo.
-- **Honeypot:** campo oculto `website` (fuera del árbol de accesibilidad). Si un bot lo completa, la acción responde "éxito" sin enviar nada.
-- **Rate limiting:** máximo 3 envíos por IP cada 5 minutos, con un store en memoria (`src/lib/rate-limit.ts`).
+- **Honeypot y tiempo de relleno:** campo oculto `website` (fuera del árbol de accesibilidad) y un contador desde que se muestra el formulario. Si un bot lo completa o envía en menos de 2,5 s, la acción responde "éxito" sin enviar nada.
+- **Rate limiting:** máximo 3 envíos **válidos** por IP cada 5 minutos, con un store en memoria (`src/lib/rate-limit.ts`). Se comprueba después de validar, así que un intento incompleto no consume cuota; al superarlo se indica cuántos minutos faltan.
 
 ### Responsive del correo
 
@@ -305,9 +305,11 @@ El template HTML del correo (`src/lib/email.ts`) está optimizado para escritori
 ### UX y accesibilidad del formulario
 
 - Funciona incluso sin JavaScript (`<form action>` + `useActionState`).
-- Errores por campo con `aria-invalid` y `aria-describedby`; mensajes de éxito/error con `role="status"` / `role="alert"`.
-- Si el servidor devuelve errores, los valores escritos se conservan; tras un envío correcto el formulario se limpia.
-- El botón muestra el estado de envío (`aria-busy`) y se deshabilita mientras se procesa.
+- Validación en vivo al salir de cada campo (mismo esquema que el servidor), errores con `aria-invalid` y `aria-describedby`, contador de caracteres del mensaje y foco automático en el primer error.
+- El botón permanece desactivado hasta que todos los campos son válidos, con un texto de ayuda enlazado por `aria-describedby`.
+- Mensajes de éxito/error con `role="status"` / `role="alert"`.
+- Tras un envío correcto el formulario se limpia; si hay error, lo escrito se conserva.
+- Mientras se envía, el botón muestra `aria-busy` y bloquea el doble envío.
 
 ## Enlaces a WhatsApp
 
