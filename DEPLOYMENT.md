@@ -232,7 +232,7 @@ git push origin --delete feature/nombre-de-la-funcionalidad
    ```powershell
    bun add resend
    ```
-5. La lógica de envío vive en `src/app/api/contact/route.ts`, y el formulario (`ContactForm.tsx`) hace `fetch('/api/contact')` con estado de carga/éxito/error
+5. La lógica de envío vive en la Server Action `src/app/actions/send-contact.ts`; el formulario (`ContactFormFields.tsx`) la invoca con `useActionState`, con estado de carga/éxito/error y validación compartida en `src/lib/contact-schema.ts`
 
 > Sin verificar un dominio propio en Resend, el remitente usa `onboarding@resend.dev` y solo se puede enviar hacia la dirección con la que te registraste en la cuenta.
 
