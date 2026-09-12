@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProfile } from "@/lib/data";
+import { FALLBACK_FULL_NAME, FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import { SITE_NAME } from "@/lib/site";
 
 export const alt = `${SITE_NAME} - Portafolio`;
@@ -8,8 +9,8 @@ export const contentType = "image/png";
 
 export default async function OpenGraphImage() {
   const profile = await getProfile();
-  const name = profile ? `${profile.firstName} ${profile.lastName}` : "Oliver Farid Rodríguez Morales";
-  const title = profile?.title ?? "Ingeniero de Software";
+  const name = profile ? `${profile.firstName} ${profile.lastName}` : FALLBACK_FULL_NAME;
+  const title = profile?.title ?? FALLBACK_PROFILE.title;
 
   return new ImageResponse(
     (

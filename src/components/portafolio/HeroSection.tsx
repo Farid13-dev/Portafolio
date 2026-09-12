@@ -2,6 +2,7 @@ import { ChevronRight, FileDown, Github, Linkedin, Phone, User } from "lucide-re
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import { buildWhatsappLink } from "@/lib/whatsapp";
 import type { Profile } from "@/types/portafolio";
 
@@ -13,15 +14,19 @@ const socialLinkClass =
   "inline-flex rounded-md p-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-ring";
 
 export function HeroSection({ profile }: HeroSectionProps) {
-  const firstName = profile?.firstName ?? "Oliver Farid";
-  const lastName = profile?.lastName ?? "Rodríguez Morales";
+  const firstName = profile?.firstName ?? FALLBACK_PROFILE.firstName;
+  const lastName = profile?.lastName ?? FALLBACK_PROFILE.lastName;
   const whatsappLink = buildWhatsappLink(profile);
 
   return (
     <section
       id="inicio"
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={-1}
+      aria-labelledby="inicio-title"
       // 100svh menos la altura del nav fijo: el primer pliegue no desborda
-      className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden bg-linear-to-br from-primary/5 via-background to-primary/5"
+      className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden bg-linear-to-br from-primary/5 via-background to-primary/5 focus:outline-none"
     >
       <div className="container relative mx-auto px-4 text-center sm:px-6 lg:px-8">
         <div className="relative mx-auto mb-6 h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20 bg-primary/10">
@@ -40,12 +45,12 @@ export function HeroSection({ profile }: HeroSectionProps) {
           />
         </div>
 
-        <h1 className="mb-4 text-5xl font-bold text-balance sm:text-6xl lg:text-7xl">
+        <h1 id="inicio-title" className="mb-4 text-5xl font-bold text-balance sm:text-6xl lg:text-7xl">
           {firstName}
           <span className="mt-2 block text-primary">{lastName}</span>
         </h1>
         <p className="mb-6 text-xl text-muted-foreground sm:text-2xl">
-          {profile?.title ?? "Ingeniero de Software | Full Stack Developer"}
+          {profile?.title ?? FALLBACK_PROFILE.title}
         </p>
 
         {profile && profile.techStack.length > 0 && (
@@ -61,6 +66,9 @@ export function HeroSection({ profile }: HeroSectionProps) {
         )}
 
         <div className="mb-12 flex flex-wrap justify-center gap-4">
+          {/* Anclas nativas a propósito: el hero solo existe en la home, y un <a> con
+              fragmento deja el salto en manos del navegador (sin JS y sin el caso
+              muerto de next/link al repetir el mismo hash). */}
           <Button size="lg" asChild>
             <a href="#portafolio">
               Ver portafolio

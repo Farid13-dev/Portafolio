@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { Github, Linkedin, Mail } from "lucide-react";
+import { SectionLink } from "@/components/layout/SectionLink";
 import { SafeImage } from "@/components/ui/safe-image";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import { SECTIONS } from "@/lib/navigation";
 import type { Profile } from "@/types/portafolio";
 
@@ -13,8 +14,8 @@ const socialLinkClass =
 
 export function Footer({ profile }: FooterProps) {
   const year = new Date().getFullYear();
-  const firstName = profile?.firstName ?? "Oliver Farid";
-  const lastName = profile?.lastName ?? "Rodríguez Morales";
+  const firstName = profile?.firstName ?? FALLBACK_PROFILE.firstName;
+  const lastName = profile?.lastName ?? FALLBACK_PROFILE.lastName;
 
   return (
     <footer className="mt-auto border-t bg-muted/50">
@@ -30,7 +31,7 @@ export function Footer({ profile }: FooterProps) {
               </p>
             </div>
             <p className="text-muted-foreground">
-              {profile?.title ?? "Ingeniero de Sistemas enfocado en desarrollo backend y sistemas con IA."}
+              {profile?.title ?? FALLBACK_PROFILE.summary}
             </p>
           </div>
 
@@ -39,9 +40,9 @@ export function Footer({ profile }: FooterProps) {
             <ul className="space-y-2">
               {SECTIONS.map(({ id, label }) => (
                 <li key={id}>
-                  <Link href={`/#${id}`} className="text-muted-foreground transition-colors hover:text-primary">
+                  <SectionLink section={id} className="text-muted-foreground transition-colors hover:text-primary">
                     {label}
-                  </Link>
+                  </SectionLink>
                 </li>
               ))}
             </ul>

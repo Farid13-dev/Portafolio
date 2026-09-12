@@ -1,6 +1,7 @@
 import { Code } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import type { Profile, SectionHeaderData, SkillGroup } from "@/types/portafolio";
 
 interface AboutSectionProps {
@@ -12,7 +13,14 @@ interface AboutSectionProps {
 export function AboutSection({ profile, skills, header }: AboutSectionProps) {
   const description = header?.description?.trim();
   return (
-    <section id="sobre-mi" aria-labelledby="sobre-mi-title" className="bg-background py-20">
+    <section
+      id="sobre-mi"
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={-1}
+      aria-labelledby="sobre-mi-title"
+      className="bg-background py-20 focus:outline-none"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <div className="mb-12 text-center">
@@ -23,9 +31,9 @@ export function AboutSection({ profile, skills, header }: AboutSectionProps) {
           </div>
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-2xl">{profile?.titleProfile ?? "Ingeniero de Sistemas"}</CardTitle>
+              <CardTitle className="text-2xl">{profile?.titleProfile ?? FALLBACK_PROFILE.titleProfile}</CardTitle>
               <CardDescription className="text-base">
-                {profile?.location ?? "Florencia - Caquetá, Colombia"}
+                {profile?.location ?? FALLBACK_PROFILE.location}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

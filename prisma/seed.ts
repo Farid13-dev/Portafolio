@@ -1,3 +1,12 @@
+// Datos de ejemplo para poblar una base de datos VACÍA.
+//
+// ⚠️ Este script es destructivo: hace upsert sobre Profile y borra sin condición
+// todas las Skill y SkillCategory (además de servicios, proyectos y tutoriales
+// con ids antiguos). No lo ejecutes contra una base de datos con contenido real.
+//
+// Toda la identidad de aquí es ficticia. El sitio NO lee este archivo en runtime:
+// los datos que se muestran salen de la base de datos (src/lib/data.ts).
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -9,22 +18,29 @@ async function main() {
   // Perfil
   // ─────────────────────────────────────────────
   const profileData = {
-    firstName: 'Oliver',
-    lastName: 'Rodriguez',
+    firstName: 'Alex',
+    lastName: 'Rivera',
     title: 'Ingeniero de Sistemas | Backend Developer',
     titleProfile: 'Ingeniero de Sistemas',
     headline: 'Construyo backends que aguantan tráfico y sistemas de IA que responden.',
-    location: 'Florencia - Caquetá, Colombia',
-    bio: 'Ingeniero de Sistemas con enfoque en desarrollo backend (Python/Django, Java/Spring Boot) y experiencia construyendo sistemas con Inteligencia Artificial. En mi proyecto de grado lideré la arquitectura de un sistema conversacional con IA: implementé una arquitectura RAG con Milvus para búsqueda semántica, integré GPT-4 para generación de respuestas, y validé el prototipo con 30 usuarios reales. También tengo experiencia en gestión y calidad de datos a escala, cubriendo el registro de 650+ familias en ICBF y georreferenciación en DANE. Actualmente curso la Maestría en Ingeniería de Software en la Universidad de los Andes.',
+    location: 'Ciudad Ejemplo, Colombia',
+    bio: 'Ingeniero de Sistemas con enfoque en desarrollo backend (Python/Django, Java/Spring Boot) y experiencia construyendo sistemas con Inteligencia Artificial. En mi proyecto de grado lideré la arquitectura de un sistema conversacional: implementé una arquitectura RAG con búsqueda semántica, integré un modelo de lenguaje para la generación de respuestas y validé el prototipo con usuarios finales. También tengo experiencia en gestión y calidad de datos a escala. Actualmente curso una Maestría en Ingeniería de Software.',
     techStack: JSON.stringify(['Backend Developer', 'Python', 'Django', 'Java', 'Spring Boot', 'RAG', 'LLM']),
-    email: 'oliver1006507@gmail.com',
-    phone: '57-302-543-1466',
-    whatsappMessage: 'Hola Oliver, vi tu portafolio y me gustaría hablar sobre un proyecto.',
-    linkedin: 'https://www.linkedin.com/in/oliver-farid-rodriguez-morales-a30629326/',
-    github: 'https://github.com/Farid13-dev',
-    profileImage: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/img/FotoPefil.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWcvRm90b1BlZmlsLmpwZWciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg2NDg4Mjc1LCJleHAiOjE4MTgwMjQyNzV9.26cXVvByFJPySnTBJGf6KT2LNarR2X_p5pMdow7Gjms',
+    email: 'alex.rivera@example.com',
+    // Prefijo 00 y sufijo 0000000: no es asignable, así que el enlace de WhatsApp
+    // ejercita la UI sin escribir por accidente a un número real.
+    phone: '57-000-000-0000',
+    whatsappMessage: 'Hola Alex, vi tu portafolio y me gustaría hablar sobre un proyecto.',
+    linkedin: 'https://example.com/linkedin',
+    github: 'https://example.com/github',
+    // Vacío: la UI cae en un avatar genérico. Pon aquí la URL PÚBLICA de tu
+    // imagen (bucket público de Supabase Storage u otro host https).
+    // Nunca pegues una URL firmada: lleva un token de descarga dentro.
+    profileImage: '',
     logoImage: '',
-    cvUrl: 'https://mdlaipedphhhgsazcqlq.supabase.co/storage/v1/object/sign/cv/cv-oliver-rodriguez.pdf?token=eyJraWQiOiI3ZDc0YmJlNC04ZTljLTRiOWQtOTEzNi05YTc0NDIwYWU1ZTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJjdi9jdi1vbGl2ZXItcm9kcmlndWV6LnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODkxNjA2ODAsImV4cCI6MTgyMDY5NjY4MH0.7GREZZByB9JxrlWhUq_ia80gx3sl7Mh-YvTS21J6vow', // URL pública del PDF en Supabase Storage (bucket público), p. ej. https://<proyecto>.supabase.co/storage/v1/object/public/docs/cv.pdf
+    // Vacío: sin CV no se pinta el botón "Descargar CV". Usa la URL PÚBLICA del
+    // PDF, p. ej. https://<proyecto>.supabase.co/storage/v1/object/public/docs/cv.pdf
+    cvUrl: '',
     availability: true,
   };
 
@@ -41,7 +57,7 @@ async function main() {
   const sectionHeadersData = [
     { key: 'sobre-mi', title: 'Sobre Mí', description: 'Quién soy, cómo trabajo y las tecnologías que domino.', order: 0 },
     { key: 'servicios', title: 'Mis Servicios', description: 'Soluciones completas de desarrollo de software adaptadas a tus necesidades', order: 1 },
-    { key: 'experiencia', title: 'Experiencia Laboral', description: 'Mi trayectoria profesional combina desarrollo de software con IA y gestión de datos a escala en entidades nacionales.', order: 2 },
+    { key: 'experiencia', title: 'Experiencia Laboral', description: 'Mi trayectoria profesional combina desarrollo de software con IA y gestión de datos a escala.', order: 2 },
     { key: 'formacion', title: 'Formación Académica', description: 'Mi trayectoria educativa y formación continua', order: 3 },
     { key: 'portafolio', title: 'Mi Portafolio', description: 'Proyectos destacados que demuestran mi experiencia y habilidades', order: 4 },
     { key: 'tutoriales', title: 'Tutoriales', description: 'Próximamente compartiré tutoriales prácticos sobre desarrollo backend y sistemas con IA', order: 5 },
@@ -119,32 +135,32 @@ async function main() {
   // ─────────────────────────────────────────────
   const experiencesData = [
     {
-      title: 'Auxiliar Administrativo',
-      company: 'Instituto Colombiano de Bienestar Familiar (ICBF)',
-      location: 'Florencia - Caquetá',
-      description: 'Apoyé la digitalización y gestión de datos del servicio "Somos Familia, Somos Comunidad". Diseñé una plantilla en Excel con macros (VBA) para automatizar solicitudes de refrigerios en 6 equipos de campo. Administré la calidad de datos del registro de 650 familias (~1.950 integrantes), validando consistencia y corrigiendo errores de captura. Gestioné el repositorio documental en la nube (OneDrive) con trazabilidad entre equipos.',
-      startDate: '09 May 2025',
-      endDate: '06 Dec 2025',
+      title: 'Analista de Datos',
+      company: 'Acme Servicios S.A.S.',
+      location: 'Ciudad Ejemplo',
+      description: 'Apoyé la digitalización y la gestión de datos de un programa social. Diseñé una plantilla con macros para automatizar solicitudes recurrentes de los equipos de campo. Administré la calidad de datos de un registro de varios cientos de hogares, validando consistencia y corrigiendo errores de captura. Gestioné el repositorio documental en la nube con trazabilidad entre equipos.',
+      startDate: 'Ene 2023',
+      endDate: 'Dic 2023',
       isCurrent: false,
       order: 1,
     },
     {
-      title: 'Recuentista',
-      company: 'Departamento Administrativo Nacional de Estadística (DANE)',
-      location: 'Florencia - Caquetá',
-      description: 'Operé un sistema de captura de datos móvil (DMC) para el registro y georreferenciación de unidades de vivienda, sincronizando información en tiempo real con un aplicativo web corporativo. Ejecuté controles de calidad de datos mediante revisitas de verificación y validación en campo, gestionando copias de seguridad diarias y reportando inconsistencias cartográficas para garantizar la integridad del marco geoestadístico nacional.',
-      startDate: '16 Feb 2024',
-      endDate: '31 Dec 2025',
+      title: 'Operador de Captura de Datos',
+      company: 'Datos y Cifras S.A.',
+      location: 'Ciudad Ejemplo',
+      description: 'Operé un sistema de captura de datos móvil para el registro y la georreferenciación de unidades de vivienda, sincronizando la información en tiempo real con un aplicativo web corporativo. Ejecuté controles de calidad mediante revisitas de verificación y validación en campo, gestionando copias de seguridad diarias y reportando inconsistencias cartográficas.',
+      startDate: 'Feb 2022',
+      endDate: 'Dic 2022',
       isCurrent: false,
       order: 2,
     },
     {
       title: 'Desarrollador de back-end e Investigador (Proyecto de Grado)',
-      company: 'Universidad de la Amazonia',
-      location: 'Florencia - Caquetá',
-      description: 'Lideré el desarrollo del backend y la arquitectura de un sistema conversacional con IA para democratizar el acceso a información institucional, implementando una arquitectura RAG con Milvus para búsqueda semántica y GPT-4 para generación de respuestas. Integré módulos de accesibilidad bidireccional (Whisper y PiperTTS) y pipelines de extracción de texto con EasyOCR, validando el prototipo con 30 usuarios finales mediante pruebas de rendimiento y usabilidad. Stack: Python, LangChain, GPT-4, Milvus, Angular, Docker.',
-      startDate: '01 Ago 2024',
-      endDate: '24 Jul 2025',
+      company: 'Universidad Ejemplo',
+      location: 'Ciudad Ejemplo',
+      description: 'Lideré el desarrollo del backend y la arquitectura de un sistema conversacional con IA para democratizar el acceso a la información institucional, implementando una arquitectura RAG con base vectorial para búsqueda semántica y un modelo de lenguaje para la generación de respuestas. Integré módulos de accesibilidad bidireccional (voz a texto y texto a voz) y pipelines de extracción de texto con OCR, validando el prototipo con usuarios finales mediante pruebas de rendimiento y usabilidad. Stack: Python, LangChain, base vectorial, Angular, Docker.',
+      startDate: 'Ago 2021',
+      endDate: 'Jul 2022',
       isCurrent: false,
       order: 3,
     },
@@ -168,23 +184,23 @@ async function main() {
   const educationData = [
     {
       title: 'Ingeniería de Sistemas',
-      institution: 'Universidad de la Amazonia',
+      institution: 'Universidad Ejemplo',
       type: 'Pregrado',
-      location: 'Florencia - Caquetá',
+      location: 'Ciudad Ejemplo',
       description: 'Formación integral en ingeniería de sistemas, combinando ciencias básicas, fundamentos de ingeniería y componentes tecnológicos, investigativos y socio-humanistas, orientada al diseño y aplicación de soluciones computacionales con impacto en el entorno.',
-      startDate: 'Ago 2019',
-      endDate: 'Ago 2025',
+      startDate: 'Ene 2018',
+      endDate: 'Dic 2022',
       isCurrent: false,
       order: 1,
     },
     {
       title: 'Maestría en Ingeniería de Software',
-      institution: 'Universidad de los Andes',
+      institution: 'Instituto Tecnológico de Ejemplo',
       type: 'Maestría',
-      location: 'Bogotá (D.C)',
+      location: 'Ciudad Ejemplo',
       description: 'Formación orientada a liderar equipos y proyectos de ingeniería de software mediante inteligencia artificial, tecnologías emergentes y metodologías ágiles, con un enfoque práctico alineado a las necesidades actuales de la industria.',
-      startDate: 'Feb 2026',
-      endDate: 'Dec 2027',
+      startDate: 'Ene 2024',
+      endDate: 'Dic 2025',
       isCurrent: true,
       order: 2,
     },
@@ -210,15 +226,15 @@ async function main() {
       title: 'Portafolio Profesional',
       description: 'Plataforma web para presentar de forma profesional mi trayectoria, servicios y proyectos, con un canal de contacto directo y seguro para potenciales clientes o empleadores.',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/Farid13-dev/Portafolio',
+      githubUrl: 'https://example.com/portafolio',
       tags: ['Next.js 16', 'TypeScript', 'Prisma', 'PostgreSQL', 'Resend'],
       order: 1,
     },
     {
       title: 'Chatbot RAG',
-      description: 'Prototipo de Chatbot asistido por tecnologías de inteligencia artificial para el acceso inclusivo a la información del estatuto estudiantil en la UDLA.',
+      description: 'Prototipo de chatbot asistido por tecnologías de inteligencia artificial para el acceso inclusivo a la información del reglamento estudiantil de una universidad.',
       image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop',
-      githubUrl: 'https://github.com/Farid13-dev/Chatbot-RAG',
+      githubUrl: 'https://example.com/chatbot-rag',
       tags: ['Python', 'Angular', 'Milvus', 'Docker', 'GPT4', 'TTS', 'OCR', 'ASR'],
       order: 2,
     },

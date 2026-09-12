@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExperienceTimeline } from "./ExperienceTimeline";
+import type { SectionId } from "@/lib/navigation";
 import type { Experience, SectionHeaderData } from "@/types/portafolio";
 
 interface ExperienceSectionProps {
   experiences: Experience[];
   header?: SectionHeaderData;
-  id?: string;
+  id?: SectionId;
   isFullPage?: boolean;
   moreHref?: string;
 }
@@ -18,7 +19,14 @@ export function ExperienceSection({ experiences, header, id, isFullPage = false,
   const description = header?.description?.trim();
 
   return (
-    <section id={id} aria-labelledby={titleId} className={isFullPage ? "py-20" : "bg-background py-20"}>
+    <section
+      id={id}
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={id ? -1 : undefined}
+      aria-labelledby={titleId}
+      className={`${isFullPage ? "py-20" : "bg-background py-20"} focus:outline-none`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">

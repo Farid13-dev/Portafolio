@@ -5,14 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { SectionLink } from "@/components/layout/SectionLink";
 import { SECTIONS, type SectionId } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
   logoImage: string | null;
+  /** Logo de texto cuando no hay imagen: sale del perfil de la BD. */
+  firstName: string;
+  lastName: string;
 }
 
-export function Navigation({ logoImage }: NavigationProps) {
+export function Navigation({ logoImage, firstName, lastName }: NavigationProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,8 +61,9 @@ export function Navigation({ logoImage }: NavigationProps) {
             {logoImage ? (
               <Image src={logoImage} alt="" width={160} height={64} priority className="h-16 w-auto" />
             ) : (
-              <span className="text-2xl font-bold text-primary">
-                OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
+              <span className="text-2xl font-bold uppercase text-primary">
+                {firstName}
+                <span className="text-primary/60"> {lastName}</span>
               </span>
             )}
           </Link>
@@ -66,9 +71,13 @@ export function Navigation({ logoImage }: NavigationProps) {
           <ul className="hidden items-center md:flex">
             {SECTIONS.map(({ id, label }) => (
               <li key={id}>
-                <Link href={`/#${id}`} className={linkClass(id)} aria-current={isActive(id) ? "location" : undefined}>
+                <SectionLink
+                  section={id}
+                  className={linkClass(id)}
+                  aria-current={isActive(id) ? "location" : undefined}
+                >
                   {label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>
@@ -91,14 +100,14 @@ export function Navigation({ logoImage }: NavigationProps) {
           <ul className="space-y-1 px-2 pb-3 pt-2">
             {SECTIONS.map(({ id, label }) => (
               <li key={id}>
-                <Link
-                  href={`/#${id}`}
+                <SectionLink
+                  section={id}
                   className={linkClass(id, true)}
                   aria-current={isActive(id) ? "location" : undefined}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>

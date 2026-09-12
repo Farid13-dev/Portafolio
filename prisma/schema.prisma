@@ -11,7 +11,7 @@ datasource db {
 model Education {
   id          String   @id @default(cuid())
   title       String   // ej. "Ingeniería de Sistemas"
-  institution String   // ej. "Universidad de la Amazonia"
+  institution String   // ej. "Universidad Ejemplo"
   type        String   // "Carrera" | "Posgrado" | "Curso" | "Certificación" | "Diplomado"
   location    String?
   description String?
