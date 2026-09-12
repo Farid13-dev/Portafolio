@@ -6,20 +6,67 @@ Plantilla de portafolio para perfiles de desarrollo, construida con Next.js 16, 
 
 ---
 
+## 📸 Capturas
+
+> Todas las capturas se tomaron con los datos de ejemplo que crea `prisma/seed.ts`: la persona, las empresas y los enlaces son ficticios.
+
+### Inicio
+
+![Portada del portafolio: nombre, titular, stack y accesos directos](docs/screenshots/01-inicio.jpg)
+
+### Sobre mí y habilidades
+
+Biografía y habilidades técnicas agrupadas por categoría, todo servido desde la base de datos.
+
+![Sección "Sobre mí" con la biografía y las habilidades agrupadas en tarjetas](docs/screenshots/02-sobre-mi.jpg)
+
+### Modo claro y modo oscuro
+
+El tema sigue la preferencia del sistema (`next-themes` con `defaultTheme="system"`), sin parpadeo en la primera carga.
+
+| Claro | Oscuro |
+|---|---|
+| ![Sección de servicios en modo claro](docs/screenshots/03-servicios-claro.jpg) | ![La misma sección de servicios en modo oscuro](docs/screenshots/04-servicios-oscuro.jpg) |
+
+### Experiencia y formación
+
+Línea de tiempo alterna, con las tarjetas ordenadas por el campo `order` de cada registro.
+
+![Línea de tiempo de experiencia laboral con tarjetas alternas a cada lado del eje](docs/screenshots/05-experiencia.jpg)
+
+### Portafolio
+
+![Rejilla de proyectos con imagen, descripción, etiquetas de stack y enlace a GitHub](docs/screenshots/06-portafolio.jpg)
+
+### Contacto
+
+Formulario con validación en vivo, rate limit por IP y envío por Resend, junto a los canales directos del perfil.
+
+![Sección de contacto: datos de contacto, disponibilidad y formulario de mensaje](docs/screenshots/07-contacto.jpg)
+
+### Páginas completas
+
+Cada sección tiene además su propia ruta (`/servicios`, `/experiencia`, `/formacion`, `/portafolio`, `/tutoriales`) con su `<h1>`, su metadata y su URL canónica. El botón de volver lleva de vuelta a la sección exacta de la home, no al principio.
+
+![Página /servicios con el botón "Volver a Servicios" arriba a la izquierda](docs/screenshots/08-pagina-servicios.jpg)
+
+---
+
 ## 📋 Índice
 
-1. [Inicio Rápido](#-inicio-rápido)
-2. [Tecnologías](#-tecnologías)
-3. [Estructura del Proyecto](#-estructura-del-proyecto)
-4. [Comandos Disponibles](#-comandos-disponibles)
-5. [Base de Datos](#-base-de-datos)
-6. [Formulario de Contacto y WhatsApp](#-formulario-de-contacto-y-whatsapp)
-7. [Imágenes](#-imágenes)
-8. [Despliegue](#-despliegue)
-9. [Desarrollo Local](#-desarrollo-local)
-10. [Modelos de Datos](#-modelos-de-datos)
-11. [Troubleshooting](#-troubleshooting)
-12. [Próximos Pasos](#-próximos-pasos)
+1. [Capturas](#-capturas)
+2. [Inicio Rápido](#-inicio-rápido)
+3. [Tecnologías](#-tecnologías)
+4. [Estructura del Proyecto](#-estructura-del-proyecto)
+5. [Comandos Disponibles](#-comandos-disponibles)
+6. [Base de Datos](#-base-de-datos)
+7. [Formulario de Contacto y WhatsApp](#-formulario-de-contacto-y-whatsapp)
+8. [Imágenes](#-imágenes)
+9. [Despliegue](#-despliegue)
+10. [Desarrollo Local](#-desarrollo-local)
+11. [Modelos de Datos](#-modelos-de-datos)
+12. [Troubleshooting](#-troubleshooting)
+13. [Próximos Pasos](#-próximos-pasos)
 
 ---
 
