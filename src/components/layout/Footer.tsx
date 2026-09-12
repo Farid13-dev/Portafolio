@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Github, Linkedin, Mail } from "lucide-react";
+import { SectionLink } from "@/components/layout/SectionLink";
 import { SafeImage } from "@/components/ui/safe-image";
 import { SECTIONS } from "@/lib/navigation";
 import type { Profile } from "@/types/portafolio";
@@ -39,9 +39,9 @@ export function Footer({ profile }: FooterProps) {
             <ul className="space-y-2">
               {SECTIONS.map(({ id, label }) => (
                 <li key={id}>
-                  <Link href={`/#${id}`} className="text-muted-foreground transition-colors hover:text-primary">
+                  <SectionLink section={id} className="text-muted-foreground transition-colors hover:text-primary">
                     {label}
-                  </Link>
+                  </SectionLink>
                 </li>
               ))}
             </ul>
