@@ -11,6 +11,8 @@ export const FALLBACK_PROFILE = {
   lastName: "Rivera",
   /** Titular bajo el nombre, en el hero. */
   title: "Ingeniero de Software | Full Stack Developer",
+  /** Frase con verbo, bajo el titular: qué haces, no cómo te llamas el cargo. */
+  headline: "Construyo backends que aguantan tráfico y sistemas de IA que responden.",
   /** Cargo corto, en la tarjeta de "Sobre mí". */
   titleProfile: "Ingeniero de Sistemas",
   /** Descripción de una línea, en el pie. */

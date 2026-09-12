@@ -1,342 +1,125 @@
-# 🚀 Guía de Despliegue - Migración SQLite → PostgreSQL (Supabase) + Vercel
+# Guía de despliegue
 
-Documento de referencia con el proceso completo seguido para migrar el portafolio de SQLite local a PostgreSQL en Supabase, desplegado en Vercel con flujo Gitflow.
+Cómo poner este portafolio en producción: base de datos, variables de entorno, Vercel y CI. Para levantarlo en local, el [README](README.md#puesta-en-marcha) basta.
 
----
-
-## 📋 Índice
-
-1. [Configuración de Git y GitHub](#-1-configuración-de-git-y-github)
-2. [Configuración de Supabase](#-2-configuración-de-supabase)
-3. [Cambios en el proyecto](#-3-cambios-en-el-proyecto)
-4. [Configuración de Vercel](#-4-configuración-de-vercel)
-5. [Flujo de merge hasta producción](#-5-flujo-de-merge-hasta-producción)
-6. [Flujo Gitflow para futuros cambios](#-6-flujo-gitflow-para-futuros-cambios)
-7. [Formulario de contacto (Resend)](#-7-formulario-de-contacto-resend)
-8. [Limpieza de archivos sin uso](#-8-limpieza-de-archivos-sin-uso)
-9. [Troubleshooting encontrado](#-9-troubleshooting-encontrado)
+**Índice:** [Base de datos](#1-base-de-datos-postgresql) · [Variables de entorno](#2-variables-de-entorno) · [Vercel](#3-vercel) · [CI](#4-ci-github-actions) · [Flujo de trabajo](#5-flujo-de-trabajo) · [Problemas conocidos](#problemas-conocidos)
 
 ---
 
-## 🌿 1. Configuración de Git y GitHub
+## 1. Base de datos (PostgreSQL)
 
-### Inicializar repo y subir `main`
+Cualquier PostgreSQL sirve. Estas instrucciones usan Supabase porque su plan gratuito cubre de sobra un portafolio.
 
-```powershell
-git init
-git add .
-git commit -m "chore: initial commit"
-git branch -M main
-git remote add origin https://github.com/tu-usuario/portafolio.git
-git push -u origin main
-```
+1. **New Project** en [supabase.com](https://supabase.com) → contraseña de base de datos y región más cercana.
+2. **Project Settings → Database → Connection string**, pestaña **ORM → Prisma**.
+3. Copiar las **dos** cadenas de conexión.
 
-### Crear rama `develop`
+El proyecto necesita las dos porque cumplen funciones distintas (`prisma/schema.prisma`):
 
-```powershell
-git checkout -b develop
-git push -u origin develop
-```
-
-### Crear feature branch para cada cambio
-
-```powershell
-git checkout develop
-git pull origin develop
-git checkout -b feature/nombre-del-cambio
-```
-
-> **Convención Gitflow:**
-> - `main` → producción, permanente
-> - `develop` → integración, permanente
-> - `feature/*`, `chore/*`, `release/*`, `hotfix/*` → temporales, se borran tras el merge
-
----
-
-## 🗄️ 2. Configuración de Supabase
-
-1. Crear cuenta en [supabase.com](https://supabase.com) con login de GitHub
-2. **New Project** → nombre del proyecto, contraseña de BD (generada por Supabase), región más cercana → Plan **Free**
-3. Esperar aprovisionamiento (1-2 min)
-4. Ir a **Project Settings → Database → Connection string**
-5. Seleccionar la pestaña **ORM → Prisma** (da el formato exacto listo para copiar)
-6. Copiar las dos connection strings:
-   - `DATABASE_URL` → **Transaction pooler**, puerto **6543**, con `?pgbouncer=true` (para runtime/serverless)
-   - `DIRECT_URL` → **Direct/Session connection**, puerto **5432** (para migraciones y `db:push`)
-7. Reemplazar `[YOUR-PASSWORD]` por la contraseña real de la base de datos
-
-> ⚠️ **Importante:** si la contraseña tiene caracteres especiales (`@`, `#`, `%`, etc.), hay que percent-encodearlos o la conexión falla. Ejemplo: `@` → `%40`.
->
-> ⚠️ Los corchetes `[ ]` en `[YOUR-PASSWORD]` son solo un placeholder de la documentación — no se incluyen literalmente en la URL final.
-
----
-
-## ⚙️ 3. Cambios en el proyecto
-
-### `.env` (nunca se sube a git, ya está en `.gitignore`)
-
-```env
-DATABASE_URL="postgresql://postgres.[project-ref]:[PASSWORD_ENCODED]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[project-ref]:[PASSWORD_ENCODED]@aws-0-[region].pooler.supabase.com:5432/postgres"
-RESEND_API_KEY="re_tu_api_key"
-CONTACT_EMAIL="tu-email@ejemplo.com"
-NODE_ENV=development
-```
-
-### `prisma/schema.prisma`
-
-```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")       // pooling, puerto 6543 — para runtime
-  directUrl = env("DIRECT_URL")         // directa, puerto 5432 — para db:push
-}
-```
-
-> Se eliminaron los modelos `User` y `Post` de ejemplo (generados por defecto por `npx prisma init`), ya que no eran usados por el proyecto.
-
-### Cliente de Prisma (patrón singleton)
-
-Para evitar abrir una conexión nueva en cada request (causa común de latencia en serverless), el cliente se instancia una única vez en `src/lib/db.ts` y se reutiliza en todas las rutas API:
-
-```typescript
-import { PrismaClient } from '@prisma/client'
-
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-```
-
-Todas las rutas importan desde ahí: `import { prisma } from '@/lib/db'` — nunca `new PrismaClient()` directo dentro de un handler.
-
-### Aplicar el schema y sembrar datos
-
-```powershell
-bun run db:generate
-bun run db:push
-bun run db:seed
-```
-
-### Verificar en local
-
-```powershell
-bun run dev
-```
-
-Confirmar que la home (`/`) y las rutas `/servicios`, `/experiencia`, `/formacion`, `/portafolio` y `/tutoriales` cargan con los datos de la base de datos.
-
----
-
-## ▲ 4. Configuración de Vercel
-
-1. **Add New → Project** → seleccionar el repo `Portafolio` desde GitHub
-2. Dejar el **Root Directory** en default (raíz del repo)
-3. Primer deploy (va a fallar en el build porque las páginas leen la base de datos al generarse y aún no hay BD conectada — es esperado)
-4. **Settings → Git** → confirmar que **Production Branch** = `main`
-5. **Settings → Environment Variables** → agregar:
-   - `DATABASE_URL`
-   - `DIRECT_URL`
-   - `RESEND_API_KEY`
-   - `CONTACT_EMAIL`
-
-   Marcar las tres casillas de entorno: **Production**, **Preview** y **Development**
-
-> ⚠️ Las variables de entorno **no se aplican retroactivamente**. Si las agregas después de un deploy, necesitas forzar un **Redeploy** para que tomen efecto:
-> ```
-> Vercel → Deployments → "..." en el último deploy → Redeploy
-> ```
-
-### Entornos de Vercel
-
-| Environment | Rama | Dominio |
+| Variable | Puerto | Para qué |
 |---|---|---|
-| **Production** | `main` | dominio real (ej. `tu-proyecto.vercel.app`) |
-| **Preview** | cualquier otra rama (`develop`, `feature/*`) | URL única por deploy |
-| **Development** | uso vía Vercel CLI local | — |
+| `DATABASE_URL` | 6543 | Runtime. Transaction pooler con `?pgbouncer=true`: en serverless cada invocación abriría una conexión nueva y agotaría el límite de Postgres |
+| `DIRECT_URL` | 5432 | Conexión directa. La usa `prisma db push`, que necesita sesiones largas y sentencias DDL que el pooler no admite |
 
----
+> **Dos detalles que rompen la conexión en silencio:** los corchetes de `[YOUR-PASSWORD]` son un marcador de la documentación, no van en la URL final; y si la contraseña tiene caracteres especiales hay que codificarlos en porcentaje (`@` → `%40`, `#` → `%23`).
 
-## 🔀 5. Flujo de merge hasta producción
+Luego, contra una base **vacía**:
 
-```powershell
-git add .
-git commit -m "feat: descripción del cambio"
+```bash
+bun run db:push    # crea las tablas
+bun run db:seed    # datos de ejemplo — destructivo, ver el aviso del README
+```
+
+## 2. Variables de entorno
+
+La plantilla completa está en [`.env.example`](.env.example). Esta tabla resume qué lee el código y qué pasa si falta:
+
+| Variable | ¿Obligatoria? | Si falta |
+|---|---|---|
+| `DATABASE_URL` | **Sí** | La aplicación no arranca y el build falla |
+| `DIRECT_URL` | **Sí** | `db:push` falla |
+| `RESEND_API_KEY` | Para el formulario | El envío devuelve error de configuración |
+| `CONTACT_EMAIL` | Para el formulario | El envío devuelve error de configuración |
+| `CONTACT_FROM` | No | Se usa `onboarding@resend.dev`, que solo entrega al dueño de la cuenta de Resend. En producción, un dominio verificado |
+| `NEXT_PUBLIC_SITE_URL` | No | Se usa `VERCEL_PROJECT_PRODUCTION_URL` y, en local, `http://localhost:3000`. Afecta a canónicas, sitemap y Open Graph |
+| `NEXT_PUBLIC_SITE_NAME` | No | Se usa el nombre ficticio de `src/lib/profile-fallback.ts` |
+| `NEXT_PUBLIC_SITE_AUTHOR` | No | Se usa `NEXT_PUBLIC_SITE_NAME` |
+| `NEXT_PUBLIC_SITE_DESCRIPTION` | No | Se usa la descripción ficticia de reserva |
+
+> Las variables `NEXT_PUBLIC_*` se incrustan **al compilar**, no se leen en runtime. Definirlas o cambiarlas no surte efecto hasta el siguiente despliegue.
+
+## 3. Vercel
+
+1. **Add New → Project** → importar el repositorio. Root Directory en la raíz.
+2. **Settings → Git** → Production Branch = `main`.
+3. **Settings → Environment Variables** → añadir las de la tabla anterior, marcando **Production** y **Preview** (y **Development** si usas la CLI).
+
+En el panel de Vercel los valores se pegan **sin comillas**: a diferencia de un `.env`, aquí las comillas acaban dentro del valor.
+
+| Entorno | Rama | URL |
+|---|---|---|
+| Production | `main` | Dominio propio o `<proyecto>.vercel.app` |
+| Preview | cualquier otra rama | URL única por despliegue |
+
+> Vercel no aplica las variables retroactivamente: si las añades después de un despliegue, hay que redesplegar (**Deployments → ⋯ → Redeploy**).
+
+## 4. CI (GitHub Actions)
+
+`.github/workflows/ci.yml` ejecuta **lint → typecheck → build** en cada push y cada PR hacia `develop` o `main`.
+
+El build necesita acceso a la base de datos, porque las páginas se prerenderizan leyendo el contenido. Para que el paso se ejecute hay que definir en **Settings → Secrets and variables → Actions** los secrets `DATABASE_URL` y `DIRECT_URL`. Si faltan, el workflow no falla: omite el build con un aviso, porque Vercel lo ejecuta igualmente en cada despliegue.
+
+`package.json` incluye `postinstall: prisma generate`, así que el cliente de Prisma se regenera en cada instalación y nunca queda desfasado respecto al esquema.
+
+## 5. Flujo de trabajo
+
+Gitflow, un PR por cambio:
+
+```bash
+git checkout develop && git pull                 # partir de develop al día
+git checkout -b feature/nombre-del-cambio
+# ... commits pequeños, mensajes en español (feat:, fix:, chore:, docs:)
+bun run lint && bun run typecheck && bun run build   # lo mismo que el CI
 git push -u origin feature/nombre-del-cambio
 ```
 
-1. Vercel genera automáticamente un **Preview Deployment** para la rama
-2. Verificar en la URL de preview que todo cargue sin errores 500 (revisar consola del navegador y Runtime Logs de Vercel)
-3. **Pull Request** en GitHub: `feature/nombre-del-cambio → develop` → revisar diff → **Merge**
-4. **Pull Request**: `develop → main` → revisar diff → **Merge**
-5. Vercel despliega automáticamente a producción al detectar el push a `main`
-6. Verificar el sitio en producción
-
-### Sincronizar `develop` (si el merge se hizo directo a `main`)
-
-```powershell
-git checkout develop
-git merge main
-git push origin develop
-```
-
-### Limpieza: borrar la feature branch ya usada
-
-```powershell
-git branch -d feature/nombre-del-cambio
-git push origin --delete feature/nombre-del-cambio
-```
+1. Vercel publica una **preview** de la rama. Comprobar ahí antes de pedir revisión.
+2. PR `feature/*` → `develop`. El CI tiene que estar en verde.
+3. Cuando `develop` esté estable, PR `develop` → `main`: ese merge despliega a producción.
+4. Borrar la rama ya mergeada (`git branch -d` y `git push origin --delete`).
 
 ---
 
-## 🔁 6. Flujo Gitflow para futuros cambios
+## Problemas conocidos
 
-```powershell
-# 1. Partir siempre desde develop actualizado
-git checkout develop
-git pull origin develop
+### `EPERM: operation not permitted, rename ... query_engine-windows.dll.node`
 
-# 2. Crear la feature branch
-git checkout -b feature/nombre-de-la-funcionalidad
-
-# 3. Trabajar con commits pequeños y descriptivos
-git add .
-git commit -m "feat: descripción del cambio"
-
-# 4. Subir y revisar en Preview Deployment de Vercel
-git push -u origin feature/nombre-de-la-funcionalidad
-
-# 5. Pull Request feature → develop, revisar y mergear
-
-# 6. Cuando develop esté estable: Pull Request develop → main
-#    (esto dispara el deploy de producción en Vercel)
-
-# 7. Limpieza
-git branch -d feature/nombre-de-la-funcionalidad
-git push origin --delete feature/nombre-de-la-funcionalidad
-```
-
----
-
-## 📧 7. Formulario de contacto (Resend)
-
-1. Crear cuenta en [resend.com](https://resend.com)
-2. Dashboard → **API Keys** → **Create API Key**
-3. Agregar `RESEND_API_KEY` y `CONTACT_EMAIL` en `.env` local y en Vercel (Production + Preview + Development)
-4. Instalar el SDK:
-   ```powershell
-   bun add resend
-   ```
-5. La lógica de envío vive en la Server Action `src/app/actions/send-contact.ts`; el formulario (`ContactFormFields.tsx`) la invoca con `useActionState`, con estado de carga/éxito/error y validación compartida en `src/lib/contact-schema.ts`
-
-> Sin verificar un dominio propio en Resend, el remitente usa `onboarding@resend.dev` y solo se puede enviar hacia la dirección con la que te registraste en la cuenta.
-
----
-
-## 🧹 8. Limpieza de archivos sin uso
-
-Tras completar la migración y confirmar que el despliegue es exclusivamente en Vercel (sin VPS propio), se eliminaron:
-
-```powershell
-# Scripts de SQLite (ya migrado a Postgres)
-Remove-Item scripts\backup-sqlite.sh
-Remove-Item scripts\restore-sqlite.sh
-Remove-Item scripts\migrate-to-postgres.js
-Remove-Item scripts -Recurse -Force -ErrorAction SilentlyContinue
-
-# Lockfile duplicado (el proyecto usa bun.lock)
-Remove-Item package-lock.json
-
-# Carpeta de uploads sin funcionalidad real (solo tenía un .gitkeep)
-Remove-Item upload -Recurse -Force
-
-# Docker y Caddy (solo aplican a self-hosting con VPS, no usado)
-Remove-Item Dockerfile
-Remove-Item .dockerignore
-Remove-Item Caddyfile
-```
-
-Subido siguiendo Gitflow:
-```powershell
-git checkout develop
-git pull origin develop
-git checkout -b chore/cleanup-unused-files
-git add -A
-git commit -m "chore: eliminar archivos sin uso (sqlite scripts, docker, caddy, upload, lockfile duplicado)"
-git push -u origin chore/cleanup-unused-files
-```
-
----
-
-## 🐛 9. Troubleshooting encontrado
-
-### Error: Turbopack "failed to create junction point" (Windows)
-
-Causado por un junction point corrupto/duplicado del cliente de Prisma. Solución:
-
-```powershell
-Remove-Item -Recurse -Force .next
-Remove-Item -Recurse -Force node_modules\.prisma
-npx prisma generate
-```
-
-Si persiste, reinstalación limpia:
-```powershell
-Remove-Item -Recurse -Force node_modules
-bun install
-npx prisma generate
-```
-
-### Error: `EPERM: operation not permitted, rename ... query_engine-windows.dll.node`
-
-Causado por tener `bun run dev` o Prisma Studio corriendo en otra terminal mientras se ejecuta `db:generate`/`db:push` — el motor de Prisma queda bloqueado en memoria. Solución: cerrar todos los procesos de Next.js/Prisma Studio antes de correr esos comandos, y si persiste:
+En Windows, con `bun run dev` o Prisma Studio abiertos en otra terminal: el motor de Prisma queda bloqueado en memoria y `db:generate` / `db:push` no pueden reemplazarlo. Cierra esos procesos antes. Si persiste:
 
 ```powershell
 Remove-Item -Recurse -Force node_modules\.prisma -ErrorAction SilentlyContinue
 bun run db:generate
 ```
 
-### Error: `JSON.parse` en `techStack` ("Unexpected token '''")
+Corolario: si cambias dependencias sin tocar el esquema, `bun install --ignore-scripts` evita el `postinstall` y el bloqueo.
 
-Causado por datos guardados en formato de lista Python (`['a','b']`) en vez de JSON válido (`["a","b"]`). Solucionado reseteando la base de datos con un seed que genera JSON válido con `JSON.stringify()`.
+### Turbopack: «failed to create junction point» (Windows)
 
-### Warning: "Encountered two children with the same key" en React
+Junction point corrupto del cliente de Prisma:
 
-Causado por usar el propio valor (`skill`) como `key` en un `.map()`, con un valor duplicado en los datos. Solución: usar `key` compuesta con índice.
-
-```tsx
-{skillGroup.items.map((skill, index) => (
-  <Badge key={`${groupIndex}-${index}-${skill}`} variant="secondary">
-    {skill}
-  </Badge>
-))}
+```powershell
+Remove-Item -Recurse -Force .next, node_modules\.prisma
+bun run db:generate
 ```
 
-### Error: "Added the required column ... without a default value" al hacer `db:push`
+### `Added the required column ... without a default value` al hacer `db:push`
 
-Ocurre al agregar un campo nuevo **requerido** (sin `?` ni `@default(...)`) a un modelo que ya tiene filas existentes — Postgres no sabe qué valor poner en las filas viejas. **Nunca usar `--force-reset`** (borra todos los datos). Solución: declarar el campo como opcional (`String?`) o con un valor por defecto (`@default("")`).
+Aparece al añadir un campo **requerido** a un modelo con filas existentes: Postgres no sabe qué poner en las antiguas. Decláralo opcional (`String?`) o con `@default(...)`. **No uses `--force-reset`**: borra todos los datos.
 
-### Variables de entorno no toman efecto en Vercel tras agregar un modelo nuevo al schema
+### `tsc` o `next build` fallan tras borrar una ruta
 
-Si Vercel reutiliza el `node_modules` cacheado de un build anterior, el cliente de Prisma generado ahí puede no incluir los modelos nuevos, aunque el build no falle. Síntoma: las rutas que usan el modelo nuevo devuelven vacío o error, incluso con las variables de entorno bien configuradas. Solución inmediata: **Redeploy sin caché** desde Vercel. Solución permanente: agregar un script `postinstall` en `package.json` para que `prisma generate` corra en cada instalación:
+Los tipos generados en `.next/types` quedan obsoletos y siguen referenciando el archivo eliminado. Borra `.next` y vuelve a compilar.
 
-```json
-{
-  "scripts": {
-    "postinstall": "prisma generate"
-  }
-}
-```
+### Las capturas del README no coinciden con lo que veo
 
-### Variables de entorno no toman efecto en Vercel (general)
-
-Si se agregan variables de entorno después de un deploy ya realizado, hay que forzar un **Redeploy** manual — Vercel no las aplica retroactivamente al deployment existente.
-
----
-
-**Última actualización:** Migración a PostgreSQL completada, formulario de contacto con Resend y enlaces de WhatsApp integrados, sección de Formación Académica y encabezados dinámicos agregados, limpieza de archivos sin uso realizada. Todo verificado en producción.
+Son las del seed de ejemplo, con datos ficticios. Tu despliegue muestra lo que haya en **tu** base de datos.
