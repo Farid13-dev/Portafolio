@@ -21,7 +21,14 @@ export function ContactSection({ profile, header }: ContactSectionProps) {
   const description = header?.description?.trim().replace(/\\n/g, "\n");
 
   return (
-    <section id="contacto" aria-labelledby="contacto-title" className="bg-background py-20">
+    <section
+      id="contacto"
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={-1}
+      aria-labelledby="contacto-title"
+      className="bg-background py-20 focus:outline-none"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 id="contacto-title" className="mb-4 text-4xl font-bold text-balance">

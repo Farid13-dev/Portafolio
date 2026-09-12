@@ -13,13 +13,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { SectionId } from "@/lib/navigation";
 import type { SectionHeaderData, Service } from "@/types/portafolio";
 
 interface ServicesSectionProps {
   services: Service[];
   header?: SectionHeaderData;
   /** id de ancla en la home; omitir en /servicios */
-  id?: string;
+  id?: SectionId;
   /** true en /servicios: el título es el h1 y no se muestra "Ver todos" */
   isFullPage?: boolean;
   moreHref?: string;
@@ -41,8 +42,11 @@ export function ServicesSection({ services, header, id, isFullPage = false, more
   return (
     <section
       id={id}
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={id ? -1 : undefined}
       aria-labelledby={titleId}
-      className={isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"}
+      className={`${isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"} focus:outline-none`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">

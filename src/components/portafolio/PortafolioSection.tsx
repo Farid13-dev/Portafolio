@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
+import type { SectionId } from "@/lib/navigation";
 import type { Project, SectionHeaderData } from "@/types/portafolio";
 
 interface PortafolioSectionProps {
   projects: Project[];
   header?: SectionHeaderData;
-  id?: string;
+  id?: SectionId;
   isFullPage?: boolean;
   moreHref?: string;
 }
@@ -26,7 +27,14 @@ export function PortafolioSection({ projects, header, id, isFullPage = false, mo
         : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl";
 
   return (
-    <section id={id} aria-labelledby={titleId} className={isFullPage ? "py-20" : "bg-background py-20"}>
+    <section
+      id={id}
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={id ? -1 : undefined}
+      aria-labelledby={titleId}
+      className={`${isFullPage ? "py-20" : "bg-background py-20"} focus:outline-none`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Heading id={titleId} className="mb-4 text-4xl font-bold text-balance">

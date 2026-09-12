@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
+import type { SectionId } from "@/lib/navigation";
 import type { SectionHeaderData, Tutorial } from "@/types/portafolio";
 
 interface TutorialsSectionProps {
   tutorials: Tutorial[];
   header?: SectionHeaderData;
-  id?: string;
+  id?: SectionId;
   isFullPage?: boolean;
   moreHref?: string;
 }
@@ -28,8 +29,11 @@ export function TutorialsSection({ tutorials, header, id, isFullPage = false, mo
   return (
     <section
       id={id}
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={id ? -1 : undefined}
       aria-labelledby={titleId}
-      className={isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"}
+      className={`${isFullPage ? "py-20" : "bg-linear-to-br from-primary/5 via-background to-primary/5 py-20"} focus:outline-none`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">

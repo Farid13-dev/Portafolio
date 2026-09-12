@@ -12,7 +12,14 @@ interface AboutSectionProps {
 export function AboutSection({ profile, skills, header }: AboutSectionProps) {
   const description = header?.description?.trim();
   return (
-    <section id="sobre-mi" aria-labelledby="sobre-mi-title" className="bg-background py-20">
+    <section
+      id="sobre-mi"
+      // tabIndex -1: al llegar por /#seccion, Next enfoca el destino del hash.
+      // Sin esto el foco se queda en <body> y el lector de pantalla no se entera.
+      tabIndex={-1}
+      aria-labelledby="sobre-mi-title"
+      className="bg-background py-20 focus:outline-none"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <div className="mb-12 text-center">

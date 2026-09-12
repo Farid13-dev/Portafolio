@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { SectionLink } from "@/components/layout/SectionLink";
 import { SECTIONS, type SectionId } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -66,9 +67,13 @@ export function Navigation({ logoImage }: NavigationProps) {
           <ul className="hidden items-center md:flex">
             {SECTIONS.map(({ id, label }) => (
               <li key={id}>
-                <Link href={`/#${id}`} className={linkClass(id)} aria-current={isActive(id) ? "location" : undefined}>
+                <SectionLink
+                  section={id}
+                  className={linkClass(id)}
+                  aria-current={isActive(id) ? "location" : undefined}
+                >
                   {label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>
@@ -91,14 +96,14 @@ export function Navigation({ logoImage }: NavigationProps) {
           <ul className="space-y-1 px-2 pb-3 pt-2">
             {SECTIONS.map(({ id, label }) => (
               <li key={id}>
-                <Link
-                  href={`/#${id}`}
+                <SectionLink
+                  section={id}
                   className={linkClass(id, true)}
                   aria-current={isActive(id) ? "location" : undefined}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>

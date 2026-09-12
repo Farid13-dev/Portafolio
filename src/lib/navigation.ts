@@ -18,3 +18,24 @@ export const FULL_PAGE_SECTIONS = [
   "portafolio",
   "tutoriales",
 ] as const satisfies readonly SectionId[];
+
+export type FullPageSectionId = (typeof FULL_PAGE_SECTIONS)[number];
+
+/**
+ * Ancla de la sección dentro de la home.
+ *
+ * Siempre con "/" delante: desde una página completa (/servicios) el enlace
+ * tiene que cambiar de documento, no solo de fragmento.
+ */
+export const sectionAnchor = (id: SectionId) => `/#${id}` as const;
+
+const SECTION_LABELS = Object.fromEntries(SECTIONS.map(({ id, label }) => [id, label])) as Record<
+  SectionId,
+  string
+>;
+
+/** Nombre de la sección tal como aparece en el nav y en el footer. */
+export const sectionLabel = (id: SectionId) => SECTION_LABELS[id];
+
+/** Ruta de la página completa de una sección; el slug es el propio id. */
+export const sectionRoute = (id: FullPageSectionId) => `/${id}` as const;
