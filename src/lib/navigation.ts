@@ -29,5 +29,13 @@ export type FullPageSectionId = (typeof FULL_PAGE_SECTIONS)[number];
  */
 export const sectionAnchor = (id: SectionId) => `/#${id}` as const;
 
+const SECTION_LABELS = Object.fromEntries(SECTIONS.map(({ id, label }) => [id, label])) as Record<
+  SectionId,
+  string
+>;
+
+/** Nombre de la sección tal como aparece en el nav y en el footer. */
+export const sectionLabel = (id: SectionId) => SECTION_LABELS[id];
+
 /** Ruta de la página completa de una sección; el slug es el propio id. */
 export const sectionRoute = (id: FullPageSectionId) => `/${id}` as const;
