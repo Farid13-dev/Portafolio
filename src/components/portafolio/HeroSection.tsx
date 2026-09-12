@@ -16,6 +16,7 @@ const socialLinkClass =
 export function HeroSection({ profile }: HeroSectionProps) {
   const firstName = profile?.firstName ?? FALLBACK_PROFILE.firstName;
   const lastName = profile?.lastName ?? FALLBACK_PROFILE.lastName;
+  const headline = profile?.headline?.trim();
   const whatsappLink = buildWhatsappLink(profile);
 
   return (
@@ -49,9 +50,12 @@ export function HeroSection({ profile }: HeroSectionProps) {
           {firstName}
           <span className="mt-2 block text-primary">{lastName}</span>
         </h1>
-        <p className="mb-6 text-xl text-muted-foreground sm:text-2xl">
+        <p className="mb-4 text-xl text-muted-foreground sm:text-2xl">
           {profile?.title ?? FALLBACK_PROFILE.title}
         </p>
+        {headline && (
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-balance text-foreground/90 sm:text-xl">{headline}</p>
+        )}
 
         {profile && profile.techStack.length > 0 && (
           <ul className="mb-8 flex flex-wrap justify-center gap-3" aria-label="Tecnologías principales">
