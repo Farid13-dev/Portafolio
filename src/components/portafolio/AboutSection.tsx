@@ -1,6 +1,7 @@
 import { Code } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import type { Profile, SectionHeaderData, SkillGroup } from "@/types/portafolio";
 
 interface AboutSectionProps {
@@ -30,9 +31,9 @@ export function AboutSection({ profile, skills, header }: AboutSectionProps) {
           </div>
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-2xl">{profile?.titleProfile ?? "Ingeniero de Sistemas"}</CardTitle>
+              <CardTitle className="text-2xl">{profile?.titleProfile ?? FALLBACK_PROFILE.titleProfile}</CardTitle>
               <CardDescription className="text-base">
-                {profile?.location ?? "Florencia - Caquetá, Colombia"}
+                {profile?.location ?? FALLBACK_PROFILE.location}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

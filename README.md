@@ -1,6 +1,8 @@
-# 🚀 Portafolio - Oliver Farid Rodriguez Morales
+# 🚀 Portafolio profesional en Next.js
 
-Portafolio profesional de Ingeniero de Software Full Stack construido con Next.js 16, TypeScript, Prisma y PostgreSQL.
+Plantilla de portafolio para perfiles de desarrollo, construida con Next.js 16, TypeScript, Prisma y PostgreSQL. El contenido se administra desde la base de datos, así que el sitio se personaliza sin tocar el código.
+
+> Todos los datos de este repositorio (nombre, correo, empresas, formación) son **ficticios**: sirven de ejemplo para que el proyecto arranque con contenido. Los datos reales de un despliegue viven en la base de datos, nunca aquí.
 
 ---
 
@@ -223,15 +225,17 @@ El script `seed.ts` incluye:
 
 | Modelo | Cantidad | Contenido |
 |--------|----------|-----------|
-| Profile | 1 | Perfil completo de Oliver Farid Rodriguez Morales |
+| Profile | 1 | Perfil de ejemplo (Alex Rivera, persona ficticia) |
 | SectionHeader | 7 | Título/descripción de cada sección (sobre-mí, servicios, experiencia, formación, portafolio, tutoriales, contacto) |
-| Services | 6 | Desarrollo Web, Apps Móviles, Backend, BD, Cloud, Consultoría |
-| Experiences | 3 | Experiencia laboral real |
-| Education | 2 | Formación académica real |
-| Projects | 6 | Proyectos con imágenes y enlaces a GitHub |
-| Tutorials | 6 | Tutoriales con imágenes y videos de YouTube |
-| SkillCategories | 4 | Frontend, Backend, Database, DevOps & Tools |
-| Skills | ~23 | Habilidades organizadas por categoría |
+| Services | 4 | Backend & APIs, Bases de Datos, Sistemas con IA, Desarrollo Web |
+| Experiences | 3 | Experiencia laboral de ejemplo |
+| Education | 2 | Formación académica de ejemplo |
+| Projects | 2 | Proyectos de ejemplo con imagen de stock y enlace |
+| Tutorials | 0 | Sección vacía a la espera de contenido |
+| SkillCategories | 5 | Frontend, Backend, Database, IA & Data, DevOps & Tools |
+| Skills | ~34 | Habilidades organizadas por categoría |
+
+> ⚠️ `seed.ts` es destructivo: borra todas las `Skill` y `SkillCategory` antes de recrearlas. Ejecútalo solo contra una base de datos de desarrollo vacía.
 
 ### Variables de Entorno Requeridas
 
@@ -270,7 +274,11 @@ bun run db:seed
 ### CV en PDF (botón "Descargar CV")
 
 El hero muestra el botón solo si `Profile.cvUrl` tiene valor. Para publicar el PDF:
-. Supabase → **Storage** → **New bucket** (p. ej. `docs`) marcado como **Public**.. Sube el archivo (p. ej. `cv-oliver-rodriguez.pdf`) y copia su **URL pública** (`…/storage/v1/object/public/docs/cv-oliver-rodriguez.pdf`).. Guarda esa URL en `Profile.cvUrl` (Prisma Studio o `prisma/seed.ts`). La home se regenera en la siguiente revalidación (máx. 1 h) o al redesplegar.
+1. Supabase → **Storage** → **New bucket** (p. ej. `docs`) marcado como **Public**.
+2. Sube el archivo (p. ej. `cv.pdf`) y copia su **URL pública** (`…/storage/v1/object/public/docs/cv.pdf`).
+3. Guarda esa URL en `Profile.cvUrl` (Prisma Studio o `prisma/seed.ts`). La home se regenera en la siguiente revalidación (máx. 1 h) o al redesplegar.
+
+> ⚠️ Usa siempre la URL **pública** del bucket. Una URL *firmada* (`/object/sign/…?token=…`) lleva dentro un token de descarga: si acaba en el repositorio, cualquiera que lea el código —o el historial de git— puede descargar el archivo hasta que el token caduque.
 
 ---
 
@@ -399,6 +407,14 @@ DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler
 RESEND_API_KEY="re_tu_api_key"
 CONTACT_EMAIL="tu-email@ejemplo.com"
 NODE_ENV=development
+```
+
+Para publicar el sitio con tu propia identidad, define además estas variables en lugar de escribir tus datos en el código (todas son opcionales y caen en los valores ficticios por defecto):
+
+```env
+NEXT_PUBLIC_SITE_NAME="Tu Nombre"          # sufijo de los <title> y texto de la imagen OG
+NEXT_PUBLIC_SITE_AUTHOR="Tu Nombre"        # <meta name="author">
+NEXT_PUBLIC_SITE_DESCRIPTION="Tu resumen"  # <meta name="description"> por defecto
 ```
 
 ### Desarrollo Iterativo
@@ -605,7 +621,7 @@ Revisa que `DATABASE_URL` y `DIRECT_URL` estén bien configuradas, y que la cont
 
 ## 📄 Licencia
 
-Este proyecto es de propiedad de Oliver Farid Rodriguez Morales.
+Código disponible como plantilla de referencia. El contenido de ejemplo (perfil, experiencia, proyectos) es ficticio y puede sustituirse libremente.
 
 ---
 

@@ -5,7 +5,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { getProfile } from "@/lib/data";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,10 +18,8 @@ export const metadata: Metadata = {
   title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   keywords: ["Ingeniero de Software", "Backend", "Next.js", "TypeScript", "React", "IA", "Colombia"],
-  authors: [{ name: "Oliver Farid Rodríguez Morales" }],
-  icons: {
-    icon: [{ url: "/images/gg.png", sizes: "256x256", type: "image/png" }],
-  },
+  authors: [{ name: SITE_AUTHOR }],
+  // El favicon lo resuelve src/app/icon.svg por convención del App Router.
   openGraph: {
     type: "website",
     locale: "es_CO",
@@ -51,7 +50,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           >
             Saltar al contenido principal
           </a>
-          <Navigation logoImage={profile?.logoImage ?? null} />
+          <Navigation
+            logoImage={profile?.logoImage ?? null}
+            firstName={profile?.firstName ?? FALLBACK_PROFILE.firstName}
+            lastName={profile?.lastName ?? FALLBACK_PROFILE.lastName}
+          />
           <main id="main-content" tabIndex={-1} className="flex-1 pt-16">
             {children}
           </main>

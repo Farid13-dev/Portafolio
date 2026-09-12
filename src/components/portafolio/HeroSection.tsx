@@ -2,6 +2,7 @@ import { ChevronRight, FileDown, Github, Linkedin, Phone, User } from "lucide-re
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
+import { FALLBACK_PROFILE } from "@/lib/profile-fallback";
 import { buildWhatsappLink } from "@/lib/whatsapp";
 import type { Profile } from "@/types/portafolio";
 
@@ -13,8 +14,8 @@ const socialLinkClass =
   "inline-flex rounded-md p-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-ring";
 
 export function HeroSection({ profile }: HeroSectionProps) {
-  const firstName = profile?.firstName ?? "Oliver Farid";
-  const lastName = profile?.lastName ?? "Rodríguez Morales";
+  const firstName = profile?.firstName ?? FALLBACK_PROFILE.firstName;
+  const lastName = profile?.lastName ?? FALLBACK_PROFILE.lastName;
   const whatsappLink = buildWhatsappLink(profile);
 
   return (
@@ -49,7 +50,7 @@ export function HeroSection({ profile }: HeroSectionProps) {
           <span className="mt-2 block text-primary">{lastName}</span>
         </h1>
         <p className="mb-6 text-xl text-muted-foreground sm:text-2xl">
-          {profile?.title ?? "Ingeniero de Software | Full Stack Developer"}
+          {profile?.title ?? FALLBACK_PROFILE.title}
         </p>
 
         {profile && profile.techStack.length > 0 && (
