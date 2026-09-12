@@ -149,4 +149,4 @@ Los pasos detallados —crear el proyecto en Supabase, las dos URLs de conexión
 
 ## Licencia
 
-Este repositorio se publica como proyecto de referencia. El contenido de ejemplo es ficticio y puede reutilizarse libremente; si vas a partir de él para tu propio portafolio, cambia los datos del seed y las variables de entorno de identidad.
+[MIT](LICENSE). Si partes de este repositorio para tu propio portafolio, cambia los datos del seed y las variables de entorno de identidad.
