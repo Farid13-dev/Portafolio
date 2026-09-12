@@ -27,7 +27,7 @@ git init
 git add .
 git commit -m "chore: initial commit"
 git branch -M main
-git remote add origin https://github.com/Farid13-dev/Portafolio.git
+git remote add origin https://github.com/tu-usuario/portafolio.git
 git push -u origin main
 ```
 
@@ -156,7 +156,7 @@ Confirmar que la home (`/`) y las rutas `/servicios`, `/experiencia`, `/formacio
 
 | Environment | Rama | Dominio |
 |---|---|---|
-| **Production** | `main` | dominio real (ej. `portafolio-nu-pied.vercel.app`) |
+| **Production** | `main` | dominio real (ej. `tu-proyecto.vercel.app`) |
 | **Preview** | cualquier otra rama (`develop`, `feature/*`) | URL única por deploy |
 | **Development** | uso vía Vercel CLI local | — |
 

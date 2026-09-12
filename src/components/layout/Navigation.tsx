@@ -11,9 +11,12 @@ import { cn } from "@/lib/utils";
 
 interface NavigationProps {
   logoImage: string | null;
+  /** Logo de texto cuando no hay imagen: sale del perfil de la BD. */
+  firstName: string;
+  lastName: string;
 }
 
-export function Navigation({ logoImage }: NavigationProps) {
+export function Navigation({ logoImage, firstName, lastName }: NavigationProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,8 +61,9 @@ export function Navigation({ logoImage }: NavigationProps) {
             {logoImage ? (
               <Image src={logoImage} alt="" width={160} height={64} priority className="h-16 w-auto" />
             ) : (
-              <span className="text-2xl font-bold text-primary">
-                OLIVER<span className="text-primary/60"> RODRIGUEZ</span>
+              <span className="text-2xl font-bold uppercase text-primary">
+                {firstName}
+                <span className="text-primary/60"> {lastName}</span>
               </span>
             )}
           </Link>
